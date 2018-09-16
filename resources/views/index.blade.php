@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h1 class="text-center">Médicaments pour transport</h1>
+    <h1 class="text-center">Calculateur de doses pour les urgences et les soins intensifs pédiatriques</h1>
 
     <form action="/" method="post">
         {{ csrf_field() }}
@@ -15,8 +15,7 @@
 
 
             <div class="form-group col-xs-6 col-md-3 col-md-offset-3">
-                <label>Âge:</label>
-                <input type="text" name="age" class="form-control" value="{{ session('form.age') }}">
+
             </div>
 
             <div class="form-group col-xs-6 col-md-3">
@@ -25,8 +24,7 @@
             </div>
 
             <div class="form-group col-xs-12 col-md-6 col-md-offset-3">
-                <label>Poids:</label> <i>(en kg)</i>
-                <input type="text" name="weight" class="form-control" value="{{ session('form.weight') }}">
+                <weight-selector></weight-selector>
             </div>
         </div>
         <div class="row">
@@ -38,8 +36,14 @@
                 <a href="/reset" class="btn btn-danger form-control">Mise à zéro</a>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="well alert-danger">
+                    <p>Ceci est un outil d'aide à la décision, il ne s'agit pas d'une prescription pharmaceutique et que le jugement de l'équipe médicale doit s'appliquer en tout temps. Les doses suggérées ne s'appliquent pas à la population néonatale. Les auteurs ne sont pas responsables de l'usage du calculateur fait par de tiers partis.</p>
+                </div>
+            </div>
 
-
+        </div>
     </form>
 
 

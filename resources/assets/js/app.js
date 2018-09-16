@@ -15,7 +15,12 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+import {Tabs, Tab} from 'vue-tabs-component';
+
 // Vue.component('bolus-infusion', require('./components/BolusInfusionComponent.vue'));
+Vue.component('tabs', Tabs);
+Vue.component('tab', Tab);
+Vue.component('weight-selector', require('./components/Weight-Selector'));
 
 const app = new Vue({
     el: '#app'

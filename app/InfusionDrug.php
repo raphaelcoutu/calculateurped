@@ -8,7 +8,11 @@ class InfusionDrug extends Model
 {
     public function getDoseStringAttribute()
     {
-        return "{$this->debit_min}-{$this->debit_max} {$this->debit_dose_unit}/kg/{$this->debit_time_unit}";
+        if($this->debit_max) {
+            return "{$this->debit_min}-{$this->debit_max} {$this->debit_dose_unit}/kg/{$this->debit_time_unit}";
+        } else {
+            return "{$this->debit_min} {$this->debit_dose_unit}/kg/{$this->debit_time_unit}";
+        }
     }
 
     public function getInitialDebitStringAttribute()

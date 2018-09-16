@@ -66,7 +66,8 @@ class HomeController extends Controller
 
         $infusions = InfusionConcentration::with('drug')
             ->where('weight_category', $weightCategory)->get()->each(function ($infusion) use ($weight) {
-            $infusion->debit = $infusion->getDebit($weight);
+            $infusion->debit_min = $infusion->getDebitMinimal($weight);
+            $infusion->debit_max = $infusion->getDebitMaximal($weight);
         });
 
         return view('infusion', compact('infusions'));
