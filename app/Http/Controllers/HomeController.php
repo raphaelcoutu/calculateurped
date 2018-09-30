@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Bolus;
-use App\Infusion;
 use App\InfusionConcentration;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -20,7 +18,6 @@ class HomeController extends Controller
         $age = request('age') ?? "____________________";
         $id = request('id') ?? "______________";
         $weight = request('weight');
-
 
         session([
             'form' => [
@@ -90,7 +87,8 @@ class HomeController extends Controller
 
         $infusions = InfusionConcentration::with('drug')
             ->where('weight_category', $weightCategory)->get()->each(function ($infusion) use ($weight) {
-                $infusion->debit = $infusion->getDebit($weight);
+                $infusion->debit_min = $infusion->getDebitMinimal($weight);
+                $infusion->debit_max = $infusion->getDebitMaximal($weight);
             });
 
         $pdf->loadView('pdf.main', compact('boluses', 'infusions'));

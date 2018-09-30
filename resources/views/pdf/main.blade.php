@@ -99,7 +99,7 @@
         }
         footer { position: fixed; bottom: 0px; left: 0px; right: 0px; background-color: lightblue; height: 50px; }
     </style>
-    <title>Médicament transport</title>
+    <title>{{ config('app.name', 'Laravel') }}</title>
 </head>
 <body>
 @include('pdf.header', compact('patient'))

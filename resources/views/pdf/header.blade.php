@@ -1,7 +1,7 @@
 <div class="header">
     <img class="floating-logo" src="{{ url('/img/logo-ciusss-trans.png') }}">
     <div class="floating-center">
-        <h2>Médicaments de transport - pédiatrie</h2>
+        <h2>Médicaments urgences / soins intensifs pédiatriques</h2>
         <p>Patient: {{ session('app.name') }}</p>
         <p>Âge : {{ session('app.age') }}</p>
     </div>
