@@ -60,7 +60,7 @@
                     <input type="radio" name="sexe" value="f" v-model="sexe"> Féminin
                 </label>
             </tab>
-            <tab name="Broselow" id="broselow">
+            <tab name="BroselowHelper" id="broselow">
                 <select name="broselow" class="form-control" v-model="couleur">
                     <option disabled selected>--- Choisir ---</option>
                     <option value="gris">Gris</option>
@@ -80,8 +80,8 @@
 </template>
 
 <script>
-    import ageSexe from '../helpers/AgeSexe'
-    import broselow from '../helpers/Broselow'
+    import ageSexe from '../helpers/AgeSexHelper'
+    import broselow from '../helpers/BroselowHelper'
 
     export default {
         data() {
