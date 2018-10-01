@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return view('index');
+        return view('web.index');
     }
 
     public function form()
@@ -49,7 +49,7 @@ class HomeController extends Controller
             $bolus->volume = $bolus->getVolumeString($weight);
         });
 
-        return view('bolus', compact('boluses', 'patientInfo'));
+        return view('web.bolus', compact('boluses', 'patientInfo'));
     }
 
     public function infusion()
@@ -67,7 +67,7 @@ class HomeController extends Controller
             $infusion->debit_max = $infusion->getDebitMaximal($weight);
         });
 
-        return view('infusion', compact('infusions'));
+        return view('web.infusion', compact('infusions'));
     }
 
     public function pdf()

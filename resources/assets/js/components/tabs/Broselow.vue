@@ -20,25 +20,21 @@
             </div>
 
 
-            <div class="col-md-4" v-show="result">
+            <div class="col-6 col-sm-3" v-show="result">
                 <span class="text-uppercase text-muted font-weight-bold">Correspond à :</span>
                 <h2>{{ result }} kg</h2>
             </div>
-            <div class="col-md-2 col-5 border border-dark mt-1 mb-3" :class="bgColor" v-show="result"></div>
+            <div class="col-8 col-sm-3 border border-dark broselow-box mx-auto m-sm-0 mb-3" :class="bgColor" v-show="result"></div>
         </div>
 
-        <div class="row">
-            <div class="col-3">
-                <input type="hidden" name="weight" :value="result">
-                <button type="submit"
-                        class="btn btn-primary btn-block"
-                        :class="{ 'disabled' : !result }"
-                        :disabled="!result"
-                >Calculer</button>
-            </div>
-            <div class="col-3">
-                <button class="btn btn-danger btn-block">Mise à zéro</button>
-            </div>
+        <div class="d-flex">
+            <input type="hidden" name="weight" :value="result">
+            <button type="submit"
+                    class="btn btn-primary px-4"
+                    :class="{ 'disabled' : !result }"
+                    :disabled="!result"
+            >Calculer</button>
+            <a href="/" class="btn btn-danger px-4 ml-4">Mise à zéro</a>
         </div>
     </div>
 </template>

@@ -86,16 +86,20 @@
         }
 
         td {
-            border:1px solid black;
             padding: 2px 5px 2px 5px;
         }
 
-        table tr:nth-child(odd) td{
-            background-color: white;
+        .table-striped tbody tr:nth-child(2n+1) {
+            background-color: #d3d3d3;
         }
 
-        table tr:nth-child(even) td{
+        .table-striped-2 tbody tr:nth-child(4n+1),
+        .table-striped-2 tbody tr:nth-child(4n+2) {
             background-color: #d3d3d3;
+        }
+
+        .text-right {
+            text-align: right;
         }
         footer { position: fixed; bottom: 0px; left: 0px; right: 0px; background-color: lightblue; height: 50px; }
     </style>

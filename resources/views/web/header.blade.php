@@ -1,18 +1,18 @@
 
+<h2 class="text-center mt-3">Calculateur de doses pour les urgences et les soins intensifs pédiatriques</h2>
 <div class="d-flex justify-content-between">
-    <h2>Médicaments urgences / soins intensifs pédiatriques</h2>
-    <a href="/" class="btn btn-xs btn-outline-primary align-self-end">Retour</a>
+
 </div>
 
 <div class="d-flex justify-content-between mt-2">
     <div class="d-flex justify-content-between w-75">
-        <div class="d-flex flex-column">
-            <p>
+        <div class="d-flex justify-content-between w-100">
+            <h4>
                 <strong>Patient</strong>: {{ session('app.name') }}  (# {{ session('app.id') }})
-            </p>
-            <p>
-                <strong>Âge</strong>: {{ session('app.age') }}
-            </p>
+            </h4>
+            <h4>
+                <strong>Poids</strong>: {{ session('app.weight') }} kg
+            </h4>
         </div>
     </div>
     <div>
@@ -21,6 +21,6 @@
             <a href="{{ url('/perfusion') }}" class="btn btn-outline-primary {{ $page == 'infusion' ? 'active':''  }}">Perfusions</a>
             <a href="{{ url('/pdf') }}" class="btn btn-warning">PDF</a>
         </div>
-        <h2 class="p-2"><strong>Poids</strong>: {{ session('app.weight') }} kg</h2>
     </div>
 </div>
+<a href="/" class="btn btn-sm btn-outline-primary align-self-end">Retour</a>

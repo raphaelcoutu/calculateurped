@@ -56,6 +56,6 @@ class Bolus extends Model
         if($volume == -1)
             return '-';
 
-        return $volume . ' ml';
+        return $volume . ' mL';
     }
 }

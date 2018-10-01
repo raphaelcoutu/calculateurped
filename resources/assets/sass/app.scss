@@ -15,3 +15,15 @@ $broselowColors: grey, pink, red, purple, yellow, white, blue, orange, green;
     background-color: #{$color};
   }
 }
+
+.table-striped-2 tbody tr:nth-child(4n+1), .table-striped-2 tbody tr:nth-child(4n+2) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.weight-selector {
+  min-height: 280px;
+}
+
+.broselow-box {
+  min-height: 50px;
+}

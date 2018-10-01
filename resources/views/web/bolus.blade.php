@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    @include('header', ['page' => 'bolus'])
+    @include('web.header', ['page' => 'bolus'])
 
     <h3 class="text-center">BOLUS</h3>
-    <table class="table table-striped">
+    <table class="table table-borderless table-striped-2">
         <thead>
         <tr>
             <th width="35%">Médicaments réanimation cardiorespiratoire / PALS</th>
@@ -25,12 +25,18 @@
                 <td>{{$bolus->dose}}</td>
                 <td>{{$bolus->volume}}</td>
             </tr>
+            <tr>
+                @isset($bolus->instructions)
+                    <td></td>
+                    <td><u>Instructions:</u></td>
+                    <td colspan="4">{{ $bolus->instructions }}</td>
+                @endisset
+            </tr>
         @endforeach
         </tbody>
     </table>
-    <p>** Doit être dilué et administré lentement si le patient n'est pas en arrêt cardiorespiratoire.</p>
 
-    <table class="table table-striped">
+    <table class="table table-borderless table-striped">
         <thead>
         <tr>
             <th width="35%">Médicaments intubation séquence rapide</th>
@@ -55,7 +61,7 @@
         </tbody>
     </table>
 
-    <table class="table table-striped">
+    <table class="table table-borderless table-striped-2">
         <thead>
         <tr>
             <th width="35%">Autres médicaments</th>
@@ -83,6 +89,13 @@
                 <td>{{$bolus->dose}}</td>
                 <td>{{$bolus->volume}}</td>
             </tr>
+            <tr>
+                @isset($bolus->instructions)
+                    <td></td>
+                    <td><u>Instructions:</u></td>
+                    <td colspan="4">{{ $bolus->instructions }}</td>
+                @endisset
+            </tr>
         @endforeach
         <tr>
             <td colspan="6" class="alert-info"><strong>Épilepsie</strong></td>
@@ -100,6 +113,13 @@
                 <td>{{$bolus->dose}}</td>
                 <td>{{$bolus->volume}}</td>
             </tr>
+            <tr>
+                @isset($bolus->instructions)
+                    <td></td>
+                    <td><u>Instructions:</u></td>
+                    <td colspan="4">{!! nl2br($bolus->instructions) !!}</td>
+                @endisset
+            </tr>
         @endforeach
         <tr>
             <td colspan="6" class="alert-info"><strong>Anaphylaxie</strong></td>
@@ -116,6 +136,13 @@
                 <td>{{$bolus->maximum_dose_string}}</td>
                 <td>{{$bolus->dose}}</td>
                 <td>{{$bolus->volume}}</td>
+            </tr>
+            <tr>
+                @isset($bolus->instructions)
+                    <td></td>
+                    <td><u>Instructions:</u></td>
+                    <td colspan="4">{{ $bolus->instructions }}</td>
+                @endisset
             </tr>
         @endforeach
         </tbody>
