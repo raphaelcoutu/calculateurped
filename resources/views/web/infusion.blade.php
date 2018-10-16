@@ -19,8 +19,8 @@
             <tr>
                 <td>{{$infusion->drug->name}} {{$infusion->drug->concentration}}</td>
                 <td>{{$infusion->drug->dose_string}}</td>
-                <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif ml/h</strong></td>
-                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/ml</td>
+                <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
+                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
                 <td>{{$infusion->total_volume}} mL</td>
             </tr>
             <tr>
@@ -75,8 +75,8 @@
             <tr>
                 <td>{{$infusion->drug->name}} {{$infusion->drug->concentration}}</td>
                 <td>{{$infusion->drug->dose_string}}</td>
-                <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif ml/h</strong></td>
-                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/ml</td>
+                <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
+                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
                 <td>{{$infusion->total_volume}} mL</td>
             </tr>
             <tr>
