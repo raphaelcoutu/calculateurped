@@ -111,11 +111,11 @@
         }
 
         .table-striped-2 tr.bg-white {
-            background-color: white;
+            background-color: #f9f9f9;
         }
 
         .table-striped-2 tr.border-bottom > td {
-            /*border-bottom: 1px solid black;*/
+            border-bottom: 1px solid black;
         }
 
         td.indent {
