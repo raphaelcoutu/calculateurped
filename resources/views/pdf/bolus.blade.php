@@ -14,7 +14,7 @@
     @foreach($boluses->where('type', 1)->sortBy('name') as $bolus)
         <tr>
             <td>{{$bolus->name}}</td>
-            <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/ml</td>
+            <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/mL</td>
             <td>{{$bolus->dosage}} {{ $bolus->unit }}/kg</td>
             <td>{{$bolus->maximum_dose_string}}</td>
             <td>{{$bolus->dose}}</td>
@@ -48,7 +48,7 @@
     @foreach($boluses->where('type', 2)->sortBy('name') as $bolus)
         <tr>
             <td>{{$bolus->name}}</td>
-            <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/ml</td>
+            <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/mL</td>
             <td>{{$bolus->dosage}} {{ $bolus->unit }}/kg</td>
             <td>{{$bolus->maximum_dose_string}}</td>
             <td>{{$bolus->dose}}</td>
@@ -74,7 +74,7 @@
         <tr>
             <td>{{$bolus->name}}</td>
             @if($bolus->commercial_concentration > 0)
-                <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/ml</td>
+                <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/mL</td>
             @else
                 <td>-</td>
             @endif
@@ -116,7 +116,7 @@
         <tr>
             <td>{{$bolus->name}}</td>
             @if($bolus->commercial_concentration > 0)
-                <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/ml</td>
+                <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/mL</td>
             @else
                 <td>-</td>
             @endif
@@ -153,7 +153,7 @@
         <tr>
             <td>{{$bolus->name}}</td>
             @if($bolus->commercial_concentration > 0)
-                <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/ml</td>
+                <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/mL</td>
             @else
                 <td>-</td>
             @endif

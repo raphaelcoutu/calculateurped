@@ -39,7 +39,7 @@ class Bolus extends Model
     {
         $dose = $this->getDose($weight);
 
-        if($this->unit == 'ml')
+        if($this->unit == 'mL')
             return 3 * $weight;
 
         if($this->commercial_concentration == 0)
