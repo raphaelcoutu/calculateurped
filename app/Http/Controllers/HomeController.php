@@ -44,7 +44,8 @@ class HomeController extends Controller
         if(!is_numeric($weight) || $weight <= 0)
             return redirect()->to('/');
 
-        $boluses = Bolus::all()->each(function ($bolus) use ($weight) {
+        $boluses = Bolus::where('min_weight', '<=', $weight)->where('max_weight', '>', $weight)->get()
+            ->each(function ($bolus) use ($weight) {
             $bolus->dose = $bolus->getDoseString($weight);
             $bolus->volume = $bolus->getVolumeString($weight);
         });
@@ -78,7 +79,8 @@ class HomeController extends Controller
 
         $pdf = \App::make('dompdf.wrapper');
 
-        $boluses = Bolus::all()->each(function ($bolus) use ($weight) {
+        $boluses = Bolus::where('min_weight', '<=', $weight)->where('max_weight', '>', $weight)->get()
+            ->each(function ($bolus) use ($weight) {
             $bolus->dose = $bolus->getDoseString($weight);
             $bolus->volume = $bolus->getVolumeString($weight);
         });
