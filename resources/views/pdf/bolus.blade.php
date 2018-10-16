@@ -17,8 +17,8 @@
             <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/mL</td>
             <td>{{$bolus->dosage}} {{ $bolus->unit }}/kg</td>
             <td>{{$bolus->maximum_dose_string}}</td>
-            <td>{{$bolus->dose}}</td>
-            <td>{{$bolus->volume}}</td>
+            <td class="text-right">{{$bolus->dose}}</td>
+            <td class="text-right">{{$bolus->volume}}</td>
         </tr>
         <tr>
             <td></td>
@@ -51,8 +51,8 @@
             <td>{{$bolus->commercial_concentration}} {{ $bolus->unit }}/mL</td>
             <td>{{$bolus->dosage}} {{ $bolus->unit }}/kg</td>
             <td>{{$bolus->maximum_dose_string}}</td>
-            <td>{{$bolus->dose}}</td>
-            <td>{{$bolus->volume}}</td>
+            <td class="text-right">{{$bolus->dose}}</td>
+            <td class="text-right">{{$bolus->volume}}</td>
         </tr>
     @endforeach
     </tbody>
@@ -80,8 +80,8 @@
             @endif
             <td>{{$bolus->dosage}} {{ $bolus->unit }}/kg</td>
             <td>{{$bolus->maximum_dose_string}}</td>
-            <td>{{$bolus->dose}}</td>
-            <td>{{$bolus->volume}}</td>
+            <td class="text-right">{{$bolus->dose}}</td>
+            <td class="text-right">{{$bolus->volume}}</td>
         </tr>
         <tr>
             <td></td>
@@ -122,8 +122,8 @@
             @endif
             <td>{{$bolus->dosage}} {{ $bolus->unit }}/kg</td>
             <td>{{$bolus->maximum_dose_string}}</td>
-            <td>{{$bolus->dose}}</td>
-            <td>{{$bolus->volume}}</td>
+            <td class="text-right">{{$bolus->dose}}</td>
+            <td class="text-right">{{$bolus->volume}}</td>
         </tr>
         <tr>
             <td></td>
@@ -159,8 +159,8 @@
             @endif
             <td>{{$bolus->dosage}} {{ $bolus->unit }}/kg</td>
             <td>{{$bolus->maximum_dose_string}}</td>
-            <td>{{$bolus->dose}}</td>
-            <td>{{$bolus->volume}}</td>
+            <td class="text-right">{{$bolus->dose}}</td>
+            <td class="text-right">{{$bolus->volume}}</td>
         </tr>
         <tr>
             <td></td>
@@ -189,7 +189,7 @@
             <td>{{$bolus->name}}</td>
             <td>{{$bolus->dosage}} {{ $bolus->unit }}/kg</td>
             <td>{{$bolus->maximum_dose_string}}</td>
-            <td>{{$bolus->dose}}</td>
+            <td class="text-right">{{$bolus->dose}}</td>
         </tr>
     @endforeach
     </tbody>
