@@ -1,7 +1,10 @@
 <div class="header">
-    <img class="floating-logo" src="{{ url('/img/logo-ciusss-trans.png') }}">
+    <div class="floating-left">
+        <img class="logo" src="{{ url('/img/logo-ciusss-trans.png') }}">
+        <h2 class="subheading">{{ $subheading }}</h2>
+    </div>
     <div class="floating-center">
-        <h2>Médicaments urgences / soins intensifs pédiatriques</h2>
+        <h2>MÉDICAMENTS URGENCES / SOINS INTENSIFS PÉDIATRIQUES</h2>
         <p><strong>Patient:</strong> {{ session('app.name') }}</p>
     </div>
     <div class="floating-right">

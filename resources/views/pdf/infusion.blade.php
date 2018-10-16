@@ -1,5 +1,4 @@
-<h2>Perfusions</h2>
-
+@include('pdf.header', ['subheading' => 'Perfusions'])
 <table width="525" class="table-striped-2">
     <thead>
     <tr>

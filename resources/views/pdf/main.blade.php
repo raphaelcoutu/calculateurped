@@ -14,51 +14,63 @@
             page-break-after: always;
         }
 
-        .floating-logo {
+        .floating-left {
             float: left;
-            width: 150px;
-            height: 75px;
-            margin: 10px;
-            /*border: 3px solid #73AD21;*/
+            position: relative;
+            width:150px;
+        }
+
+        .logo {
+            position: absolute;
+            top:0;
+            width: 100px;
+            height: 50px;
+        }
+
+        .subheading {
+            position: absolute;
+            top:60px;
+            left:0;
         }
 
         .floating-center {
             float: left;
-            width: 375px;
+            width: 400px;
             height: 100px;
-            margin: 10px;
+            margin: 0 10px;
             /*border: 3px solid #73AD21;*/
         }
 
         .floating-center h2 {
-            font-size: 22px;
+            font-size: 16px;
+            text-align:center;
+            font-weight: bold;
+            margin: 5px 0;
         }
 
         .floating-right {
             float: left;
-            width: 150px;
-            height: 100px;
-            margin: 10px;
+            width: 90px;
+            height: 90px;
+            margin: 5px;
             padding: 0;
-            /*border: 3px solid #73AD21;*/
             border-left: 1px solid black;
             text-align: center;
         }
 
         .right-top {
-            /*border:1px solid red;*/
             height:35px;
             width: 150px;
-            margin-bottom: 15px;
+            margin-bottom: 5px;
         }
 
         .right-bottom {
-            height:65px;
+            height:40px;
             width:150px;
         }
 
         .weight {
-            font-size: 32px;
+            font-size: 25px;
             padding: 0;
             margin:0;
         }
@@ -74,9 +86,9 @@
 
         table {
             font-size: 13px;
-            border:2px solid black;
-            margin-bottom:5px;
-            padding:5px;
+            border:1px solid black;
+            margin:0;
+            padding: 0;
             border-collapse: collapse;
         }
 
@@ -98,6 +110,18 @@
             background-color: #d3d3d3;
         }
 
+        .table-striped-2 tr.bg-white {
+            background-color: white;
+        }
+
+        .table-striped-2 tr.border-bottom > td {
+            /*border-bottom: 1px solid black;*/
+        }
+
+        td.indent {
+            padding-left:20px;
+        }
+
         .text-right {
             text-align: right;
         }
@@ -109,10 +133,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 </head>
 <body>
-@include('pdf.header', compact('patient'))
 @include('pdf.bolus', compact('boluses'))
 <div class="page-break"></div>
-@include('pdf.header', compact('patient'))
 @include('pdf.infusion', compact('infusions'))
 </body>
 </html>
