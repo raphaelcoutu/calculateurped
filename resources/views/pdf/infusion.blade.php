@@ -14,16 +14,15 @@
     @foreach($infusions->where('drug.type', 1)->sortBy('name') as $infusion)
         <tr>
             <td>{{$infusion->drug->name}} {{$infusion->drug->concentration}}</td>
-            <td>{{$infusion->drug->dose_string}}</td>
-            <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
+            <td class="text-center">{{$infusion->drug->dose_string}}</td>
+            <td class="text-center"><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
             <td class="text-right">{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
 
             <td style="text-align: right">{{$infusion->total_volume}} mL</td>
         </tr>
         <tr>
             <td></td>
-            <td class="text-right"><u>Recette:</u></td>
-            <td colspan="3">{{$infusion->recipe}}</td>
+            <td colspan="4"><u>Recette:</u> {{$infusion->recipe}}</td>
         </tr>
     @endforeach
     </tbody>
@@ -43,16 +42,15 @@
     @foreach($infusions->where('drug.type', 2)->sortBy('name') as $infusion)
         <tr>
             <td>{{$infusion->drug->name}} {{$infusion->drug->concentration}}</td>
-            <td>{{$infusion->drug->dose_string}}</td>
-            <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
+            <td class="text-center">{{$infusion->drug->dose_string}}</td>
+            <td class="text-center"><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
             <td class="text-right">{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
 
             <td style="text-align: right">{{$infusion->total_volume}} mL</td>
         </tr>
         <tr>
             <td></td>
-            <td class="text-right"><u>Recette:</u></td>
-            <td colspan="3">{{$infusion->recipe}}</td>
+            <td colspan="4"><u>Recette:</u> {{$infusion->recipe}}</td>
         </tr>
     @endforeach
     </tbody>
@@ -72,16 +70,15 @@
     @foreach($infusions->where('drug.type', 3)->sortBy('name') as $infusion)
         <tr>
             <td>{{$infusion->drug->name}} {{$infusion->drug->concentration}}</td>
-            <td>{{$infusion->drug->dose_string}}</td>
-            <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
+            <td class="text-center">{{$infusion->drug->dose_string}}</td>
+            <td class="text-center"><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
             <td class="text-right">{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
 
             <td style="text-align: right">{{$infusion->total_volume}} mL</td>
         </tr>
         <tr>
             <td></td>
-            <td class="text-right"><u>Recette:</u></td>
-            <td colspan="3">{{$infusion->recipe}}</td>
+            <td colspan="4"><u>Recette:</u> {{$infusion->recipe}}</td>
         </tr>
     @endforeach
     </tbody>

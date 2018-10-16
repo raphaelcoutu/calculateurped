@@ -101,6 +101,9 @@
         .text-right {
             text-align: right;
         }
+        .text-center {
+            text-align:center;
+        }
         footer { position: fixed; bottom: 0px; left: 0px; right: 0px; background-color: lightblue; height: 50px; }
     </style>
     <title>{{ config('app.name', 'Laravel') }}</title>
