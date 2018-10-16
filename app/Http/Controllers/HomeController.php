@@ -14,7 +14,7 @@ class HomeController extends Controller
 
     public function form()
     {
-        $name = request('name') ?? "________________________________________";
+        $name = request('name') ?? "___________________________________";
         $age = request('age') ?? "____________________";
         $id = request('id') ?? "______________";
         $weight = request('weight');
