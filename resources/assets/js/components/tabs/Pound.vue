@@ -18,7 +18,7 @@
                     :class="{ 'disabled' : !result }"
                     :disabled="!result"
             >Calculer</button>
-            <a href="/" class="btn btn-danger px-4 ml-4">Mise à zéro</a>
+            <a href="/reset" class="btn btn-danger px-4 ml-4">Mise à zéro</a>
         </div>
     </div>
 </template>
