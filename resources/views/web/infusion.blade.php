@@ -25,8 +25,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td><u>Recette:</u></td>
-                <td colspan="3">{{$infusion->recipe}}</td>
+                <td colspan="4"><u>Recette:</u> {{$infusion->recipe}}</td>
             </tr>
         @endforeach
         </tbody>
@@ -53,8 +52,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td><u>Recette:</u></td>
-                <td colspan="3">{{$infusion->recipe}}</td>
+                <td colspan="4"><u>Recette:</u> {{$infusion->recipe}}</td>
             </tr>
         @endforeach
         </tbody>
@@ -81,8 +79,7 @@
             </tr>
             <tr>
                 <td></td>
-                <td><u>Recette:</u></td>
-                <td colspan="3">{{$infusion->recipe}}</td>
+                <td colspan="4"><u>Recette:</u> {{$infusion->recipe}}</td>
             </tr>
         @endforeach
         </tbody>

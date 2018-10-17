@@ -36,6 +36,8 @@
         </tbody>
     </table>
 
+    <p class="alert alert-warning">* Doit être dilué et administré lentement si le patient n'est pas en arrêt cardiorespiratoire.</p>
+
     <table class="table table-borderless table-striped">
         <thead>
         <tr>
