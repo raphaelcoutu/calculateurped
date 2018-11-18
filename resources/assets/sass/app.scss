@@ -16,8 +16,32 @@ $broselowColors: grey, pink, red, purple, yellow, white, blue, orange, green;
   }
 }
 
-.table-striped-2 tbody tr:nth-child(4n+1), .table-striped-2 tbody tr:nth-child(4n+2) {
-  background-color: rgba(0, 0, 0, 0.05);
+.table-green tbody tr:nth-child(2n+1) {
+  background-color: #E3FCEC;
+}
+
+.table-green-2 tbody tr:nth-child(4n+1), .table-green-2 tbody tr:nth-child(4n+2) {
+  background-color: #E3FCEC;
+}
+
+.table-red tbody tr:nth-child(2n+1) {
+  background-color: #FCEBEA;
+}
+
+.table-red-2 tbody tr:nth-child(4n+1), .table-red-2 tbody tr:nth-child(4n+2) {
+  background-color: #FCEBEA;
+}
+
+.table-blue-2 tbody tr:nth-child(4n+1), .table-blue-2 tbody tr:nth-child(4n+2) {
+  background-color: #EFF8FF;
+}
+
+.table-orange tbody tr:nth-child(2n+1) {
+  background-color: #FFF5EB;
+}
+
+.table-yellow-2 tbody tr:nth-child(4n+1), .table-yellow-2 tbody tr:nth-child(4n+2) {
+  background-color: #FCFBEB;
 }
 
 .weight-selector {

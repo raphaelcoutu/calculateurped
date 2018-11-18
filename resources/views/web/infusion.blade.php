@@ -4,7 +4,7 @@
     @include('web.header', ['page' => 'infusion'])
 
     <h3 class="text-center">PERFUSIONS CONTINUES</h3>
-    <table class="table table-sm table-borderless table-striped-2">
+    <table class="table table-sm table-borderless table-green-2">
         <thead>
         <tr>
             <th width="25%">Sédation</th>
@@ -37,7 +37,7 @@
         </tbody>
     </table>
 
-    <table class="table table-sm table-borderless table-striped-2">
+    <table class="table table-sm table-borderless table-red-2">
         <thead>
         <tr>
             <th width="25%">Cardiovasculaire</th>
@@ -76,7 +76,7 @@
         </tbody>
     </table>
 
-    <table class="table table-sm table-borderless table-striped-2">
+    <table class="table table-sm table-borderless table-yellow-2">
         <thead>
         <tr>
             <th width="25%">Autres médicaments</th>

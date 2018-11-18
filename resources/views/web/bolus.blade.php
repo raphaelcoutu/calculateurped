@@ -4,7 +4,7 @@
     @include('web.header', ['page' => 'bolus'])
 
     <h3 class="text-center">BOLUS</h3>
-    <table class="table table-borderless table-striped-2">
+    <table class="table table-borderless table-red">
         <thead>
         <tr>
             <th width="35%">Médicaments réanimation cardiorespiratoire / PALS</th>
@@ -30,20 +30,13 @@
                 </td>
                 <td class="text-right font-weight-bold">{{ $bolus->volumeString }}</td>
             </tr>
-            <tr>
-                @isset($bolus->instructions)
-                    <td></td>
-                    <td><u>Instructions:</u></td>
-                    <td colspan="4">{{ $bolus->instructions }}</td>
-                @endisset
-            </tr>
         @endforeach
         </tbody>
     </table>
 
     <p class="alert alert-warning">** Doit être dilué et administré sur 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
 
-    <table class="table table-borderless table-striped">
+    <table class="table table-borderless table-green">
         <thead>
         <tr>
             <th width="35%">Médicaments intubation séquence rapide</th>
@@ -69,7 +62,7 @@
         </tbody>
     </table>
 
-    <table class="table table-borderless table-striped-2">
+    <table class="table table-borderless table-blue-2">
         <thead>
         <tr>
             <th width="35%">Autres médicaments</th>
@@ -81,7 +74,7 @@
         </thead>
         <tbody>
         <tr>
-            <td colspan="6" class="alert-info"><strong>Hypertension intracrânienne</strong></td>
+            <td colspan="6" class="alert-dark"><i>Hypertension intracrânienne</i></td>
         </tr>
         @foreach($boluses->where('type', 3)->sortBy('name') as $bolus)
             <tr>
@@ -107,7 +100,7 @@
             </tr>
         @endforeach
         <tr>
-            <td colspan="6" class="alert-info"><strong>Épilepsie</strong></td>
+            <td colspan="6" class="alert-dark"><i>Épilepsie</i></td>
         </tr>
         @foreach($boluses->where('type', 4)->sortBy('name') as $bolus)
             <tr>
@@ -133,7 +126,7 @@
             </tr>
         @endforeach
         <tr>
-            <td colspan="6" class="alert-info"><strong>Anaphylaxie</strong></td>
+            <td colspan="6" class="alert-dark"><i>Anaphylaxie</i></td>
         </tr>
         @foreach($boluses->where('type', 5)->sortBy('name') as $bolus)
             <tr>
@@ -161,7 +154,7 @@
         </tbody>
     </table>
 
-    <table class="table table-striped">
+    <table class="table table-borderless table-orange">
         <thead>
         <tr>
             <th width="35%">Défibrillation</th>
