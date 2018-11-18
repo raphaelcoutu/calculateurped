@@ -46,8 +46,9 @@ class HomeController extends Controller
 
         $boluses = Bolus::where('min_weight', '<=', $weight)->where('max_weight', '>', $weight)->get()
             ->each(function ($bolus) use ($weight) {
-            $bolus->dose = $bolus->getDoseString($weight);
-            $bolus->volume = $bolus->getVolumeString($weight);
+                $bolus->dose = $bolus->getDose($weight);
+                $bolus->doseString = $bolus->getDoseString($weight);
+                $bolus->volumeString = $bolus->getVolumeString($weight);
         });
 
         return view('web.bolus', compact('boluses', 'patientInfo'));

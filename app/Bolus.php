@@ -6,14 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bolus extends Model
 {
-    public function getMaximumDoseStringAttribute()
-    {
-        if($this->maximum_dose == 0)
-            return '-';
-
-        return $this->maximum_dose . ' ' . $this->unit;
-    }
-
     public function getDose($weight)
     {
         $result = 0;
