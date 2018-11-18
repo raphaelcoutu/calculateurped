@@ -10,8 +10,8 @@
             <th width="25%">Sédation</th>
             <th width="20%">Dose (min-max)</th>
             <th width="20%">Débit (min-max)</th>
-            <th width="10%">Concentration finale</th>
-            <th width="10%">Volume total</th>
+            <th width="10%" class="text-right">Concentration finale</th>
+            <th width="10%" class="text-right">Volume total</th>
         </tr>
         </thead>
         <tbody>
@@ -22,8 +22,8 @@
                 </td>
                 <td>{{$infusion->drug->dose_string}}</td>
                 <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
-                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
-                <td>{{$infusion->total_volume}} mL</td>
+                <td class="text-right">{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
+                <td class="text-right">{{$infusion->total_volume}} mL</td>
             </tr>
             <tr>
                 <td>
@@ -43,8 +43,8 @@
             <th width="25%">Cardiovasculaire</th>
             <th width="20%">Dose (min-max)</th>
             <th width="20%">Débit (min-max)</th>
-            <th width="10%">Concentration finale</th>
-            <th width="10%">Volume total</th>
+            <th width="10%" class="text-right">Concentration finale</th>
+            <th width="10%" class="text-right">Volume total</th>
         </tr>
         </thead>
         <tbody>
@@ -53,8 +53,8 @@
                 <td>{{$infusion->drug->name}} {{$infusion->drug->concentration}}</td>
                 <td>{{$infusion->drug->dose_string}}</td>
                 <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
-                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
-                <td>{{$infusion->total_volume}} mL</td>
+                <td class="text-right">{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
+                <td class="text-right">{{$infusion->total_volume}} mL</td>
             </tr>
             <tr>
                 <td>
@@ -63,7 +63,7 @@
                     @endif
                 </td>
                 <td colspan="2"><u>Recette:</u> {{$infusion->recipe}}</td>
-                <td>
+                <td class="text-right">
                     @if($infusion->concentration === 100.00 && $infusion->concentration_unit === 'mU')
                         <span class="small">(0.1 U/mL)</span>
                     @endif
@@ -80,8 +80,8 @@
             <th width="25%">Autres médicaments</th>
             <th width="20%">Dose (min-max)</th>
             <th width="20%">Débit (min-max)</th>
-            <th width="10%">Concentration finale</th>
-            <th width="10%">Volume total</th>
+            <th width="10%" class="text-right">Concentration finale</th>
+            <th width="10%" class="text-right">Volume total</th>
         </tr>
         </thead>
         <tbody>
@@ -90,8 +90,8 @@
                 <td>{{$infusion->drug->name}} {{$infusion->drug->concentration}}</td>
                 <td>{{$infusion->drug->dose_string}}</td>
                 <td><strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong></td>
-                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
-                <td>{{$infusion->total_volume}} mL</td>
+                <td class="text-right">{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
+                <td class="text-right">{{$infusion->total_volume}} mL</td>
             </tr>
             <tr>
                 <td>
