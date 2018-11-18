@@ -1,5 +1,5 @@
 <template>
-    <Tabs @onSelectedTabChanged="selectedTabChanged">
+    <Tabs>
         <Tab name="Kilos" id="kilogram" class="pt-3">
             <Kilogram></Kilogram>
         </Tab>
@@ -28,12 +28,6 @@
         components: {
             Tabs, Tab,
             Kilogram, Pound, AgeSex, Broselow
-        },
-
-        methods: {
-            selectedTabChanged(hash) {
-
-            }
         }
     }
 

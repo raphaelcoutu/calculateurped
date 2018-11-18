@@ -40,8 +40,6 @@
             } else {
                 this.selectTab(this.tabs[0].hash)
             }
-
-            console.log(this.tabs)
         },
 
         methods: {
@@ -49,8 +47,6 @@
                 this.tabs.forEach(tab => {
                     tab.isActive = (tab.hash === tabHash)
                 })
-
-                this.$emit('onSelectedTabChanged', tabHash)
 
                 this.activeTabHash = tabHash
             },
