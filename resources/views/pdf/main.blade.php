@@ -128,6 +128,9 @@
         .text-center {
             text-align:center;
         }
+        .text-bold {
+            font-weight: bold;
+        }
         footer { position: fixed; bottom: 0px; left: 0px; right: 0px; background-color: lightblue; height: 50px; }
     </style>
     <title>{{ config('app.name', 'Laravel') }}</title>
