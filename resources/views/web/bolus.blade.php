@@ -171,7 +171,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($boluses->where('type', 6)->sortBy('name') as $bolus)
+        @foreach($boluses->where('type', 6)->sortByDesc('name') as $bolus)
             <tr>
                 <td>{{ $bolus->name }}</td>
                 <td>-</td>

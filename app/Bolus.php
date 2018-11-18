@@ -39,7 +39,7 @@ class Bolus extends Model
 
         $volume = $dose / $this->commercial_concentration;
 
-        return round($volume, 2);
+        return round($volume, $this->precision);
     }
 
     public function getVolumeString($weight)
