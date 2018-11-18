@@ -62,13 +62,15 @@
                     <span class="small"><i>{{ $infusion->drug->brand_name }}</i></span>
                     @endif
                 </td>
-                <td colspan="2"><u>Recette:</u> {{$infusion->recipe}}</td>
-                <td class="text-right">
-                    @if($infusion->concentration === 100.00 && $infusion->concentration_unit === 'mU')
+                @if($infusion->concentration === 100.00 && $infusion->concentration_unit === 'mU')
+                    <td colspan="2"><u>Recette:</u> {{$infusion->recipe}}</td>
+                    <td class="text-right">
                         <span class="small">(0.1 U/mL)</span>
-                    @endif
-                </td>
-                <td></td>
+                    </td>
+                    <td></td>
+                @else
+                    <td colspan="4"><u>Recette:</u> {{$infusion->recipe}}</td>
+                @endif
             </tr>
         @endforeach
         </tbody>
