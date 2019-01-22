@@ -16,6 +16,9 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate);
+
 Vue.component('selector', require('./components/Selector'));
 
 const app = new Vue({
