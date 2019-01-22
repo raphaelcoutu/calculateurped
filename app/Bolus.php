@@ -24,7 +24,7 @@ class Bolus extends Model
 
     public function getDoseString($weight)
     {
-        return $this->getDose($weight) . ' ' . $this->unit;
+        return round($this->getDose($weight), $this->precision) . ' ' . $this->unit;
     }
 
     public function getVolume($weight)
@@ -39,7 +39,7 @@ class Bolus extends Model
 
         $volume = $dose / $this->commercial_concentration;
 
-        return round($volume, $this->precision);
+        return $volume;
     }
 
     public function getVolumeString($weight)
@@ -48,6 +48,6 @@ class Bolus extends Model
         if($volume == -1)
             return '-';
 
-        return $volume . ' mL';
+        return round($volume, $this->precision) . ' mL';
     }
 }
