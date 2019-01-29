@@ -13,7 +13,7 @@
 
 Route::get('/', 'HomeController@index');
 Route::post('/', 'HomeController@form');
-Route::get('/bolus', 'HomeController@bolus');
+Route::get('/bolus', 'BolusController');
 Route::get('/perfusion', 'HomeController@infusion');
 Route::get('/reset', 'HomeController@reset');
 Route::get('/pdf', 'HomeController@pdf');

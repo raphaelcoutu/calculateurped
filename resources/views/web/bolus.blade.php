@@ -15,30 +15,30 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($boluses->where('type', 1)->sortBy('name') as $bolus)
+        @foreach($calculated->where('bolus.type', 1)->sortBy('bolus.name') as $calc)
             <tr>
                 <td class="d-flex justify-content-between">
                     <span>
-                        @if($bolus->asterisk)
+                        @if($calc->bolus->asterisk)
                             **
                         @endif
-                        {{ $bolus->name }}
+                        {{ $calc->bolus->name }}
                     </span>
-                    @if($bolus->brand_name)
-                    <span class="small"><i>{{ $bolus->brand_name }}</i></span>
+                    @if($calc->bolus->brand_name)
+                    <span class="small"><i>{{ $calc->bolus->brand_name }}</i></span>
                     @endif
                 </td>
-                <td class="font-weight-bold">{{ $bolus->commercial_concentration }} {{ $bolus->unit }}/mL</td>
-                <td>{{ $bolus->dosage }} {{ $bolus->unit }}/kg</td>
+                <td class="font-weight-bold">{{ $calc->bolus->commercial_concentration }} {{ $calc->bolus->unit }}/mL</td>
+                <td>{{ $calc->bolus->dosage }} {{ $calc->bolus->unit }}/kg</td>
                 <td class="text-right font-weight-bold">
-                    @if($bolus->dose === $bolus->maximum_dose)
+                    @if($calc->roundedDose === $calc->bolus->maximum_dose)
                         <small class="text-muted">MAX</small>
-                    @elseif($bolus->dose === $bolus->minimum_dose)
+                    @elseif($calc->roundedDose === $calc->bolus->minimum_dose)
                         <small class="text-muted">MIN</small>
                     @endif
-                    {{ $bolus->doseString }}
+                    {{ $calc->roundedDoseString }}
                 </td>
-                <td class="text-right font-weight-bold">{{ $bolus->volumeString }}</td>
+                <td class="text-right font-weight-bold">{{ $calc->roundedVolumeString }}</td>
             </tr>
         @endforeach
         </tbody>
@@ -57,21 +57,21 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($boluses->where('type', 2)->sortBy('name') as $bolus)
+        @foreach($calculated->where('bolus.type', 2)->sortBy('bolus.name') as $calc)
             <tr>
                 <td class="d-flex justify-content-between">
-                    <span>{{ $bolus->name }}</span>
-                    <span class="small"><i>{{ $bolus->brand_name }}</i></span>
+                    <span>{{ $calc->bolus->name }}</span>
+                    <span class="small"><i>{{ $calc->bolus->brand_name }}</i></span>
                 </td>
-                <td class="font-weight-bold">{{ $bolus->commercial_concentration }} {{ $bolus->unit }}/mL</td>
-                <td>{{ $bolus->dosage }} {{ $bolus->unit }}/kg</td>
+                <td class="font-weight-bold">{{ $calc->bolus->commercial_concentration }} {{ $calc->bolus->unit }}/mL</td>
+                <td>{{ $calc->bolus->dosage }} {{ $calc->bolus->unit }}/kg</td>
                 <td class="text-right font-weight-bold">
-                    @if($bolus->dose === $bolus->maximum_dose)
+                    @if($calc->roundedDose === $calc->bolus->maximum_dose)
                         <small class="text-muted">MAX</small>
                     @endif
-                    {{ $bolus->doseString }}
+                    {{ $calc->roundedDoseString }}
                 </td>
-                <td class="text-right font-weight-bold" class="text-right font-weight-bold">{{ $bolus->volumeString }}</td>
+                <td class="text-right font-weight-bold" class="text-right font-weight-bold">{{ $calc->roundedVolumeString }}</td>
             </tr>
         @endforeach
         </tbody>
@@ -92,31 +92,31 @@
             <td colspan="6" class="alert-dark"><i>Hypertension intracrânienne</i></td>
         </tr>
         <tr></tr>
-        @foreach($boluses->where('type', 3)->sortBy('name') as $bolus)
+        @foreach($calculated->where('bolus.type', 3)->sortBy('bolus.name') as $calc)
             <tr>
                 <td class="d-flex justify-content-between">
-                    <span>{{ $bolus->name }}</span>
-                    <span class="small"><i>{{ $bolus->brand_name }}</i></span>
+                    <span>{{ $calc->bolus->name }}</span>
+                    <span class="small"><i>{{ $calc->bolus->brand_name }}</i></span>
                 </td>
-                @if($bolus->commercial_concentration > 0)
-                    <td class="font-weight-bold">{{ $bolus->commercial_concentration }} {{ $bolus->unit }}/mL</td>
+                @if($calc->bolus->commercial_concentration > 0)
+                    <td class="font-weight-bold">{{ $calc->bolus->commercial_concentration }} {{ $calc->bolus->unit }}/mL</td>
                 @else
                     <td>-</td>
                 @endif
-                <td>{{ $bolus->dosage }} {{ $bolus->unit }}/kg</td>
+                <td>{{ $calc->bolus->dosage }} {{ $calc->bolus->unit }}/kg</td>
                 <td class="text-right font-weight-bold">
-                    @if($bolus->dose === $bolus->maximum_dose)
+                    @if($calc->roundedDose === $calc->bolus->maximum_dose)
                         <small class="text-muted">MAX</small>
                     @endif
-                    {{ $bolus->doseString }}
+                    {{ $calc->roundedDoseString }}
                 </td>
-                <td class="text-right font-weight-bold">{{ $bolus->volumeString }}</td>
+                <td class="text-right font-weight-bold">{{ $calc->roundedVolumeString }}</td>
             </tr>
             <tr>
-                @isset($bolus->instructions)
+                @isset($calc->bolus->instructions)
                     <td></td>
                     <td><u>Instructions:</u></td>
-                    <td colspan="4">{!! nl2br($bolus->instructions) !!}</td>
+                    <td colspan="4">{!! nl2br($calc->bolus->instructions) !!}</td>
                 @endisset
             </tr>
         @endforeach
@@ -124,31 +124,31 @@
             <td colspan="6" class="alert-dark"><i>Épilepsie</i></td>
         </tr>
         <tr></tr>
-        @foreach($boluses->where('type', 4)->sortBy('name') as $bolus)
+        @foreach($calculated->where('bolus.type', 4)->sortBy('bolus.name') as $calc)
             <tr>
                 <td class="d-flex justify-content-between">
-                    <span>{{ $bolus->name }}</span>
-                    <span class="small"><i>{{ $bolus->brand_name }}</i></span>
+                    <span>{{ $calc->bolus->name }}</span>
+                    <span class="small"><i>{{ $calc->bolus->brand_name }}</i></span>
                 </td>
-                @if($bolus->commercial_concentration > 0)
-                    <td class="font-weight-bold">{{ $bolus->commercial_concentration }} {{ $bolus->unit }}/mL</td>
+                @if($calc->bolus->commercial_concentration > 0)
+                    <td class="font-weight-bold">{{ $calc->bolus->commercial_concentration }} {{ $calc->bolus->unit }}/mL</td>
                 @else
                     <td>-</td>
                 @endif
-                <td>{{ $bolus->dosage }} {{ $bolus->unit }}/kg</td>
+                <td>{{ $calc->bolus->dosage }} {{ $calc->bolus->unit }}/kg</td>
                 <td class="text-right font-weight-bold">
-                    @if($bolus->dose === $bolus->maximum_dose)
+                    @if($calc->roundedDose === $calc->bolus->maximum_dose)
                         <small class="text-muted">MAX</small>
                     @endif
-                    {{ $bolus->doseString }}
+                    {{ $calc->roundedDoseString }}
                 </td>
-                <td class="text-right font-weight-bold">{{ $bolus->volumeString }}</td>
+                <td class="text-right font-weight-bold">{{ $calc->roundedVolumeString }}</td>
             </tr>
             <tr>
-                @isset($bolus->instructions)
+                @isset($calc->bolus->instructions)
                     <td></td>
                     <td><u>Instructions:</u></td>
-                    <td colspan="4">{!! nl2br($bolus->instructions) !!}</td>
+                    <td colspan="4">{!! nl2br($calc->bolus->instructions) !!}</td>
                 @endisset
             </tr>
         @endforeach
@@ -156,31 +156,31 @@
             <td colspan="6" class="alert-dark"><i>Anaphylaxie</i></td>
         </tr>
         <tr></tr>
-        @foreach($boluses->where('type', 5)->sortBy('name') as $bolus)
+        @foreach($calculated->where('bolus.type', 5)->sortBy('bolus.name') as $calc)
             <tr>
                 <td class="d-flex justify-content-between">
-                    <span>{{ $bolus->name }}</span>
-                    <span class="small"><i>{{ $bolus->brand_name }}</i></span>
+                    <span>{{ $calc->bolus->name }}</span>
+                    <span class="small"><i>{{ $calc->bolus->brand_name }}</i></span>
                 </td>
-                @if($bolus->commercial_concentration > 0)
-                    <td class="font-weight-bold">{{ $bolus->commercial_concentration }} {{ $bolus->unit }}/mL</td>
+                @if($calc->bolus->commercial_concentration > 0)
+                    <td class="font-weight-bold">{{ $calc->bolus->commercial_concentration }} {{ $calc->bolus->unit }}/mL</td>
                 @else
                     <td>-</td>
                 @endif
-                <td>{{ $bolus->dosage }} {{ $bolus->unit }}/kg</td>
+                <td>{{ $calc->bolus->dosage }} {{ $calc->bolus->unit }}/kg</td>
                 <td class="text-right font-weight-bold">
-                    @if($bolus->dose === $bolus->maximum_dose)
+                    @if($calc->roundedDose === $calc->bolus->maximum_dose)
                         <small class="text-muted">MAX</small>
                     @endif
-                    {{ $bolus->doseString }}
+                    {{ $calc->roundedDoseString }}
                 </td>
-                <td class="text-right font-weight-bold">{{ $bolus->volumeString }}</td>
+                <td class="text-right font-weight-bold">{{ $calc->roundedVolumeString }}</td>
             </tr>
             <tr>
-                @isset($bolus->instructions)
+                @isset($calc->bolus->instructions)
                     <td></td>
                     <td><u>Instructions:</u></td>
-                    <td colspan="4">{{ $bolus->instructions }}</td>
+                    <td colspan="4">{{ $calc->bolus->instructions }}</td>
                 @endisset
             </tr>
         @endforeach
@@ -197,16 +197,16 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($boluses->where('type', 6)->sortByDesc('name') as $bolus)
+        @foreach($calculated->where('bolus.type', 6)->sortByDesc('bolus.name') as $calc)
             <tr>
-                <td>{{ $bolus->name }}</td>
+                <td>{{ $calc->bolus->name }}</td>
                 <td>-</td>
-                <td>{{ $bolus->dosage }} {{ $bolus->unit }}/kg</td>
+                <td>{{ $calc->bolus->dosage }} {{ $calc->bolus->unit }}/kg</td>
                 <td class="text-right font-weight-bold">
-                    @if($bolus->dose === $bolus->maximum_dose)
+                    @if($calc->roundedDose === $calc->bolus->maximum_dose)
                         <small class="text-muted">MAX</small>
                     @endif
-                    {{ $bolus->doseString }}
+                    {{ $calc->roundedDoseString }}
                 </td>
             </tr>
         @endforeach

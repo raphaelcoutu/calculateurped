@@ -39,23 +39,6 @@ class HomeController extends Controller
         return redirect()->to('/bolus');
     }
 
-    public function bolus()
-    {
-        $weight = session('app.dosingWeight');
-
-        if(!is_numeric($weight) || $weight <= 0)
-            return redirect()->to('/');
-
-        $boluses = Bolus::where('min_weight', '<=', $weight)->where('max_weight', '>', $weight)->get()
-            ->each(function ($bolus) use ($weight) {
-                $bolus->dose = $bolus->getDose($weight);
-                $bolus->doseString = $bolus->getDoseString($weight);
-                $bolus->volumeString = $bolus->getVolumeString($weight);
-        });
-
-        return view('web.bolus', compact('boluses', 'patientInfo'));
-    }
-
     public function infusion()
     {
         $weight = session('app.dosingWeight');
