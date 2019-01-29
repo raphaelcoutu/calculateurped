@@ -18,6 +18,7 @@ class HomeController extends Controller
         $age = request('age') ?? "____________________";
         $id = request('id') ?? "______________";
         $weight = request('weight');
+        $dosingWeight = request('weight') < 100 ? request('weight') : '100';
 
         session([
             'form' => [
@@ -30,7 +31,8 @@ class HomeController extends Controller
                 'name' => $name,
                 'age' => $age,
                 'id' => $id,
-                'weight' => $weight
+                'weight' => $weight,
+                'dosingWeight' => $dosingWeight
             ]
         ]);
 
@@ -39,7 +41,7 @@ class HomeController extends Controller
 
     public function bolus()
     {
-        $weight = session('app.weight');
+        $weight = session('app.dosingWeight');
 
         if(!is_numeric($weight) || $weight <= 0)
             return redirect()->to('/');
@@ -56,7 +58,7 @@ class HomeController extends Controller
 
     public function infusion()
     {
-        $weight = session('app.weight');
+        $weight = session('app.dosingWeight');
 
         if(!is_numeric($weight) || $weight <= 0)
             return redirect()->to('/');

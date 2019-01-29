@@ -10,9 +10,14 @@
             <h4>
                 <strong>Patient</strong>: {{ session('app.name') }}  (# {{ session('app.id') }})
             </h4>
-            <h4>
-                <strong>Poids</strong>: {{ session('app.weight') }} kg
-            </h4>
+            <div>
+                <h4 class="m-0">
+                    <strong>Poids</strong>: {{ session('app.dosingWeight') }} kg<br>
+                </h4>
+                @if(session('app.weight') !== session('app.dosingWeight'))
+                    <small>Poids réel: {{ session('app.weight') }} kg</small>
+                @endif
+            </div>
         </div>
     </div>
     <div>
