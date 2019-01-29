@@ -7,7 +7,8 @@
             </div>
             <div class="col-6" v-show="result">
                 <span class="text-uppercase text-muted font-weight-bold">Correspond à:</span>
-                <h2>{{ result }} kg</h2>
+                <div v-if="!$v.input.between" class=" px-4 text-danger">Veuillez inscrire un nombre entre 4.4 et 550 lbs.</div>
+                <h2 v-else>{{ result }} kg</h2>
             </div>
         </div>
 
@@ -24,6 +25,8 @@
 </template>
 
 <script>
+    import { required, between } from 'vuelidate/lib/validators'
+
     export default {
         data: () => ({
             input: ''
@@ -35,7 +38,15 @@
                     return (this.input/2.2).toFixed(2)
                 }
             }
+        },
+
+        validations: {
+            input: {
+                required,
+                between: between(4.4, 550)
+            }
         }
+
     }
 
 </script>
