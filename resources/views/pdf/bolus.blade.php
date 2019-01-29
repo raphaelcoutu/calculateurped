@@ -187,4 +187,4 @@
     </tbody>
 </table>
 
-<p>** Doit être dilué et administré 30-60 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
+<p>** Doit être dilué et administré 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
