@@ -48,11 +48,11 @@ class HomeController extends Controller
 
         $weightCategory = $this->findWeightCategory($weight);
 
-        $infusions = InfusionConcentration::with('drug')
-            ->where('weight_category', $weightCategory)->get()->each(function ($infusion) use ($weight) {
-            $infusion->debit_min = $infusion->getDebitMinimal($weight);
-            $infusion->debit_max = $infusion->getDebitMaximal($weight);
-        });
+        $infusions = InfusionConcentration::with('drug')->weight($weightCategory)->get()
+            ->each(function ($infusion) use ($weight) {
+                $infusion->debit_min = $infusion->getDebitMinimal($weight);
+                $infusion->debit_max = $infusion->getDebitMaximal($weight);
+            });
 
         return view('web.infusion', compact('infusions'));
     }
@@ -65,7 +65,7 @@ class HomeController extends Controller
 
         $pdf = \App::make('dompdf.wrapper');
 
-        $boluses = Bolus::where('min_weight', '<=', $weight)->where('max_weight', '>', $weight)->get()
+        $boluses = Bolus::weight($weight)->get()
             ->each(function ($bolus) use ($weight) {
             $bolus->dose = $bolus->getDoseString($weight);
             $bolus->volume = $bolus->getVolumeString($weight);

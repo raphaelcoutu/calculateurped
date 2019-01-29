@@ -14,6 +14,11 @@ class InfusionConcentration extends Model
         return $this->belongsTo(InfusionDrug::class, 'infusion_drug_id');
     }
 
+    public function scopeWeight($query, $category)
+    {
+        return $query->where('weight_category', $category);
+    }
+
     public function getIsDebitMinLimitedAttribute()
     {
         return $this->isDebitMinLimited;
