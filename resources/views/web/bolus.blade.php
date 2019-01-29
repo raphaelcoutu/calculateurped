@@ -18,7 +18,12 @@
         @foreach($boluses->where('type', 1)->sortBy('name') as $bolus)
             <tr>
                 <td class="d-flex justify-content-between">
-                    <span>{{ $bolus->name }}</span>
+                    <span>
+                        @if($bolus->asterisk)
+                            **
+                        @endif
+                        {{ $bolus->name }}
+                    </span>
                     @if($bolus->brand_name)
                     <span class="small"><i>{{ $bolus->brand_name }}</i></span>
                     @endif
