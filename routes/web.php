@@ -13,7 +13,11 @@
 
 Route::get('/', 'HomeController@index');
 Route::post('/', 'HomeController@form');
-Route::get('/bolus', 'BolusController');
-Route::get('/perfusion', 'HomeController@infusion');
+
+Route::middleware('weight')->group(function () {
+    Route::get('/bolus', 'BolusController');
+    Route::get('/perfusion', 'HomeController@infusion');
+    Route::get('/pdf', 'HomeController@pdf');
+});
+
 Route::get('/reset', 'HomeController@reset');
-Route::get('/pdf', 'HomeController@pdf');

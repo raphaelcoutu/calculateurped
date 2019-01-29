@@ -43,9 +43,6 @@ class HomeController extends Controller
     {
         $weight = session('app.dosingWeight');
 
-        if(!is_numeric($weight) || $weight <= 0)
-            return redirect()->to('/');
-
         $weightCategory = $this->findWeightCategory($weight);
 
         $infusions = InfusionConcentration::with('drug')->weight($weightCategory)->get()
@@ -60,8 +57,6 @@ class HomeController extends Controller
     public function pdf()
     {
         $weight = session('app.weight');
-        if(!is_numeric($weight) || $weight <= 0)
-            return redirect()->to('/');
 
         $pdf = \App::make('dompdf.wrapper');
 
