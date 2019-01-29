@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Bolus;
 use App\CalculatedBolus;
-use Illuminate\Http\Request;
 
 class BolusController extends Controller
 {
-
-
     public function __invoke()
     {
         $weight = session('app.dosingWeight');
@@ -22,6 +19,6 @@ class BolusController extends Controller
             $calculated->push(new CalculatedBolus($bolus, $weight));
         }
 
-        return view('web.bolus', compact('calculated', 'patientInfo'));
+        return view('web.bolus', compact('calculated'));
     }
 }
