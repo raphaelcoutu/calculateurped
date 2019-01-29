@@ -87,7 +87,14 @@
             <td></td>
         </tr>
         <tr>
-            <td colspan="7"></td>
+            <td></td>
+            <td></td>
+            @isset($bolus->instructions)
+                <td><u>Instructions:</u></td>
+                <td colspan="4">{!! nl2br($bolus->instructions) !!}</td>
+            @else
+                <td colspan="5"></td>
+            @endisset
         </tr>
     @endforeach
 
