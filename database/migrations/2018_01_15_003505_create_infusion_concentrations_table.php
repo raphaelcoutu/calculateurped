@@ -18,7 +18,7 @@ class CreateInfusionConcentrationsTable extends Migration
             $table->tinyInteger('infusion_drug_id');
             $table->float('concentration');
             $table->string('concentration_unit');
-            $table->string('recipe');
+            $table->string('instructions');
             $table->float('total_volume');
             $table->tinyInteger('weight_category');
             $table->timestamps();
