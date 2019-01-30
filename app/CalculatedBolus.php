@@ -53,7 +53,7 @@ class CalculatedBolus implements ArrayAccess
         }
 
         // Exception pour les joules
-        else if ($this->bolus->commercial_concentration == 0) {
+        else if ($this->bolus->commercial_concentration === 0.0) {
             return $this->volume = -1;
         }
 
