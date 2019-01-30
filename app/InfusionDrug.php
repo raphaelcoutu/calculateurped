@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class InfusionDrug extends Model
 {
+    protected $guarded = [];
+
     public function getDoseStringAttribute()
     {
         if($this->debit_max) {

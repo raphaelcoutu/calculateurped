@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class InfusionConcentration extends Model
 {
+    protected $guarded = [];
+
     private $isDebitMinLimited = false;
     private $isDebitMaxLimited = false;
 
