@@ -15,19 +15,19 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($infusions->where('drug.type', 1)->sortBy('name') as $infusion)
+        @foreach($calculated->where('drug.type', 1)->sortBy('drug.name') as $infusion)
             <tr>
                 <td>
                     {{$infusion->drug->name}} [{{$infusion->drug->concentration}}]
                 </td>
-                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
-                <td>{{$infusion->total_volume}} mL</td>
-                <td>{{$infusion->drug->dose_string}}</td>
+                <td>{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</td>
+                <td>{{$infusion->recipe->total_volume}} mL</td>
+                <td>{{$infusion->dosageString}}</td>
                 <td>
                     @if($infusion->isDebitMinLimited)
                         <small>MAX</small>
                     @endif
-                    <strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong>
+                    <strong>{{$infusion->rateString}}</strong>
                     @if($infusion->isDebitMaxLimited)
                         <small>MAX</small>
                     @endif
@@ -40,7 +40,7 @@
                     <span class="small"><i>{{ $infusion->drug->brand_name }}</i></span>
                     @endif
                 </td>
-                <td colspan="3"><u>Recette:</u> {{$infusion->recipe}}</td>
+                <td colspan="3"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
             </tr>
         @endforeach
         </tbody>
@@ -57,17 +57,17 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($infusions->where('drug.type', 2)->sortBy('name') as $infusion)
+        @foreach($calculated->where('drug.type', 2)->sortBy('name') as $infusion)
             <tr>
                 <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
-                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
-                <td>{{$infusion->total_volume}} mL</td>
-                <td>{{$infusion->drug->dose_string}}</td>
+                <td>{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</td>
+                <td>{{$infusion->recipe->total_volume}} mL</td>
+                <td>{{$infusion->dosageString}}</td>
                 <td>
                     @if($infusion->isDebitMinLimited)
                         <small>MAX</small>
                     @endif
-                    <strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong>
+                    <strong>{{$infusion->rateString}}</strong>
                     @if($infusion->isDebitMaxLimited)
                         <small>MAX</small>
                     @endif
@@ -79,14 +79,14 @@
                     <span class="small"><i>{{ $infusion->drug->brand_name }}</i></span>
                     @endif
                 </td>
-                @if($infusion->concentration === 100.00 && $infusion->concentration_unit === 'mU')
+                @if($infusion->recipe->concentration === 100.00 && $infusion->recipe->concentration_unit === 'mU')
                     <td>
                         <span class="small">(0.1 U/mL)</span>
                     </td>
-                    <td colspan="3"><u>Recette:</u> {{$infusion->recipe}}</td>
+                    <td colspan="3"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
                 @else
                     <td></td>
-                    <td colspan="3"><u>Recette:</u> {{$infusion->recipe}}</td>
+                    <td colspan="3"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
                 @endif
             </tr>
         @endforeach
@@ -104,17 +104,17 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($infusions->where('drug.type', 3)->sortBy('name') as $infusion)
+        @foreach($calculated->where('drug.type', 3)->sortBy('name') as $infusion)
             <tr>
                 <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
-                <td>{{$infusion->concentration}} {{$infusion->concentration_unit}}/mL</td>
-                <td>{{$infusion->total_volume}} mL</td>
-                <td>{{$infusion->drug->dose_string}}</td>
+                <td>{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</td>
+                <td>{{$infusion->recipe->total_volume}} mL</td>
+                <td>{{$infusion->dosageString}}</td>
                 <td>
                     @if($infusion->isDebitMinLimited)
                         <small>MAX</small>
                     @endif
-                    <strong>{{$infusion->debit_min}}@if($infusion->debit_max)-{{$infusion->debit_max}}@endif mL/h</strong>
+                    <strong>{{$infusion->rateString}}</strong>
                     @if($infusion->isDebitMaxLimited)
                         <small>MAX</small>
                     @endif
@@ -127,7 +127,7 @@
                     <span class="small"><i>{{ $infusion->drug->brand_name }}</i></span>
                     @endif
                 </td>
-                <td colspan="3"><u>Recette:</u> {{$infusion->recipe}}</td>
+                <td colspan="3"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
             </tr>
         @endforeach
         </tbody>
