@@ -24,11 +24,8 @@
                 <td>{{$infusion->recipe->total_volume}} mL</td>
                 <td>{{$infusion->dosageString}}</td>
                 <td>
-                    @if($infusion->isRateMinLimited)
-                        <small>MAX</small>
-                    @endif
                     <strong>{{$infusion->rateString}}</strong>
-                    @if($infusion->isRateMaxLimited)
+                    @if($infusion->isRateMinLimited || $infusion->isRateMaxLimited)
                         <small>MAX</small>
                     @endif
                 </td>
@@ -64,11 +61,8 @@
                 <td>{{$infusion->recipe->total_volume}} mL</td>
                 <td>{{$infusion->dosageString}}</td>
                 <td>
-                    @if($infusion->isRateMinLimited)
-                        <small>MAX</small>
-                    @endif
                     <strong>{{$infusion->rateString}}</strong>
-                    @if($infusion->isRateMaxLimited)
+                    @if($infusion->isRateMinLimited || $infusion->isRateMaxLimited)
                         <small>MAX</small>
                     @endif
                 </td>
@@ -111,11 +105,8 @@
                 <td>{{$infusion->recipe->total_volume}} mL</td>
                 <td>{{$infusion->dosageString}}</td>
                 <td>
-                    @if($infusion->isRateMinLimited)
-                        <small>MAX</small>
-                    @endif
                     <strong>{{$infusion->rateString}}</strong>
-                    @if($infusion->isRateMaxLimited)
+                    @if($infusion->isRateMinLimited || $infusion->isRateMaxLimited)
                         <small>MAX</small>
                     @endif
                 </td>
