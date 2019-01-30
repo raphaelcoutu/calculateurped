@@ -14,7 +14,7 @@ class AddAsteriskToBolusesTable extends Migration
     public function up()
     {
         Schema::table('boluses', function (Blueprint $table) {
-            $table->boolean('asterisk')->after('name');
+            $table->boolean('asterisk')->default(false)->after('name');
         });
     }
 

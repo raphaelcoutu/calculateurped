@@ -14,7 +14,7 @@ class AddBrandNameToBolusesTable extends Migration
     public function up()
     {
         Schema::table('boluses', function (Blueprint $table) {
-            $table->string('brand_name')->after('name');
+            $table->string('brand_name')->default('')->after('name');
         });
     }
 

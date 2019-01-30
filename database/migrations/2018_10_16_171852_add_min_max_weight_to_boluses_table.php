@@ -14,8 +14,8 @@ class AddMinMaxWeightToBolusesTable extends Migration
     public function up()
     {
         Schema::table('boluses', function (Blueprint $table) {
-            $table->decimal('min_weight')->after('type');
-            $table->decimal('max_weight')->after('min_weight');
+            $table->decimal('min_weight')->default(0.0)->after('type');
+            $table->decimal('max_weight')->default(999.0)->after('min_weight');
         });
     }
 

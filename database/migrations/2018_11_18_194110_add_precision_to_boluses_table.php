@@ -14,7 +14,7 @@ class AddPrecisionToBolusesTable extends Migration
     public function up()
     {
         Schema::table('boluses', function (Blueprint $table) {
-            $table->tinyInteger('precision')->after('maximum_dose');
+            $table->tinyInteger('precision')->default(1)->after('maximum_dose');
         });
     }
 

@@ -14,9 +14,9 @@ class AddDebitLimitToInfusionDrugsTable extends Migration
     public function up()
     {
         Schema::table('infusion_drugs', function (Blueprint $table) {
-            $table->float('debit_min_limit')->after('debit_dose_unit');
-            $table->float('debit_max_limit')->after('debit_min_limit');
-            $table->string('debit_limit_unit')->after('debit_max_limit');
+            $table->float('debit_min_limit')->default(0)->after('debit_dose_unit');
+            $table->float('debit_max_limit')->default(0)->after('debit_min_limit');
+            $table->string('debit_limit_unit')->default('')->after('debit_max_limit');
         });
     }
 

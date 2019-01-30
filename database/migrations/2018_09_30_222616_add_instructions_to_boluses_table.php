@@ -14,7 +14,7 @@ class AddInstructionsToBolusesTable extends Migration
     public function up()
     {
         Schema::table('boluses', function (Blueprint $table) {
-            $table->string('instructions')->nullable()->after('maximum_dose');
+            $table->string('instructions')->default('')->after('maximum_dose');
         });
     }
 

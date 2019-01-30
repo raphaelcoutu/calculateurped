@@ -21,6 +21,7 @@ class CreateInfusionDrugsTable extends Migration
             $table->float('debit_max');
             $table->string('debit_dose_unit');
             $table->string('debit_time_unit');
+            $table->tinyInteger('type');
             $table->timestamps();
         });
     }

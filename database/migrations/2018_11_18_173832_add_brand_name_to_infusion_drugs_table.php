@@ -14,7 +14,7 @@ class AddBrandNameToInfusionDrugsTable extends Migration
     public function up()
     {
         Schema::table('infusion_drugs', function (Blueprint $table) {
-            $table->string('brand_name')->after('name');
+            $table->string('brand_name')->default('')->after('name');
         });
     }
 
