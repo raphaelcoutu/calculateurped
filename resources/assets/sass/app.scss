@@ -8,11 +8,21 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
-$broselowColors: grey, pink, red, purple, yellow, white, blue, orange, green;
+$broselowColors: (
+    grey: #B8C2CC,
+    pink: #F66D9B,
+    red: #E3342F,
+    purple: #9561E2,
+    yellow: #FFED4A,
+    white: #FFFFFF,
+    blue: #3490DC,
+    orange: #F6993F,
+    green: #38C172
+);
 
-@each $color in $broselowColors{
-  .broselow-#{$color} {
-    background-color: #{$color};
+@each $bg-class, $bg-color in $broselowColors{
+  .broselow-#{"" + $bg-class} {
+    background-color: $bg-color;
   }
 }
 
