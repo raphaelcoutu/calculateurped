@@ -31,12 +31,12 @@
                 </td>
             </tr>
             <tr>
-                <td></td>
                 <td>
                     @if($infusion->drug->brand_name)
                     <span class="small"><i>{{ $infusion->drug->brand_name }}</i></span>
                     @endif
                 </td>
+                <td></td>
                 <td colspan="3"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
             </tr>
         @endforeach
