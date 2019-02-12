@@ -27,10 +27,16 @@
             height: 50px;
         }
 
-        .subheading {
+        .page-heading {
             position: absolute;
             top:60px;
             left:0;
+        }
+
+        .page-subheading {
+            position: absolute;
+            top:66px;
+            left:5px;
         }
 
         .floating-center {
@@ -136,8 +142,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 </head>
 <body>
-@include('pdf.bolus', compact('boluses'))
+@include('pdf.bolus', compact('calcBoluses'))
 <div class="page-break"></div>
-@include('pdf.infusion', compact('infusions'))
+@include('pdf.infusion', compact('calcInfusions'))
 </body>
 </html>

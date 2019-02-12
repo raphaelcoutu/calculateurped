@@ -1,7 +1,8 @@
 <div class="header">
     <div class="floating-left">
         <img class="logo" src="{{ url('/img/logo-ciusss-trans.png') }}">
-        <h2 class="subheading">{{ $subheading }}</h2>
+        <h2 class="page-heading">{{ $pageHeading }}</h2>
+        <p class="page-subheading"><i>{{ $pageSubheading ?? '' }}</i></p>
     </div>
     <div class="floating-center">
         <h2>MÉDICAMENTS URGENCES / SOINS INTENSIFS PÉDIATRIQUES</h2>

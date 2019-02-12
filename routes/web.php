@@ -17,7 +17,7 @@ Route::post('/', 'HomeController@form');
 Route::middleware('weight')->group(function () {
     Route::get('/bolus', 'BolusController');
     Route::get('/perfusion', 'InfusionController');
-    Route::get('/pdf', 'HomeController@pdf');
+    Route::get('/pdf', 'PdfController');
 });
 
 Route::get('/reset', 'HomeController@reset');
