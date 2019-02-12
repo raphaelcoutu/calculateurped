@@ -22,3 +22,31 @@ $factory->define(App\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\InfusionDrug::class, function (Faker $faker) {
+   return [
+       'name' => $faker->name,
+       'brand_name' => $faker->name,
+       'concentration' => $faker->numberBetween(0.1, 100) . ' mg/mL',
+       'debit_min' => 1,
+       'debit_max' => 5,
+       'debit_dose_unit' => 'mg',
+       'debit_time_unit' => 'h',
+       'debit_min_limit' => 0,
+       'debit_max_limit' => 0,
+       'debit_limit_unit' => '',
+       'dosage_precision' => 1,
+       'type' => 1
+   ];
+});
+
+$factory->define(App\InfusionConcentration::class, function (Faker $faker) {
+    return [
+        'infusion_drug_id' => 1,
+        'concentration' => $faker->numberBetween(0.1, 100),
+        'concentration_unit' => 'mg',
+        'instructions' => 'Recette',
+        'total_volume' => 100,
+        'weight_category' => 1
+    ];
+});

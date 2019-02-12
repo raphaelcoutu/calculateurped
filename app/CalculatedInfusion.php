@@ -114,9 +114,8 @@ class CalculatedInfusion
 
         $conc = $this->recipe->concentration;
         $concUnit = $this->recipe->concentration_unit;
-        $standardConcentration = $this->convertDoseToBaseUnit($conc, $concUnit);
 
-        $dosage = $mlHourRate * $standardConcentration;
+        $dosage = $mlHourRate * $conc;
 
         // Dose
         $dosage *= $this->convertUnitFactor($concUnit, $this->drug->debit_dose_unit);

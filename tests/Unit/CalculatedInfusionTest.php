@@ -254,4 +254,30 @@ class CalculatedInfusionTest extends TestCase
         $calc = new CalculatedInfusion($product, $weight);
         $this->assertEquals('0.5 - 1 mcg/kg/min', $calc->dosageString);
     }
+
+    /** @test */
+    public function it_calculates_units()
+    {
+        $drug = factory(InfusionDrug::class)->create([
+            'debit_min' => 0.2,
+            'debit_max' => 2,
+            'debit_dose_unit' => 'mU',
+            'debit_time_unit' => 'min',
+            'debit_min_limit' => 1.2,
+            'debit_max_limit' => 6,
+            'debit_limit_unit' => 'unité'
+        ]);
+        $conc = factory(InfusionConcentration::class)->create([
+            'concentration' => 100,
+            'concentration_unit' => 'mU'
+        ]);
+        $drug->concentrations()->save($conc);
+
+        $weight = 60;
+        $calc = new CalculatedInfusion($conc, $weight);
+        $this->assertEquals(7.2, $calc->minimalRate);
+        $this->assertEquals(60, $calc->maximalRate);
+        $this->assertEquals(0.2, $calc->minimalDosage);
+        $this->assertEquals(1.7, $calc->maximalDosage);
+    }
 }
