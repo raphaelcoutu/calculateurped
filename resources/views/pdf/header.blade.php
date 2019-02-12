@@ -6,15 +6,18 @@
     </div>
     <div class="floating-center">
         <h2>MÉDICAMENTS URGENCES / SOINS INTENSIFS PÉDIATRIQUES</h2>
-        <p><strong>Patient:</strong> {{ session('app.name') }}</p>
+        <p style="padding-left:50px"><strong>Patient:</strong> {{ session('app.name') }}</p>
+        <p style="padding-left:50px"><strong>Dossier: #{{ session('app.id') }}</strong></p>
     </div>
     <div class="floating-right">
         <div class="right-top">
-            DOSSIER:<br>{{ session('app.id') }}
+            Poids:
+            <p class="weight">{{ session('app.dosingWeight') }} kg</p>
         </div>
         <div class="right-bottom">
-            Poids:
-            <p class="weight">{{ session('app.weight') }} kg</p>
+            @if(session('app.weight') !== session('app.dosingWeight'))
+            (Poids réel: {{ session('app.weight') }} kg)
+            @endif
         </div>
     </div>
     <div class="after-box"></div>

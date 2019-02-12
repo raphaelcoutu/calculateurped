@@ -29,19 +29,19 @@
 
         .page-heading {
             position: absolute;
-            top:60px;
+            top:50px;
             left:0;
         }
 
         .page-subheading {
             position: absolute;
-            top:66px;
+            top:75px;
             left:5px;
         }
 
         .floating-center {
             float: left;
-            width: 400px;
+            width: 370px;
             height: 100px;
             margin: 0 10px;
             /*border: 3px solid #73AD21;*/
@@ -65,13 +65,13 @@
         }
 
         .right-top {
-            height:35px;
+            height:45px;
             width: 150px;
             margin-bottom: 5px;
         }
 
         .right-bottom {
-            height:40px;
+            height:30px;
             width:150px;
         }
 
@@ -136,6 +136,10 @@
         }
         .text-bold {
             font-weight: bold;
+        }
+        p {
+            margin:0;
+            padding:0;
         }
         footer { position: fixed; bottom: 0px; left: 0px; right: 0px; background-color: lightblue; height: 50px; }
     </style>
