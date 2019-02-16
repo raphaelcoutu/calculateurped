@@ -115,7 +115,7 @@ class CalculatedInfusionTest extends TestCase
         $product = InfusionConcentration::with('drug')->weight($weightCategory)
             ->where('infusion_drug_id', 2)->first();
         $anotherCalc = new CalculatedInfusion($product, $weight);
-        $this->assertEquals(0.4, $anotherCalc->minimalRate);
+        $this->assertEquals(0.36, $anotherCalc->minimalRate);
     }
 
     /** @test */
@@ -131,7 +131,7 @@ class CalculatedInfusionTest extends TestCase
         $product = InfusionConcentration::with('drug')->weight($weightCategory)
             ->where('infusion_drug_id', 2)->first();
         $anotherCalc = new CalculatedInfusion($product, $weight);
-        $this->assertEquals(1.4, $anotherCalc->maximalRate);
+        $this->assertEquals(1.44, $anotherCalc->maximalRate);
     }
 
     /** @test */

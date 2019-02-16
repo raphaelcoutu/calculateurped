@@ -77,7 +77,10 @@ class CalculatedInfusion
     private function getFixedRate($doseBaseUnitHour)
     {
         $concentration = $this->convertDoseToBaseUnit($this->recipe->concentration, $this->recipe->concentration_unit);
-        return round($doseBaseUnitHour / $concentration, 1);
+        $rate = $doseBaseUnitHour / $concentration;
+        $precision = ($rate < 2) ? 2 : 1;
+
+        return round($rate, $precision, PHP_ROUND_HALF_DOWN);
     }
 
     private function getRate($dosageRate)
@@ -85,8 +88,10 @@ class CalculatedInfusion
         $standardDosage = $this->convertDoseToBaseUnit($dosageRate, $this->drug->debit_dose_unit);
         $concentration = $this->convertDoseToBaseUnit($this->recipe->concentration, $this->recipe->concentration_unit);
         $minuteToHourFactor = $this->minToHourFactor($this->drug->debit_time_unit);
+        $rate = $this->weight * $standardDosage / $concentration * $minuteToHourFactor;
+        $precision = ($rate < 2) ? 2 : 1;
 
-        return round($this->weight * $standardDosage / $concentration * $minuteToHourFactor, 1);
+        return round($rate, $precision, PHP_ROUND_HALF_DOWN);
     }
 
     /**
