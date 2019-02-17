@@ -280,4 +280,30 @@ class CalculatedInfusionTest extends TestCase
         $this->assertEquals(0.2, $calc->minimalDosage);
         $this->assertEquals(1.7, $calc->maximalDosage);
     }
+
+    /** @test */
+    public function infusion_rate_less_than_2_ml_h_has_2_digit_precision()
+    {
+        $drug = factory(InfusionDrug::class)->create();
+        $conc = factory(InfusionConcentration::class)->create();
+        $drug->concentrations()->save($conc);
+
+        $weight = 3.75;
+        $calc = new CalculatedInfusion($conc, $weight);
+        $digits = strlen(substr(strrchr($calc->minimalRate, '.'), 1));
+        $this->assertEquals(2, $digits);
+    }
+
+    /** @test */
+    public function infusion_rate_greater_or_equals_than_2_ml_h_has_1_digit_precision()
+    {
+        $drug = factory(InfusionDrug::class)->create();
+        $conc = factory(InfusionConcentration::class)->create();
+        $drug->concentrations()->save($conc);
+
+        $weight = 7.5;
+        $calc = new CalculatedInfusion($conc, $weight);
+        $digits = strlen(substr(strrchr($calc->maximalRate, '.'), 1));
+        $this->assertEquals(1, $digits);
+    }
 }

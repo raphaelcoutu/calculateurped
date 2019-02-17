@@ -131,24 +131,12 @@ class CalculatedBolusTest extends TestCase
     }
 
     /** @test */
-    public function it_should_return_a_rounded_volume()
-    {
-        $this->bolus->volume_precision = 1;
-        $calcBolus = new CalculatedBolus($this->bolus, 5.12);
-        $this->assertEquals(0.5, $calcBolus->roundedVolume);
-
-        $this->bolus->volume_precision = 2;
-        $calcBolus = new CalculatedBolus($this->bolus, 5.12);
-        $this->assertEquals(0.51, $calcBolus->roundedVolume);
-    }
-
-    /** @test */
     public function it_should_return_a_rounded_dose()
     {
         $this->bolus->volumePrecision = 1;
         $this->bolus->dosePrecision = 1;
         $calcBolus = new CalculatedBolus($this->bolus, 5.125);
-        $this->assertEquals(25, $calcBolus->roundedDose);
+        $this->assertEquals(25.5, $calcBolus->roundedDose);
 
         $this->bolus->volume_precision = 2;
         $this->bolus->dose_precision = 1;
@@ -159,11 +147,50 @@ class CalculatedBolusTest extends TestCase
         $this->bolus->volume_precision = 1;
         $this->bolus->dose_precision = 2;
         $calcBolus = new CalculatedBolus($this->bolus, 5.125);
-        $this->assertEquals(25, $calcBolus->roundedDose);
+        $this->assertEquals(25.5, $calcBolus->roundedDose);
 
         $this->bolus->volume_precision = 2;
         $this->bolus->dose_precision = 2;
         $calcBolus = new CalculatedBolus($this->bolus, 5.125);
         $this->assertEquals(25.5, $calcBolus->roundedDose);
+    }
+
+    /** @test */
+    public function volume_should_have_2_digits_precision_below_1_ml()
+    {
+        $bolus = factory(Bolus::class)->make(['commercial_concentration' => 33]);
+        $calc = new CalculatedBolus($bolus, 5.1);
+
+        $this->assertEquals(0.15, $calc->roundedVolume);
+    }
+
+    /** @test */
+    public function volume_should_have_2_digits_precision_and_multiple_of_3_between_1_and_3_ml()
+    {
+        $bolus = factory(Bolus::class)->make(['commercial_concentration' => 13]);
+
+        // 1.161...
+        $calc = new CalculatedBolus($bolus, 15.1);
+        $this->assertEquals(1.15, $calc->roundedVolume);
+
+        // 1.1846...
+        $calc = new CalculatedBolus($bolus, 15.4);
+        $this->assertEquals(1.2, $calc->roundedVolume);
+    }
+
+    /** @test */
+    public function volume_should_be_rounded_if_greater_than_3_ml()
+    {
+        $this->bolus->volume_precision = 1;
+        $calcBolus = new CalculatedBolus($this->bolus, 40.12);
+
+        // 4.012 mL
+        $this->assertEquals(4.0, $calcBolus->roundedVolume);
+
+        $this->bolus->volume_precision = 2;
+        $calcBolus = new CalculatedBolus($this->bolus, 40.12);
+
+        // 4.012 mL
+        $this->assertEquals(4.01, $calcBolus->roundedVolume);
     }
 }

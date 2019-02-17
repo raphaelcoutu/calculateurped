@@ -66,8 +66,20 @@ class CalculatedBolus implements ArrayAccess
     private function setRoundedVolume()
     {
         $volume = $this->setVolume();
+        $rounded = 0;
 
-        return $this->roundedVolume = round($volume, $this->bolus->volume_precision);
+        if($volume < 1) {
+            // 2 chiffres de précision
+            $rounded = round($volume, 2);
+        } else if($volume >= 1 && $volume < 3) {
+            // 2 chiffres de précision mais en multiple de 0.05
+            $rounded = round($volume * 2, 1) / 2;
+        } else {
+            // précision selon la base de données
+            $rounded = round($volume, $this->bolus->volume_precision);
+        }
+
+        return $this->roundedVolume = $rounded;
     }
 
     private function setRoundedDose()
