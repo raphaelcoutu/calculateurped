@@ -84,13 +84,27 @@ class CalculatedBolus implements ArrayAccess
 
     private function setRoundedDose()
     {
-        $volume = $this->setRoundedVolume();
+        $dose = $this->setDose();
 
         // Si c'est les joules ou le NaCl 3%
         if($this->bolus->commercial_concentration === 0.0) {
             return $this->roundedDose = round($this->dose, $this->bolus->dose_precision);
         } else {
-            return $this->roundedDose = round($volume * $this->bolus->commercial_concentration, $this->bolus->dose_precision);
+
+            if($dose < 0.1) {
+                // 3 chiffres de précision
+                $rounded = round($dose, 3);
+            } else if($dose < 1) {
+                // 2 chiffres de précision
+                $rounded = round($dose, 2);
+            } else if($dose >= 1 && $dose < 3) {
+                // 2 chiffres de précision mais en multiple de 0.05
+                $rounded = round($dose * 2, 1) / 2;
+            } else {
+                // précision selon la base de données
+                $rounded = round($dose, $this->bolus->volume_precision);
+            }
+            return $this->roundedDose = $rounded;
         }
     }
 

@@ -35,7 +35,7 @@
     @endforeach
     </tbody>
 </table>
-
+<p>** Doit être dilué et administré 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
 <table width="525" class="table-striped">
     <thead>
     <tr>
@@ -227,5 +227,3 @@
     @endforeach
     </tbody>
 </table>
-
-<p>** Doit être dilué et administré 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>

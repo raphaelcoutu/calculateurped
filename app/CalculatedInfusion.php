@@ -89,7 +89,8 @@ class CalculatedInfusion
         $concentration = $this->convertDoseToBaseUnit($this->recipe->concentration, $this->recipe->concentration_unit);
         $minuteToHourFactor = $this->minToHourFactor($this->drug->debit_time_unit);
         $rate = $this->weight * $standardDosage / $concentration * $minuteToHourFactor;
-        $precision = ($rate < 2) ? 2 : 1;
+//        $precision = ($rate < 2) ? 2 : 1;
+        $precision = 2;
 
         return round($rate, $precision, PHP_ROUND_HALF_DOWN);
     }

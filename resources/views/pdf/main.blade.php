@@ -121,6 +121,7 @@
         }
 
         .table-striped-2 tr.border-bottom > td {
+            border-top: 1px solid black;
             border-bottom: 1px solid black;
         }
 
