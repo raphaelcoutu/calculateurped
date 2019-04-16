@@ -80,7 +80,7 @@ class CalculatedInfusion
         $rate = $doseBaseUnitHour / $concentration;
         $precision = ($rate < 2) ? 2 : 1;
 
-        return round($rate, $precision, PHP_ROUND_HALF_DOWN);
+        return floor($rate * pow(10, $precision)) / pow(10, $precision);
     }
 
     private function getRate($dosageRate)
@@ -92,7 +92,7 @@ class CalculatedInfusion
 //        $precision = ($rate < 2) ? 2 : 1;
         $precision = 2;
 
-        return round($rate, $precision, PHP_ROUND_HALF_DOWN);
+        return floor($rate * pow(10, $precision)) / pow(10, $precision);
     }
 
     /**
