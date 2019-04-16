@@ -70,7 +70,7 @@ class CalculatedBolus implements ArrayAccess
 
         if($this->bolus->unit === "g") {
             $dose = $this->setRoundedDose();
-            $rounded = round($dose / $this->bolus->commercial_concentration, $this->bolus->dose_precision);
+            $rounded = round($dose / $this->bolus->commercial_concentration, $this->bolus->volume_precision);
         } else {
             if ($volume < 1) {
                 // 2 chiffres de précision
