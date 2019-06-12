@@ -119,7 +119,7 @@ class CalculatedBolus implements ArrayAccess
                 $rounded = round($dose * 2, 1) / 2;
             } else {
                 // précision selon la base de données
-                $rounded = round($dose, $this->bolus->volume_precision);
+                $rounded = round($dose, $this->bolus->dose_precision);
             }
             return $this->roundedDose = $rounded;
         }

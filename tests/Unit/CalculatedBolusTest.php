@@ -136,23 +136,25 @@ class CalculatedBolusTest extends TestCase
         $this->bolus->volumePrecision = 1;
         $this->bolus->dosePrecision = 1;
         $calcBolus = new CalculatedBolus($this->bolus, 5.125);
-        $this->assertEquals(25.5, $calcBolus->roundedDose);
+        $this->assertEquals(25.6, $calcBolus->roundedDose);
 
         $this->bolus->volume_precision = 2;
         $this->bolus->dose_precision = 1;
         $calcBolus = new CalculatedBolus($this->bolus, 5.125);
         $this->assertEquals(0.51, $calcBolus->roundedVolume);
-        $this->assertEquals(25.5, $calcBolus->roundedDose);
+        $this->assertEquals(25.6, $calcBolus->roundedDose);
 
         $this->bolus->volume_precision = 1;
         $this->bolus->dose_precision = 2;
-        $calcBolus = new CalculatedBolus($this->bolus, 5.125);
-        $this->assertEquals(25.5, $calcBolus->roundedDose);
+        $calcBolus = new CalculatedBolus($this->bolus, 35.125);
+        $this->assertEquals(3.5, $calcBolus->roundedVolume);
+        $this->assertEquals(175.63, $calcBolus->roundedDose);
 
         $this->bolus->volume_precision = 2;
         $this->bolus->dose_precision = 2;
-        $calcBolus = new CalculatedBolus($this->bolus, 5.125);
-        $this->assertEquals(25.5, $calcBolus->roundedDose);
+        $calcBolus = new CalculatedBolus($this->bolus, 35.125);
+        $this->assertEquals(3.51, $calcBolus->roundedVolume);
+        $this->assertEquals(175.63, $calcBolus->roundedDose);
     }
 
     /** @test */

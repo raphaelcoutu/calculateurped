@@ -80,7 +80,7 @@ class CalculatedInfusion
         $rate = $doseBaseUnitHour / $concentration;
         $precision = ($rate < 2) ? 2 : 1;
 
-        return floor($rate * pow(10, $precision)) / pow(10, $precision);
+        return $this->floorp($rate, $precision);
     }
 
     private function getRate($dosageRate)
@@ -89,10 +89,20 @@ class CalculatedInfusion
         $concentration = $this->convertDoseToBaseUnit($this->recipe->concentration, $this->recipe->concentration_unit);
         $minuteToHourFactor = $this->minToHourFactor($this->drug->debit_time_unit);
         $rate = $this->weight * $standardDosage / $concentration * $minuteToHourFactor;
-//        $precision = ($rate < 2) ? 2 : 1;
-        $precision = 2;
 
-        return floor($rate * pow(10, $precision)) / pow(10, $precision);
+        return $this->floorp($rate, 2);
+    }
+
+    /**
+     * Fonction pour arrondir à l'inférieur (bug math avec PHP Floor)
+     */
+    function floorp($val, $precision)
+    {
+        // Éviter une valeur négative (ex: maxRate = 0)
+        if ($val == 0) return 0;
+
+        $half = 0.5 / pow(10, $precision);
+        return round($val - $half, $precision);
     }
 
     /**
