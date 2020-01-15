@@ -43,6 +43,7 @@ class PdfController extends Controller
         $dom_pdf = $pdf->getDomPDF();
 
         $canvas = $dom_pdf->get_canvas();
+        $canvas->page_text(40, 750, \Carbon\Carbon::now()->toDateTimeString(), null, 10, array(0, 0, 0));
         $canvas->page_text(520, 750, "Page {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
 
