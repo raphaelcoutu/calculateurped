@@ -80,7 +80,7 @@
                     <td colspan="3"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
                 @else
                     <td></td>
-                    <td colspan="3"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
+                    <td colspan="3"><u>Recette:</u> {!! nl2br(e($infusion->recipe->instructions)) !!}</td>
                 @endif
             </tr>
         @endforeach

@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <style>
         html {
-            margin:30px 30px 10px 50px;
+            margin:20px 20px 20px 50px;
         }
 
         .page-break {
@@ -25,6 +25,11 @@
             top:0;
             width: 100px;
             height: 50px;
+        }
+
+        .checkbox {
+            padding: 0px 0px;
+            border: 1px solid black;
         }
 
         .page-heading {
@@ -111,6 +116,15 @@
             background-color: #d3d3d3;
         }
 
+        .table-striped tr.bg-white {
+            background-color: #f9f9f9;
+        }
+
+        .table-striped tr.border-bottom > td {
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+
         .table-striped-2 tbody tr:nth-child(4n+1),
         .table-striped-2 tbody tr:nth-child(4n+2) {
             background-color: #d3d3d3;
@@ -126,7 +140,7 @@
         }
 
         td.indent {
-            padding-left:20px;
+            padding-left:15px;
         }
 
         .text-right {

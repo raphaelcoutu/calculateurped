@@ -15,12 +15,15 @@
         </tr>
         </thead>
         <tbody>
+        <tr>
+            <td colspan="6" class="alert-dark text-center"><i>IV DIRECT</i></td>
+        </tr>
         @foreach($calculated->where('bolus.type', 1)->sortBy('bolus.name') as $calc)
             <tr>
                 <td class="d-flex justify-content-between">
                     <span>
                         @if($calc->bolus->asterisk)
-                            **
+                            ** <sup>voir note</sup>
                         @endif
                         {{ $calc->bolus->name }}
                     </span>
@@ -44,7 +47,11 @@
         </tbody>
     </table>
 
-    <p class="alert alert-warning">** Doit être dilué et administré sur 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
+    @if(session('app.weight') <= 15)
+        <p class="alert alert-warning">** Doit être dilué dans 50 mL et administré sur 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
+    @else
+        <p class="alert alert-warning">** Doit être dilué dans 100 mL et administré sur 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
+    @endif
 
     <table class="table table-borderless table-green">
         <thead>
@@ -113,11 +120,11 @@
                 <td class="text-right font-weight-bold">{{ $calc->roundedVolumeString }}</td>
             </tr>
             <tr>
-                @isset($calc->bolus->instructions)
+                @if(isset($calc->bolus->instructions) && !empty($calc->bolus->instructions))
                     <td></td>
                     <td><u>Instructions:</u></td>
                     <td colspan="4">{!! nl2br($calc->bolus->instructions) !!}</td>
-                @endisset
+                @endif
             </tr>
         @endforeach
         <tr>
@@ -145,11 +152,11 @@
                 <td class="text-right font-weight-bold">{{ $calc->roundedVolumeString }}</td>
             </tr>
             <tr>
-                @isset($calc->bolus->instructions)
+                @if(isset($calc->bolus->instructions) && !empty($calc->bolus->instructions))
                     <td></td>
                     <td><u>Instructions:</u></td>
                     <td colspan="4">{!! nl2br($calc->bolus->instructions) !!}</td>
-                @endisset
+                @endif
             </tr>
         @endforeach
         <tr>
@@ -177,11 +184,11 @@
                 <td class="text-right font-weight-bold">{{ $calc->roundedVolumeString }}</td>
             </tr>
             <tr>
-                @isset($calc->bolus->instructions)
+                @if(isset($calc->bolus->instructions) && !empty($calc->bolus->instructions))
                     <td></td>
                     <td><u>Instructions:</u></td>
                     <td colspan="4">{{ $calc->bolus->instructions }}</td>
-                @endisset
+                @endif
             </tr>
         @endforeach
         </tbody>
