@@ -11,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach($calcInfusions->where('drug.type', 1)->sortBy('drug.name') as $infusion)
+    @foreach($calcInfusions->where('drug.type', 1)->sortBy('drug.order') as $infusion)
         <tr>
             <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
             <td class="text-right text-bold">{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</td>
@@ -45,7 +45,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach($calcInfusions->where('drug.type', 2)->sortBy('name') as $infusion)
+    @foreach($calcInfusions->where('drug.type', 2)->sortBy('drug.order') as $infusion)
         <tr>
             <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
             <td class="text-right text-bold">{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</td>
@@ -84,7 +84,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach($calcInfusions->where('drug.type', 3)->sortBy('name') as $infusion)
+    @foreach($calcInfusions->where('drug.type', 3)->sortBy('drug.order') as $infusion)
         <tr>
             <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
             <td class="text-right text-bold">{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</td>
