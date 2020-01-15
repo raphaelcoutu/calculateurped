@@ -5,7 +5,7 @@
         <p class="page-subheading"><i>{{ $pageSubheading ?? '' }}</i></p>
     </div>
     <div class="floating-center">
-        <h2>MÉDICAMENTS URGENCES / SOINS INTENSIFS PÉDIATRIQUES</h2>
+        <h2>{{ config('app.name') }}</h2>
         <p style="padding-left:50px"><strong>Patient:</strong> {{ session('app.name') }}</p>
         <p style="padding-left:50px"><strong>Dossier: #{{ session('app.id') }}</strong></p>
     </div>
