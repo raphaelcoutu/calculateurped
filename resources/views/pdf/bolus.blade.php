@@ -50,9 +50,9 @@
     </tbody>
 </table>
 @if(session('app.weight') <= 15)
-    <p>** Doit être dilué dans 50 mL et administré sur 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
+    <p class="note">** Doit être dilué dans 50 mL et administré sur 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
 @else
-    <p>** Doit être dilué dans 100 mL et administré sur 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
+    <p class="note">** Doit être dilué dans 100 mL et administré sur 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
 @endif
 <table width="540" class="table-striped">
     <thead>

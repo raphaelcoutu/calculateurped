@@ -154,7 +154,12 @@
         }
         p {
             margin:0;
-            padding:0;
+            padding: 0;
+        }
+        .note {
+            font-size: 13px;
+            padding-bottom: 5px;
+            font-style: italic;
         }
         footer { position: fixed; bottom: 0px; left: 0px; right: 0px; background-color: lightblue; height: 50px; }
     </style>
