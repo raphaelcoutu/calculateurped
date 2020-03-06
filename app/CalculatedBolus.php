@@ -53,7 +53,7 @@ class CalculatedBolus implements ArrayAccess
         }
 
         // Exception pour les joules
-        else if ($this->bolus->commercial_concentration === 0.0) {
+        else if ($this->bolus->commercial_concentration == 0.0) {
             return $this->volume = -1;
         }
 
@@ -92,7 +92,7 @@ class CalculatedBolus implements ArrayAccess
         $dose = $this->setDose();
 
         // Si c'est les joules ou le NaCl 3%
-        if($this->bolus->commercial_concentration === 0.0) {
+        if($this->bolus->commercial_concentration == 0.0) {
             return $this->roundedDose = round($this->dose, $this->bolus->dose_precision);
         }
 
