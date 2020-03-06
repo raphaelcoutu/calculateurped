@@ -27,6 +27,7 @@
         <div class="container">
             @yield('content')
         </div>
+        <small>Version: {{ config('version') }}</small>
     </div>
 
     <!-- Scripts -->
