@@ -2,7 +2,7 @@ git pull
 
 php artisan cache:clear
 
-$content = Get-Content -raw -path .env
+$content = Get-Content -encoding UTF8 -path .env
 $hash = git rev-parse --short HEAD
 $date = git log -1 --date=short --pretty=format:%cd
 
