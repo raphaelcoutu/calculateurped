@@ -47,7 +47,7 @@
         .floating-center {
             float: left;
             width: 370px;
-            height: 100px;
+            height: 90px;
             margin: 0 10px;
             /*border: 3px solid #73AD21;*/
         }
@@ -63,7 +63,7 @@
             float: left;
             width: 90px;
             height: 90px;
-            margin: 5px;
+            margin: 0px;
             padding: 0;
             border-left: 1px solid black;
             text-align: center;
