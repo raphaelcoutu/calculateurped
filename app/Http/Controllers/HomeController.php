@@ -33,7 +33,7 @@ class HomeController extends Controller
             ]
         ]);
 
-        return redirect()->to('/bolus');
+        return redirect()->to('/pdf');
     }
 
     public function reset()
