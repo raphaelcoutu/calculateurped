@@ -77,7 +77,7 @@
 
         .right-bottom {
             height:30px;
-            width:150px;
+            width:170px;
         }
 
         .weight {

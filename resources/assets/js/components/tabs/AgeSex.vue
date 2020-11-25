@@ -63,6 +63,8 @@
             </div>
         </div>
 
+        <input type="hidden" name="isWeightEstimated" value="true">
+
         <div class="d-flex">
             <input type="hidden" name="weight" :value="result">
             <button type="submit"

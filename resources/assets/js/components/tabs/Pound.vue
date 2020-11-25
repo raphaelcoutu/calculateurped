@@ -11,8 +11,14 @@
                 <h2 v-else>{{ result }} kg</h2>
             </div>
         </div>
+        <div class="row">
+            <div class="col-6 d-flex align-items-center ml-4">
+                <input type="checkbox" name="isWeightEstimated" class="form-check-input" id="isWeightEstimated">
+                <label class="form-check-label" for="isWeightEstimated">Poids estimé</label>
+            </div>
+        </div>
 
-        <div class="d-flex">
+        <div class="d-flex mt-2">
             <input type="hidden" name="weight" :value="result">
             <button type="submit"
                     class="btn btn-primary px-4"

@@ -27,6 +27,8 @@
             <div class="col-8 col-sm-3 border border-dark broselow-box mx-auto m-sm-0 mb-3" :class="bgColor" v-show="result"></div>
         </div>
 
+        <input type="hidden" name="isWeightEstimated" value="true">
+
         <div class="d-flex">
             <input type="hidden" name="weight" :value="result">
             <button type="submit"

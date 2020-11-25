@@ -10,15 +10,25 @@
         <p style="padding-left:50px"><strong>Dossier: #{{ session('app.id') }}</strong></p>
     </div>
     <div class="floating-right">
+        @if(session('app.weight') !== session('app.dosingWeight'))
         <div class="right-top">
-            Poids:
+            Poids de calcul:
             <p class="weight">{{ session('app.dosingWeight') }} kg</p>
         </div>
         <div class="right-bottom">
-            @if(session('app.weight') !== session('app.dosingWeight'))
-            (Poids réel: {{ session('app.weight') }} kg)
+            @if(session('app.isWeightEstimated'))
+                <p>(Poids <u>estimé</u>: {{ session('app.weight') }} kg)</p>
+            @else
+                <p>(Poids <u>réél</u>: {{ session('app.weight') }} kg)</p>
             @endif
         </div>
+        @else
+        <div class="right-top">
+            Poids @if(session('app.isWeightEstimated'))<u>estimé</u>@else<u>réél</u>@endif:
+            <p class="weight">{{ session('app.dosingWeight') }} kg</p>
+        </div>
+        <div class="right-bottom"></div>
+        @endif
     </div>
     <div class="after-box"></div>
 </div>

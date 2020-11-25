@@ -16,20 +16,23 @@ class HomeController extends Controller
         $id = request('id') ?? "______________";
         $weight = request('weight');
         $dosingWeight = request('weight') < 100 ? request('weight') : '100';
+        $isWeightEstimated = request('isWeightEstimated');
 
         session([
             'form' => [
                 'name' => request('name'),
                 'age' => request('age'),
                 'id' => request('id'),
-                'weight' => request('weight')
+                'weight' => request('weight'),
+                'isWeightEstimated' => request('isWeightEstimated'),
             ],
             'app' => [
                 'name' => $name,
                 'age' => $age,
                 'id' => $id,
                 'weight' => $weight,
-                'dosingWeight' => $dosingWeight
+                'dosingWeight' => $dosingWeight,
+                'isWeightEstimated' => $isWeightEstimated
             ]
         ]);
 
