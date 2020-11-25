@@ -4,7 +4,7 @@
 
     <h2 class="text-center mt-3">Calculateur de doses pour les urgences et les soins intensifs pédiatriques</h2>
 
-    <form action="/" method="post">
+    <form action="/" method="post" autocomplete="off">
         {{ csrf_field() }}
         <div class="row">
 
