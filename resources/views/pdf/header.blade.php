@@ -19,12 +19,12 @@
             @if(session('app.isWeightEstimated'))
                 <p>(Poids <u>estimé</u>: {{ session('app.weight') }} kg)</p>
             @else
-                <p>(Poids <u>réél</u>: {{ session('app.weight') }} kg)</p>
+                <p>(Poids <u>réel</u>: {{ session('app.weight') }} kg)</p>
             @endif
         </div>
         @else
         <div class="right-top">
-            Poids @if(session('app.isWeightEstimated'))<u>estimé</u>@else<u>réél</u>@endif:
+            Poids @if(session('app.isWeightEstimated'))<u>estimé</u>@else<u>réel</u>@endif:
             <p class="weight">{{ session('app.dosingWeight') }} kg</p>
         </div>
         <div class="right-bottom"></div>
