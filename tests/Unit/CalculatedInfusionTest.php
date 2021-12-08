@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use App\CalculatedInfusion;
-use App\InfusionConcentration;
-use App\InfusionDrug;
+use App\Models\CalculatedInfusion;
+use App\Models\InfusionConcentration;
+use App\Models\InfusionDrug;
 use App\WeightCategory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,7 +16,7 @@ class CalculatedInfusionTest extends TestCase
     private $drug;
     private $concentration;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -258,7 +258,7 @@ class CalculatedInfusionTest extends TestCase
     /** @test */
     public function it_calculates_units()
     {
-        $drug = factory(InfusionDrug::class)->create([
+        $drug = InfusionDrug::factory()->create([
             'debit_min' => 0.2,
             'debit_max' => 2,
             'debit_dose_unit' => 'mU',
@@ -267,7 +267,7 @@ class CalculatedInfusionTest extends TestCase
             'debit_max_limit' => 6,
             'debit_limit_unit' => 'unité'
         ]);
-        $conc = factory(InfusionConcentration::class)->create([
+        $conc = InfusionConcentration::factory()->create([
             'concentration' => 100,
             'concentration_unit' => 'mU'
         ]);
@@ -284,8 +284,8 @@ class CalculatedInfusionTest extends TestCase
     /** @test */
     public function infusion_rate_always_has_2_digit_precision()
     {
-        $drug = factory(InfusionDrug::class)->create();
-        $conc = factory(InfusionConcentration::class)->create();
+        $drug = InfusionDrug::factory()->create();
+        $conc = InfusionConcentration::factory()->create();
         $drug->concentrations()->save($conc);
 
         $weight = 3.75;

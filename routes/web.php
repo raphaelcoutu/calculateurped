@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\BolusController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InfusionController;
+use App\Http\Controllers\PdfController;
+use App\Models\Bolus;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,13 +18,13 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
-Route::post('/', 'HomeController@form');
+Route::get('/', [HomeController::class, 'index']);
+Route::post('/', [HomeController::class, 'form']);
 
 Route::middleware('weight')->group(function () {
-    Route::get('/bolus', 'BolusController');
-    Route::get('/perfusion', 'InfusionController');
-    Route::get('/pdf', 'PdfController');
+    Route::get('/bolus', BolusController::class);
+    Route::get('/perfusion', InfusionController::class);
+    Route::get('/pdf', PdfController::class);
 });
 
-Route::get('/reset', 'HomeController@reset');
+Route::get('/reset', [HomeController::class, 'reset']);

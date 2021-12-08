@@ -3,7 +3,7 @@
     <thead>
     <tr>
         <th width="5">MD</th>
-        <th width="120">Sédation</th>
+        <th width="120">SÉDATION</th>
         <th width="30">Concentration<br>finale</th>
         <th width="30">Volume total</th>
         <th width="90">Dose (min-max)</th>
@@ -16,7 +16,7 @@
         <tr>
             <td class="checkbox" rowspan="2"></td>
             <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
-            <td class="text-right text-bold">{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</td>
+            <td class="text-right"><strong>{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</strong></td>
             <td style="text-align: right">{{$infusion->recipe->total_volume}} mL</td>
             <td class="text-center">{{$infusion->dosageString}}</td>
             <td class="text-center"><strong>{{$infusion->rateString}}</strong></td>
@@ -39,7 +39,7 @@
     <thead>
     <tr>
         <th width="5">MD</th>
-        <th width="100">Cardiovasculaire</th>
+        <th width="100">CARDIOVASCULAIRE</th>
         <th width="30">Concentration<br>finale</th>
         <th width="30">Volume total</th>
         <th width="90">Dose (min-max)</th>
@@ -52,7 +52,7 @@
         <tr>
             <td class="checkbox" rowspan="2"></td>
             <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
-            <td class="text-right text-bold">{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</td>
+            <td class="text-right"><strong>{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</strong></td>
             <td style="text-align: right">{{$infusion->recipe->total_volume}} mL</td>
             <td class="text-center">{{$infusion->dosageString}}</td>
             <td class="text-center"><strong>{{$infusion->rateString}}</strong></td>
@@ -80,7 +80,7 @@
     <thead>
     <tr>
         <th width="5">MD</th>
-        <th width="110">Autres médicaments</th>
+        <th width="110">AUTRES MÉDICAMENTS</th>
         <th width="30">Concentration<br>finale</th>
         <th width="30">Volume total</th>
         <th width="90">Dose (min-max)</th>
@@ -93,7 +93,7 @@
         <tr>
             <td class="checkbox" rowspan="2"></td>
             <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
-            <td class="text-right text-bold">{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</td>
+            <td class="text-right"><strong>{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</strong></td>
             <td style="text-align: right">{{$infusion->recipe->total_volume}} mL</td>
             <td class="text-center">{{$infusion->dosageString}}</td>
             <td class="text-center"><strong>{{$infusion->rateString}}</strong></td>
@@ -109,5 +109,34 @@
             <td colspan="4"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
         </tr>
     @endforeach
+    </tbody>
+</table>
+
+<h2>Défibrillation</h2>
+<table width="540" class="table-striped">
+    <thead>
+    <tr>
+        <th width="5">MD</th>
+        <th width="175">DÉFIBRILLATION</th>
+        <th width="120">Posologie</th>
+        <th width="120" colspan="2">Dose</th>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach($calcBoluses->where('bolus.type', 6) as $calcBolus)
+        <tr>
+            <td class="checkbox"></td>
+            <td>{{$calcBolus->bolus->name}}</td>
+            <td class="text-center"><strong>{{$calcBolus->bolus->dosage}} {{ $calcBolus->bolus->unit }}/kg</strong></td>
+            <td class="text-right">{{$calcBolus->roundedDoseString}}</td>
+            <td>
+                @if($calcBolus->roundedDose === $calcBolus->bolus->maximum_dose)
+                    <small><i>MAX</i></small>
+                @elseif($calcBolus->roundedDose === $calcBolus->bolus->minimum_dose)
+                    <small><i>MIN</i></small>
+                @endif
+            </td>
+        </tr>
+        @endforeach
     </tbody>
 </table>

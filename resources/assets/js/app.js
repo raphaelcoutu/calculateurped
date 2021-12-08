@@ -8,7 +8,7 @@ import 'babel-polyfill'
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+window.Vue = require('vue').default;
 
 /**
  * The following block of code may be used to automatically register your
@@ -30,7 +30,7 @@ window.Vue = require('vue');
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate);
 
-Vue.component('selector', require('./components/Selector').default);
+Vue.component('selector', require('./components/Selector.vue').default);
 
 const app = new Vue({
     el: '#app'

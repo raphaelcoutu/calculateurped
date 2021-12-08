@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\Bolus;
-use App\CalculatedBolus;
+use App\Models\Bolus;
+use App\Models\CalculatedBolus;
 use Tests\TestCase;
 
 class CalculatedBolusTest extends TestCase
@@ -12,9 +12,10 @@ class CalculatedBolusTest extends TestCase
     private $shock;
     private $hypertonicSodium;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
+
         $this->bolus = Bolus::make([
             'name' => 'Amiodarone',
             'brand_name' => 'Cordarone',
@@ -99,7 +100,7 @@ class CalculatedBolusTest extends TestCase
         $calcBolus = new CalculatedBolus($this->bolus, 0.1);
         $this->assertEquals(0.2, $calcBolus->volume);
     }
-    
+
     /** @test */
     public function it_should_not_return_volume_for_shock()
     {
@@ -160,7 +161,7 @@ class CalculatedBolusTest extends TestCase
     /** @test */
     public function volume_should_have_2_digits_precision_below_1_ml()
     {
-        $bolus = factory(Bolus::class)->make(['commercial_concentration' => 33]);
+        $bolus = Bolus::factory()->make(['commercial_concentration' => 33]);
         $calc = new CalculatedBolus($bolus, 5.1);
 
         $this->assertEquals(0.15, $calc->roundedVolume);
@@ -169,7 +170,7 @@ class CalculatedBolusTest extends TestCase
     /** @test */
     public function volume_should_have_2_digits_precision_and_multiple_of_3_between_1_and_3_ml()
     {
-        $bolus = factory(Bolus::class)->make(['commercial_concentration' => 13]);
+        $bolus = Bolus::factory()->make(['commercial_concentration' => 13]);
 
         // 1.161...
         $calc = new CalculatedBolus($bolus, 15.1);

@@ -23,6 +23,7 @@
                 <selector class="weight-selector"></selector>
             </div>
         </div>
+        <blockquote><p>ATTENTION: il est <u><strong>impératif</strong></u> que la concentration commerciale du médicament utilisée soit la même que celle inscrite sur le calculateur de dose pour que la conversion de la dose de <strong>mg</strong> à <strong>mL</strong> soit exacte. Il est possible d’utiliser le calculateur pour prescrire la médication en mg si vous n’utilisez pas la même concentration commerciale pour un médicament donné. Il faudra seulement ajuster le volume du médicament à administrer.</p></blockquote>
         <div class="row">
             <div class="col-12">
                 <div class="alert alert-danger">

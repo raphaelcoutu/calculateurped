@@ -1,5 +1,6 @@
 /database/scripts/*.sql
 /node_modules
+/pgadmin
 /public/mix-manifest.json
 /public/css
 /public/hot
@@ -10,9 +11,11 @@
 /.idea
 /.vscode
 /.vagrant
+docker-compose.override.yml
 Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
 .env
+.env.backup
 .phpunit.result.cache

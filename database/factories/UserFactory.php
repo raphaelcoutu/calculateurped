@@ -1,70 +1,39 @@
 <?php
 
-use Faker\Generator as Faker;
+namespace Database\Factories;
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| This directory should contain each of the model factory definitions for
-| your application. Factories provide a convenient way to generate new
-| model instances for testing / seeding your application's database.
-|
-*/
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
-$factory->define(App\User::class, function (Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm',
-        'remember_token' => str_random(10),
-    ];
-});
+class UserFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+        ];
+    }
 
-$factory->define(App\Bolus::class, function(Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'asterisk' => $faker->boolean,
-        'unit' => 'mg',
-        'commercial_concentration' => 10,
-        'dosage' => 1,
-        'minimum_dose' => 0,
-        'maximum_dose' => 0,
-        'dose_precision' => 1,
-        'volume_precision' => 1,
-        'instructions' => $faker->sentence(),
-        'type' => 1,
-        'min_weight' => 0,
-        'max_weight' => 999
-    ];
-});
-
-$factory->define(App\InfusionDrug::class, function (Faker $faker) {
-   return [
-       'name' => $faker->name,
-       'brand_name' => $faker->name,
-       'concentration' => $faker->numberBetween(0.1, 100) . ' mg/mL',
-       'debit_min' => 1,
-       'debit_max' => 5,
-       'debit_dose_unit' => 'mg',
-       'debit_time_unit' => 'h',
-       'debit_min_limit' => 0,
-       'debit_max_limit' => 0,
-       'debit_limit_unit' => '',
-       'dosage_precision' => 1,
-       'type' => 1
-   ];
-});
-
-$factory->define(App\InfusionConcentration::class, function (Faker $faker) {
-    return [
-        'infusion_drug_id' => 1,
-        'concentration' => 10,
-        'concentration_unit' => 'mg',
-        'instructions' => 'Recette',
-        'total_volume' => 100,
-        'weight_category' => 1
-    ];
-});
+    /**
+     * Indicate that the model's email address should be unverified.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    public function unverified()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'email_verified_at' => null,
+            ];
+        });
+    }
+}

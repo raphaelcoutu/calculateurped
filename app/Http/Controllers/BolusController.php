@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Bolus;
-use App\CalculatedBolus;
+use App\Models\Bolus;
+use App\Models\CalculatedBolus;
 
 class BolusController extends Controller
 {

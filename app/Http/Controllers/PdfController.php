@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Bolus;
-use App\CalculatedBolus;
-use App\CalculatedInfusion;
-use App\InfusionConcentration;
+use App\Models\Bolus;
+use App\Models\CalculatedBolus;
+use App\Models\CalculatedInfusion;
+use App\Models\InfusionConcentration;
 use App\WeightCategory;
+use Dompdf\FontMetrics;
 use Illuminate\Http\Request;
 
 class PdfController extends Controller

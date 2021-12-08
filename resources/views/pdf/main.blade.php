@@ -8,6 +8,8 @@
     <style>
         html {
             margin:20px 20px 20px 50px;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: normal;
         }
 
         .page-break {
@@ -148,9 +150,6 @@
         }
         .text-center {
             text-align:center;
-        }
-        .text-bold {
-            font-weight: bold;
         }
         p {
             margin:0;
