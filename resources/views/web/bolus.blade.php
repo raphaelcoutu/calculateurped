@@ -128,7 +128,7 @@
             </tr>
         @endforeach
         <tr>
-            <td colspan="6" class="alert-dark"><i>Épilepsie</i></td>
+            <td colspan="6" class="alert-dark"><i>Convulsions</i></td>
         </tr>
         <tr></tr>
         @foreach($calculated->where('bolus.type', 4)->sortBy('bolus.name') as $calc)

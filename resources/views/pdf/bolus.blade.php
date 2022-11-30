@@ -138,9 +138,9 @@
         </tr>
     @endforeach
 
-     {{--Épilepsie--}}
+     {{--Convulsions--}}
     <tr class="bg-white border-bottom">
-        <td colspan="8" rowspan="2"><i>ÉPILEPSIE</i></td>
+        <td colspan="8" rowspan="2"><i>CONVULSIONS</i></td>
     </tr>
      <tr class="bg-white"></tr>
     @foreach($calcBoluses->where('bolus.type', 4)->sortBy('bolus.name') as $calcBolus)
