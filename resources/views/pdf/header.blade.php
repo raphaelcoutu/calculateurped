@@ -1,6 +1,6 @@
 <div class="header">
     <div class="floating-left">
-        <img class="logo" src="./img/logo-ciusss-trans.png" alt="Logo CIUSSSE-CHUS">
+        <img class="logo" src="{{public_path('/img/logo-ciusss-trans.png')}}" alt="Logo CIUSSSE-CHUS">
         <h2 class="page-heading">{{ $pageHeading }}</h2>
         <p class="page-subheading"><i>{{ $pageSubheading ?? '' }}</i></p>
     </div>
