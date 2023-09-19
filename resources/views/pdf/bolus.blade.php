@@ -1,4 +1,5 @@
-@include('pdf.header', ['pageHeading' => 'Bolus'])
+@include('pdf.header')
+<h2 class="page-heading">Bolus</h2>
 <table width="540" class="table-striped">
     <thead>
     <tr>

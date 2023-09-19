@@ -1,5 +1,7 @@
-@include('pdf.header', ['pageHeading' => 'Perfusions', 'pageSubheading' => 'Doses de départ'])
-<table width="540" class="table-striped-2">
+@include('pdf.header')
+<h2 class="page-heading">Perfusions</h2>
+<p class="page-subheading"><i>Doses de départ</i></p>
+<table width="540" class="table-striped-2 mt-10">
     <thead>
     <tr>
         <th width="5">MD</th>

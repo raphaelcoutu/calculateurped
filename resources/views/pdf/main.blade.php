@@ -19,7 +19,7 @@
         .floating-left {
             float: left;
             position: relative;
-            width:150px;
+            width:100px;
         }
 
         .logo {
@@ -48,10 +48,9 @@
 
         .floating-center {
             float: left;
-            width: 370px;
-            height: 90px;
+            width: 470px;
+            height: 80px;
             margin: 0 10px;
-            /*border: 3px solid #73AD21;*/
         }
 
         .floating-center h2 {
@@ -64,7 +63,7 @@
         .floating-right {
             float: left;
             width: 90px;
-            height: 90px;
+            height: 80px;
             margin: 0px;
             padding: 0;
             border-left: 1px solid black;
@@ -159,6 +158,9 @@
             font-size: 13px;
             padding-bottom: 5px;
             font-style: italic;
+        }
+        .mt-10 {
+            margin-top: 10px;
         }
         footer { position: fixed; bottom: 0px; left: 0px; right: 0px; background-color: lightblue; height: 50px; }
     </style>
