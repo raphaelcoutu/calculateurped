@@ -12,7 +12,6 @@
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/favicons/calendar.png" sizes="48x48">
 
 
     <!-- Scripts -->
