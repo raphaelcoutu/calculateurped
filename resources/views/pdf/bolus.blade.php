@@ -1,32 +1,32 @@
 @include('pdf.header')
 <h2 class="page-heading">Bolus</h2>
-<table width="540" class="table-striped">
+<table style="width: 725px" class="table">
     <thead>
     <tr>
-        <th width="15">MD</th>
-        <th colspan="2">URGENCE/RÉANIMATION</th>
-        <th width="60">Concentration<br>commerciale</th>
-        <th width="60">Posologie</th>
-        <th width="60">Dose</th>
-        <th width="100" colspan="2">Volume</th>
+        <th style="width: 25px">MD</th>
+        <th style="width: auto" colspan="2">URGENCE/RÉANIMATION</th>
+        <th style="width: 100px">Concentration<br>commerciale</th>
+        <th>Posologie</th>
+        <th>Dose</th>
+        <th style="width: 75px" colspan="2">Volume</th>
     </tr>
     </thead>
     <tbody>
-        <tr class="bg-white border-bottom">
+        <tr class="table-subsection">
             <td colspan="8" class="text-center"><i>IV DIRECT</i></td>
         </tr>
     @foreach($calcBoluses->where('bolus.type', 1)->sortBy('bolus.name') as $calcBolus)
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td class="checkbox"></td>
-            {{-- Si on a pas de nom commercial, on fusionne les colonnes --}}
+            {{--Si on a pas de nom commercial, on fusionne les colonnes--}}
             @if(isset($calcBolus->bolus->brand_name) && !empty($calcBolus->bolus->brand_name))
-                <td width="120">
+                <td>
                     @if($calcBolus->bolus->asterisk)
                         <span>** <sup>voir note</sup></span>
                     @endif
                     {{$calcBolus->bolus->name}}
                 </td>
-                <td class="text-right" width="40"><i>{{$calcBolus->bolus->brand_name}}</i></td>
+                <td class="text-right"><i>{{$calcBolus->bolus->brand_name}}</i></td>
             @else
                 <td colspan="2">
                     @if($calcBolus->bolus->asterisk)
@@ -37,9 +37,9 @@
             @endif
             <td><strong>{{$calcBolus->bolus->commercial_concentration}} {{ $calcBolus->bolus->unit }}/mL</strong></td>
             <td>{{$calcBolus->bolus->dosage}} {{ $calcBolus->bolus->unit }}/kg</td>
-            <td class="text-right text-bold">{{$calcBolus->roundedDoseString}}</td>
-            <td width="30" class="text-right text-bold">{{$calcBolus->roundedVolumeString}}</td>
-            <td width="30">
+            <td class="text-right"><strong>{{$calcBolus->roundedDoseString}}</strong></td>
+            <td class="text-right"><strong>{{$calcBolus->roundedVolumeString}}</strong></td>
+            <td>
                 @if($calcBolus->roundedDose === $calcBolus->bolus->maximum_dose)
                     <small><i>MAX</i></small>
                 @elseif($calcBolus->roundedDose === $calcBolus->bolus->minimum_dose)
@@ -55,30 +55,30 @@
 @else
     <p class="note">** Doit être dilué dans 100 mL et administré sur 15-30 minutes si le patient n'est pas en arrêt cardiorespiratoire.</p>
 @endif
-<table width="540" class="table-striped">
+<table style="width: 725px" class="table">
     <thead>
     <tr>
-        <th width="15">MD</th>
-        <th width="160" colspan="2">INTUBATION SÉQUENCE RAPIDE</th>
-        <th width="60">Concentration<br>commerciale</th>
-        <th width="60">Posologie</th>
-        <th width="60">Dose</th>
-        <th width="100" colspan="2">Volume</th>
+        <th style="width: 25px">MD</th>
+        <th colspan="2">INTUBATION SÉQUENCE RAPIDE</th>
+        <th style="width: 100px">Concentration<br>commerciale</th>
+        <th>Posologie</th>
+        <th>Dose</th>
+        <th style="width: 75px" colspan="2">Volume</th>
     </tr>
     </thead>
     <tbody>
     @foreach($calcBoluses->where('bolus.type', 2)->sortBy('bolus.name') as $calcBolus)
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td class="checkbox"></td>
-            <td width="75">
+            <td>
                 {{$calcBolus->bolus->name}}
             </td>
-            <td class="text-right" width="85"><i>{{$calcBolus->bolus->brand_name}}</i></td>
+            <td class="text-right"><i>{{$calcBolus->bolus->brand_name}}</i></td>
             <td><strong>{{$calcBolus->bolus->commercial_concentration}} {{ $calcBolus->bolus->unit }}/mL</strong></td>
             <td>{{$calcBolus->bolus->dosage}} {{ $calcBolus->bolus->unit }}/kg</td>
             <td class="text-right"><strong>{{$calcBolus->roundedDoseString}}</strong></td>
-            <td width="30" class="text-right"><strong>{{$calcBolus->roundedVolumeString}}</strong></td>
-            <td width="30">
+            <td class="text-right"><strong>{{$calcBolus->roundedVolumeString}}</strong></td>
+            <td>
                 @if($calcBolus->roundedDose === $calcBolus->bolus->maximum_dose)
                     <small><i>MAX</i></small>
                 @elseif($calcBolus->roundedDose === $calcBolus->bolus->minimum_dose)
@@ -90,37 +90,36 @@
     </tbody>
 </table>
 
-<table width="540" class="table-striped-2">
+<table style="width: 725px" class="table mt-10">
     <thead>
     <tr>
-        <th width="15">MD</th>
+        <th style="width: 25px">MD</th>
         <th colspan="2">AUTRES MÉDICAMENTS</th>
-        <th width="60">Concentration<br>commerciale</th>
-        <th width="60">Posologie</th>
-        <th width="60">Dose</th>
-        <th width="60" colspan="2">Volume</th>
+        <th>Concentration<br>commerciale</th>
+        <th>Posologie</th>
+        <th>Dose</th>
+        <th colspan="2">Volume</th>
     </tr>
     </thead>
     <tbody>
-     {{--Hypertension intracranienne--}}
-    <tr class="bg-white border-bottom">
-        <td colspan="8" rowspan="2"><i>HYPERTENSION INTRACRANIENNE</i></td>
+    <tr class="table-subsection">
+        <td colspan="8"><i>HYPERTENSION INTRACRANIENNE</i></td>
     </tr>
-    <tr class="bg-white"></tr>
     @foreach($calcBoluses->where('bolus.type', 3)->sortBy('bolus.name') as $calcBolus)
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td class="checkbox" rowspan="2"></td>
-            <td class="indent" width="120">{{$calcBolus->bolus->name}}</td>
-            <td width="60"></td>
+            <td>{{$calcBolus->bolus->name}}</td>
+            <td></td>
             @if($calcBolus->bolus->commercial_concentration > 0)
-                <td><strong>{{$calcBolus->bolus->commercial_concentration}} {{ $calcBolus->bolus->unit }}/mL</strong></td>
+                <td><strong>{{$calcBolus->bolus->commercial_concentration}} {{ $calcBolus->bolus->unit }}/mL</strong>
+                </td>
             @else
                 <td>-</td>
             @endif
             <td>{{$calcBolus->bolus->dosage}} {{ $calcBolus->bolus->unit }}/kg</td>
             <td class="text-right"><strong>{{$calcBolus->roundedDoseString}}</strong></td>
-            <td width="30" class="text-right"><strong>{{$calcBolus->roundedVolumeString}}</strong></td>
-            <td width="30">
+            <td class="text-right"><strong>{{$calcBolus->roundedVolumeString}}</strong></td>
+            <td>
                 @if($calcBolus->roundedDose === $calcBolus->bolus->maximum_dose)
                     <small><i>MAX</i></small>
                 @elseif($calcBolus->roundedDose === $calcBolus->bolus->minimum_dose)
@@ -128,7 +127,7 @@
                 @endif
             </td>
         </tr>
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td></td>
             @if(!empty($calcBolus->bolus->instructions))
                 <td><u>Instructions:</u></td>
@@ -139,18 +138,17 @@
         </tr>
     @endforeach
 
-     {{--Convulsions--}}
-    <tr class="bg-white border-bottom">
-        <td colspan="8" rowspan="2"><i>CONVULSIONS</i></td>
+    <tr class="table-subsection">
+        <td colspan="8"><i>CONVULSIONS</i></td>
     </tr>
-     <tr class="bg-white"></tr>
     @foreach($calcBoluses->where('bolus.type', 4)->sortBy('bolus.name') as $calcBolus)
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td class="checkbox" rowspan="2"></td>
-            <td class="indent">{{$calcBolus->bolus->name}}</td>
+            <td>{{$calcBolus->bolus->name}}</td>
             <td class="text-right"><i>{{$calcBolus->bolus->brand_name}}</i></td>
             @if($calcBolus->bolus->commercial_concentration > 0)
-                <td><strong>{{$calcBolus->bolus->commercial_concentration}} {{ $calcBolus->bolus->unit }}/mL</strong></td>
+                <td><strong>{{$calcBolus->bolus->commercial_concentration}} {{ $calcBolus->bolus->unit }}/mL</strong>
+                </td>
             @else
                 <td>-</td>
             @endif
@@ -165,7 +163,7 @@
                 @endif
             </td>
         </tr>
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td></td>
             @if(!empty($calcBolus->bolus->instructions))
                 <td><u>Instructions:</u></td>
@@ -176,18 +174,17 @@
         </tr>
     @endforeach
 
-     {{--Anaphylaxie--}}
-    <tr class="bg-white border-bottom">
-        <td colspan="8" rowspan="2"><i>ANAPHYLAXIE</i></td>
+    <tr class="table-subsection">
+        <td colspan="8"><i>ANAPHYLAXIE</i></td>
     </tr>
-    <tr class="bg-white"></tr>
     @foreach($calcBoluses->where('bolus.type', 5)->sortBy('bolus.name') as $calcBolus)
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td class="checkbox" rowspan="2"></td>
-            <td class="indent">{{$calcBolus->bolus->name}}</td>
+            <td>{{$calcBolus->bolus->name}}</td>
             <td class="text-right"><i>{{$calcBolus->bolus->brand_name}}</i></td>
             @if($calcBolus->bolus->commercial_concentration > 0)
-                <td><strong>{{$calcBolus->bolus->commercial_concentration}} {{ $calcBolus->bolus->unit }}/mL</strong></td>
+                <td><strong>{{$calcBolus->bolus->commercial_concentration}} {{ $calcBolus->bolus->unit }}/mL</strong>
+                </td>
             @else
                 <td>-</td>
             @endif
@@ -202,7 +199,7 @@
                 @endif
             </td>
         </tr>
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td></td>
             @if(!empty($calcBolus->bolus->instructions))
                 <td><u>Instructions:</u></td>

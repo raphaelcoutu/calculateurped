@@ -1,21 +1,21 @@
 @include('pdf.header')
 <h2 class="page-heading">Perfusions</h2>
 <p class="page-subheading"><i>Doses de départ</i></p>
-<table width="540" class="table-striped-2 mt-10">
+<table style="width: 725px" class="table mt-10">
     <thead>
     <tr>
-        <th width="5">MD</th>
-        <th width="120">SÉDATION</th>
-        <th width="30">Concentration<br>finale</th>
-        <th width="30">Volume total</th>
-        <th width="90">Dose (min-max)</th>
-        <th width="80">Débit (min-max)</th>
-        <th width="40">Dose réelle</th>
+        <th style="width: 25px">MD</th>
+        <th>SÉDATION</th>
+        <th>Concentration<br>finale</th>
+        <th>Volume total</th>
+        <th>Dose (min-max)</th>
+        <th>Débit (min-max)</th>
+        <th>Dose réelle</th>
     </tr>
     </thead>
     <tbody>
     @foreach($calcInfusions->where('drug.type', 1)->sortBy('drug.order') as $infusion)
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td class="checkbox" rowspan="2"></td>
             <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
             <td class="text-right"><strong>{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</strong></td>
@@ -28,7 +28,7 @@
                 @endif
             </td>
         </tr>
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td><i>{{$infusion->drug->brand_name}}</i></td>
             <td></td>
             <td colspan="4"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
@@ -37,21 +37,21 @@
     </tbody>
 </table>
 
-<table width="540" class="table-striped-2">
+<table style="width: 725px" class="table mt-10">
     <thead>
     <tr>
-        <th width="5">MD</th>
-        <th width="100">CARDIOVASCULAIRE</th>
-        <th width="30">Concentration<br>finale</th>
-        <th width="30">Volume total</th>
-        <th width="90">Dose (min-max)</th>
-        <th width="80">Débit (min-max)</th>
-        <th width="40">Dose réelle</th>
+        <th style="width: 25px">MD</th>
+        <th>CARDIOVASCULAIRE</th>
+        <th>Concentration<br>finale</th>
+        <th>Volume total</th>
+        <th>Dose (min-max)</th>
+        <th>Débit (min-max)</th>
+        <th>Dose réelle</th>
     </tr>
     </thead>
     <tbody>
     @foreach($calcInfusions->where('drug.type', 2)->sortBy('drug.order') as $infusion)
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td class="checkbox" rowspan="2"></td>
             <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
             <td class="text-right"><strong>{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</strong></td>
@@ -64,7 +64,7 @@
                 @endif
             </td>
         </tr>
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td><i>{{$infusion->drug->brand_name}}</i></td>
             @if($infusion->recipe->concentration === 100.00 && $infusion->recipe->concentration_unit === 'mU')
                 <td class="text-right">(0.1 U/mL)</td>
@@ -78,25 +78,25 @@
     </tbody>
 </table>
 
-<table width="540" class="table-striped-2">
+<table style="width: 725px" class="table mt-10">
     <thead>
     <tr>
-        <th width="5">MD</th>
-        <th width="110">AUTRES MÉDICAMENTS</th>
-        <th width="30">Concentration<br>finale</th>
-        <th width="30">Volume total</th>
-        <th width="90">Dose (min-max)</th>
-        <th width="80">Débit (min-max)</th>
-        <th width="40">Dose réelle</th>
+        <th style="width: 25px">MD</th>
+        <th>AUTRES MÉDICAMENTS</th>
+        <th>Concentration<br>finale</th>
+        <th>Volume total</th>
+        <th>Dose (min-max)</th>
+        <th>Débit (min-max)</th>
+        <th>Dose réelle</th>
     </tr>
     </thead>
     <tbody>
     @foreach($calcInfusions->where('drug.type', 3)->sortBy('drug.order') as $infusion)
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td class="checkbox" rowspan="2"></td>
             <td>{{$infusion->drug->name}} [{{$infusion->drug->concentration}}]</td>
             <td class="text-right"><strong>{{$infusion->recipe->concentration}} {{$infusion->recipe->concentration_unit}}/mL</strong></td>
-            <td style="text-align: right">{{$infusion->recipe->total_volume}} mL</td>
+            <td class="text-right">{{$infusion->recipe->total_volume}} mL</td>
             <td class="text-center">{{$infusion->dosageString}}</td>
             <td class="text-center"><strong>{{$infusion->rateString}}</strong></td>
             <td>
@@ -105,7 +105,7 @@
                 @endif
             </td>
         </tr>
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td><i>{{$infusion->drug->brand_name}}</i></td>
             <td></td>
             <td colspan="4"><u>Recette:</u> {{$infusion->recipe->instructions}}</td>
@@ -114,19 +114,18 @@
     </tbody>
 </table>
 
-<h2>Défibrillation</h2>
-<table width="540" class="table-striped">
+<table style="width: 725px" class="table mt-10">
     <thead>
     <tr>
-        <th width="5">MD</th>
-        <th width="175">DÉFIBRILLATION</th>
-        <th width="120">Posologie</th>
-        <th width="120" colspan="2">Dose</th>
+        <th style="width: 25px">MD</th>
+        <th>DÉFIBRILLATION</th>
+        <th>Posologie</th>
+        <th colspan="2">Dose</th>
     </tr>
     </thead>
     <tbody>
         @foreach($calcBoluses->where('bolus.type', 6) as $calcBolus)
-        <tr>
+        <tr @class(['striped' => $loop->index % 2])>
             <td class="checkbox"></td>
             <td>{{$calcBolus->bolus->name}}</td>
             <td class="text-center"><strong>{{$calcBolus->bolus->dosage}} {{ $calcBolus->bolus->unit }}/kg</strong></td>

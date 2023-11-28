@@ -30,7 +30,7 @@
         }
 
         .checkbox {
-            padding: 0px 0px;
+            padding: 0 0;
             border: 1px solid black;
         }
 
@@ -96,9 +96,8 @@
             padding:0;
         }
 
-        table {
+        .table {
             font-size: 13px;
-            border:1px solid black;
             margin:0;
             padding: 0;
             border-collapse: collapse;
@@ -110,7 +109,7 @@
         }
 
         td {
-            padding: 2px 5px 2px 5px;
+            padding: 0 5px 2px 5px;
         }
 
         .table-striped tbody tr:nth-child(2n+1) {
@@ -126,22 +125,17 @@
             border-bottom: 1px solid black;
         }
 
-        .table-striped-2 tbody tr:nth-child(4n+1),
-        .table-striped-2 tbody tr:nth-child(4n+2) {
-            background-color: #d3d3d3;
+        .table {
+            border: 1px solid black;
         }
 
-        .table-striped-2 tr.bg-white {
+        .table-subsection > td {
             background-color: #f9f9f9;
+            border: 1px solid black;
         }
 
-        .table-striped-2 tr.border-bottom > td {
-            border-top: 1px solid black;
-            border-bottom: 1px solid black;
-        }
-
-        td.indent {
-            padding-left:15px;
+        .striped {
+            background-color: #d3d3d3;
         }
 
         .text-right {
