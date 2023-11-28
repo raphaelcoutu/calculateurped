@@ -13,9 +13,9 @@ require('laravel-mix-polyfill');
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
+mix.js('resources/js/app.js', 'public/js')
    .vue()
-   .sass('resources/assets/sass/app.scss', 'public/css')
+   .sass('resources/sass/app.scss', 'public/css')
    .polyfill({
        enable: true,
        useBuiltIns: "usage",

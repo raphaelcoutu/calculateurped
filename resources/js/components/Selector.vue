@@ -17,12 +17,12 @@
 </template>
 
 <script>
-    import Tab from './Tab'
-    import Tabs from './Tabs'
-    import Kilogram from './tabs/Kilogram'
-    import Pound from './tabs/Pound'
-    import AgeSex from './tabs/AgeSex'
-    import Broselow from "./tabs/Broselow";
+    import Tab from './Tab.vue'
+    import Tabs from './Tabs.vue'
+    import Kilogram from './tabs/Kilogram.vue'
+    import Pound from './tabs/Pound.vue'
+    import AgeSex from './tabs/AgeSex.vue'
+    import Broselow from "./tabs/Broselow.vue";
 
     export default {
         components: {
