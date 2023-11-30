@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Arr;
+
 class HomeController extends Controller
 {
     public function index()
@@ -16,7 +18,7 @@ class HomeController extends Controller
         $id = request('id') ?? "______________";
         $weight = request('weight');
         $dosingWeight = request('weight') < 100 ? request('weight') : '100';
-        $isWeightEstimated = request('isWeightEstimated');
+        $isWeightEstimated = request('estimated');
 
         session([
             'form' => [
@@ -24,7 +26,7 @@ class HomeController extends Controller
                 'age' => request('age'),
                 'id' => request('id'),
                 'weight' => request('weight'),
-                'isWeightEstimated' => request('isWeightEstimated'),
+                'isWeightEstimated' => request('estimated')
             ],
             'app' => [
                 'name' => $name,
@@ -36,7 +38,8 @@ class HomeController extends Controller
             ]
         ]);
 
-        return redirect()->to('/pdf');
+        return redirect()
+            ->to('/pdf');
     }
 
     public function reset()

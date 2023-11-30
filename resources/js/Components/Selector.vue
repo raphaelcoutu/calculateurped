@@ -1,35 +1,60 @@
-<template>
-    <Tabs>
-        <Tab name="Kilos" id="kilogram" class="pt-3">
-            <Kilogram></Kilogram>
-        </Tab>
-        <Tab name="Livres" id="pounds" class="pt-3">
-            <Pound></Pound>
-        </Tab>
-        <Tab name="Âge/Sexe" id="agesex" class="pt-3">
-            <AgeSex></AgeSex>
-        </Tab>
-        <Tab name="Broselow" id="broselow" class="pt-3">
-            <Broselow></Broselow>
-        </Tab>
-    </Tabs>
+<script setup>
+import SelectorButton from "./SelectorButton.vue";
+import { ref } from "vue";
+import Kilogram from "./Kilogram.vue";
+import Pound from "./Pound.vue";
+import AgeSex from "./AgeSex.vue";
+import Broselow from "./Broselow.vue";
 
-</template>
+const active = ref('kg');
 
-<script>
-    import Tab from './Tab.vue'
-    import Tabs from './Tabs.vue'
-    import Kilogram from './tabs/Kilogram.vue'
-    import Pound from './tabs/Pound.vue'
-    import AgeSex from './tabs/AgeSex.vue'
-    import Broselow from "./tabs/Broselow.vue";
+const weight = ref({
+    value: 0,
+    estimated: false
+});
 
-    export default {
-        components: {
-            Tabs, Tab,
-            Kilogram, Pound, AgeSex, Broselow
-        }
-    }
+const changeActive = (value) => {
+    // Prevent refresh if already active
+    if(value === active.value) return
 
+    active.value = value;
+    weight.value = 0;
+}
+
+const onChange = (value) => {
+    weight.value = value;
+}
+
+const activeRef = ref()
+
+const reset = () => {
+    activeRef.value.reset();
+}
 
 </script>
+
+<template>
+    <div class="flex justify-around mt-10 mb-4 md:w-3/4 mx-auto text-center items-center text-xl space-x-2">
+        <SelectorButton :class="{'active': active === 'kg'}" @click="changeActive('kg')">Kilogrammes</SelectorButton>
+        <SelectorButton :class="{'active': active === 'pound'}" @click="changeActive('pound')">Livres</SelectorButton>
+        <SelectorButton :class="{'active': active === 'agesex'}" @click="changeActive('agesex')">Âge/Sexe
+        </SelectorButton>
+        <SelectorButton :class="{'active': active === 'broselow'}" @click="changeActive('broselow')">Broselow
+        </SelectorButton>
+    </div>
+
+    <Kilogram v-if="active === 'kg'" ref="activeRef" @change="onChange"/>
+    <Pound v-if="active === 'pound'" ref="activeRef" @change="onChange"/>
+    <AgeSex v-if="active === 'agesex'" ref="activeRef" @change="onChange"/>
+    <Broselow v-if="active === 'broselow'" ref="activeRef" @change="onChange"/>
+
+    <input type="hidden" name="weight" :value="weight.value">
+    <input type="hidden" name="estimated" :value="weight.estimated">
+
+    <div class="mt-5 space-x-2">
+        <button type="submit" class="border rounded py-2 px-3 bg-indigo-500 text-indigo-100 disabled:cursor-not-allowed disabled:bg-indigo-300" :disabled="!weight.value">Calculer</button>
+        <button type="button" @click="reset" class="border border-indigo-500 rounded py-2 px-3 bg-indigo-50 text-indigo-900">Mise à
+            zéro
+        </button>
+    </div>
+</template>
