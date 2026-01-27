@@ -1,10 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-
-    <h1 class="text-center mt-3 text-2xl font-medium">
-        Calculateur de doses pour les urgences et les soins intensifs pédiatriques
-    </h1>
+    <div class="flex justify-between w-full">
+        <h1 class="text-center text-2xl font-medium dark:text-gray-200 flex-grow">
+            Calculateur de doses pour les urgences et les soins intensifs pédiatriques
+        </h1>
+        <dark-mode></dark-mode>
+    </div>
 
     <form action="/" method="post" autocomplete="off">
         @csrf
@@ -23,14 +25,14 @@
         </div>
         <selector></selector>
     </form>
-    <blockquote class="mt-10 mx-auto border-l-8 border-red-500 rounded p-2 bg-red-50 shadow">
+    <blockquote class="mt-10 mx-auto border-l-8 border-red-500 rounded p-2 bg-red-50 shadow dark:bg-red-950 dark:text-red-100">
         ATTENTION: il est <u><strong>impératif</strong></u> que la concentration commerciale du
         médicament utilisée soit la même que celle inscrite sur le calculateur de dose pour que la conversion de
         la dose de <strong>mg</strong> à <strong>mL</strong> soit exacte. Il est possible d’utiliser le
         calculateur pour prescrire la médication en mg si vous n’utilisez pas la même concentration commerciale
         pour un médicament donné. Il faudra seulement ajuster le volume du médicament à administrer.
     </blockquote>
-    <div class="mx-auto mt-2 border-l-8 border-amber-300 bg-white rounded p-2 bg-yellow-50 text-yellow-950 shadow">
+    <div class="mx-auto mt-2 border-l-8 border-amber-300 rounded p-2 bg-yellow-50 text-yellow-950 shadow dark:bg-yellow-900 dark:text-yellow-100">
         <p>Ceci est un outil d'aide à la décision, il ne s'agit pas d'une prescription pharmaceutique. Le
             jugement de l'équipe médicale doit s'appliquer en tout temps. Les doses suggérées ne
             s'appliquent pas à la population néonatale. Les auteurs ne sont pas responsables de l'usage du

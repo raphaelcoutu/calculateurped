@@ -8,11 +8,11 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-50">
+<body class="bg-slate-50 dark:bg-gray-900">
     <div id="app">
         <div class="lg:w-1/2 mx-auto p-1">
             @yield('content')
-            <div class="text-sm mx-auto mt-5 border lg:w-1/3 text-center text-gray-500">
+            <div class="text-sm mx-auto mt-5 border dark:border-gray-700 lg:w-1/3 text-center text-gray-500">
                 Version: {{ config('version') }} | PHP {{ PHP_VERSION }} | Laravel v{{\Illuminate\Foundation\Application::VERSION}}
             </div>
         </div>

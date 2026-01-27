@@ -68,7 +68,7 @@ const error = ref('')
     <div>
         <div class="flex items-center relative">
             <input
-                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-600 rounded-md shadow-sm w-full block"
+                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-600 rounded-md shadow-sm w-full block dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 focus:dark:border-indigo-600 focus:dark:ring-indigo-600 focus:mr-0.5"
                 :class="{'rounded-r-none': $props.suffix}"
                 v-model="inputValue"
                 @input="handleInput"
@@ -79,7 +79,7 @@ const error = ref('')
                 :inputmode="type === 'number' ? 'decimal' : null"
             >
             <p v-if="$props.suffix"
-               class="py-2.5 px-2.5 border border-l-0 rounded rounded-l-none border-gray-300 text-sm font-semibold">{{
+               class="py-2.5 px-2.5 border border-l-0 rounded rounded-l-none border-gray-300 text-sm font-semibold dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">{{
                     $props.suffix
                 }}</p>
         </div>
