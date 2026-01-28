@@ -52,8 +52,8 @@ const reset = () => {
     <input type="hidden" name="estimated" :value="weight.estimated">
 
     <div class="mt-5 space-x-2">
-        <button type="submit" class="border rounded py-2 px-3 bg-indigo-500 text-indigo-100 disabled:cursor-not-allowed disabled:bg-indigo-300" :disabled="!weight.value">Calculer</button>
-        <button type="button" @click="reset" class="border border-indigo-500 rounded py-2 px-3 bg-indigo-50 text-indigo-900">Mise à
+        <button type="submit" class="border rounded py-2 px-3 bg-blue-600 text-white disabled:cursor-not-allowed disabled:bg-blue-300 dark:bg-blue-800 dark:disabled:bg-blue-900" :disabled="!weight.value">Calculer</button>
+        <button type="button" @click="reset" class="border border-blue-500 rounded py-2 px-3 bg-blue-50 text-blue-900 dark:bg-gray-700 dark:text-white dark:border-gray-600">Mise à
             zéro
         </button>
     </div>

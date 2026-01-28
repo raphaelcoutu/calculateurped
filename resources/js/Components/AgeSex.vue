@@ -28,7 +28,7 @@ defineExpose({
         <div>
             <InputLabel>Sexe</InputLabel>
             <SelectInput
-                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-600 rounded-md shadow-sm w-full block"
+                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-600 rounded-md shadow-sm w-full block dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 v-model="sex" @update:modelValue="emitChange">
                 <option selected disabled value="null">Sélectionnez...</option>
                 <option value="male">Masculin</option>
@@ -38,7 +38,7 @@ defineExpose({
         <div class="mt-4">
             <InputLabel>Âge</InputLabel>
             <SelectInput
-                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-600 rounded-md shadow-sm w-full block"
+                class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-600 rounded-md shadow-sm w-full block dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 v-model="age" @update:modelValue="emitChange">
                 <option selected disabled value="null">Sélectionnez...</option>
                 <option value="month_1">1 mois</option>
