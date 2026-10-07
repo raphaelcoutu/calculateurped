@@ -4,7 +4,9 @@ services:
         ports:
             - '5432:5432'
         environment:
-            POSTGRES_PASSWORD: admin
+            POSTGRES_DB: calculateurped
+            POSTGRES_USER: calculateurped
+            POSTGRES_PASSWORD: secret
         volumes:
             - pgdata:/var/lib/postgresql/data
 volumes:
