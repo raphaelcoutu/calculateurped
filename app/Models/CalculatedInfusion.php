@@ -101,8 +101,11 @@ class CalculatedInfusion
         // Éviter une valeur négative (ex: maxRate = 0)
         if ($val == 0) return 0;
 
-        $half = 0.5 / pow(10, $precision);
-        return round($val - $half, $precision);
+        $factor = pow(10, $precision);
+        $scaledValue = $val * $factor;
+        $floatingPointTolerance = PHP_FLOAT_EPSILON * max(1, abs($scaledValue)) * 4;
+
+        return floor($scaledValue + $floatingPointTolerance) / $factor;
     }
 
     /**
