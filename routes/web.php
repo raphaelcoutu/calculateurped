@@ -27,23 +27,23 @@ Route::post('/', [HomeController::class, 'form']);
 
 Route::middleware('weight')->group(function () {
     Route::get('/bolus', BolusController::class);
-    Route::get('/perfusion', InfusionController::class);
+    Route::get('/infusion', InfusionController::class);
     Route::get('/pdf', PdfController::class);
 });
 
 Route::get('/reset', [HomeController::class, 'reset']);
 
 Route::middleware('guest')->group(function () {
-    Route::get('/connexion', [LoginController::class, 'create'])->name('login');
-    Route::post('/connexion', [LoginController::class, 'store'])->middleware('throttle:login')->name('login.store');
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'store'])->middleware('throttle:login')->name('login.store');
 
-    Route::get('/mot-de-passe/oublie', [PasswordResetController::class, 'requestForm'])->name('password.request');
-    Route::post('/mot-de-passe/courriel', [PasswordResetController::class, 'sendLink'])->middleware('throttle:5,1')->name('password.email');
-    Route::get('/mot-de-passe/reinitialiser/{token}', [PasswordResetController::class, 'resetForm'])->name('password.reset');
-    Route::post('/mot-de-passe/reinitialiser', [PasswordResetController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
+    Route::get('/forgot-password', [PasswordResetController::class, 'requestForm'])->name('password.request');
+    Route::post('/password/email', [PasswordResetController::class, 'sendLink'])->middleware('throttle:5,1')->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetForm'])->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
 });
 
-Route::post('/deconnexion', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
+Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('organizations', OrganizationController::class)->only(['index', 'create', 'store', 'show', 'edit']);
@@ -54,6 +54,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/centre', [OrganizationProfileController::class, 'edit'])->name('organization.profile.edit');
-    Route::put('/centre', [OrganizationProfileController::class, 'update'])->name('organization.profile.update');
+    Route::get('/organization/profile', [OrganizationProfileController::class, 'edit'])->name('organization.profile.edit');
+    Route::put('/organization/profile', [OrganizationProfileController::class, 'update'])->name('organization.profile.update');
 });
