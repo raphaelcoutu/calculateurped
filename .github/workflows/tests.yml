@@ -12,20 +12,6 @@ permissions:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_DB: laravel
-          POSTGRES_USER: laravel
-          POSTGRES_PASSWORD: secret
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U laravel -d laravel"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -47,13 +33,6 @@ jobs:
 
       - name: Setup Application
         run: composer setup
-        env:
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: laravel
-          DB_USERNAME: laravel
-          DB_PASSWORD: secret
 
       - name: Run CI Checks
         run: composer ci:check
