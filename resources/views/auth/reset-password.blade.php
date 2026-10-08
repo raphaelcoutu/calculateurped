@@ -12,7 +12,7 @@
                 @error('email') <p class="mt-1 text-sm text-red-700">{{ $message }}</p> @enderror
             </div>
             <div>
-                <label for="password" class="mb-1 block">Mot de passe (12 caractères minimum)</label>
+                <label for="password" class="mb-1 block">Mot de passe (8 caractères minimum)</label>
                 <input id="password" name="password" type="password" required autocomplete="new-password" class="w-full rounded border p-2">
                 @error('password') <p class="mt-1 text-sm text-red-700">{{ $message }}</p> @enderror
             </div>
