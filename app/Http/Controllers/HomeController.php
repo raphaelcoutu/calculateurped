@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Arr;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
-        return view('web.index');
+        return Inertia::render('home/index', [
+            'form' => [
+                'name' => session('form.name', ''),
+                'id' => session('form.id', ''),
+            ],
+        ]);
     }
 
     public function form()
     {
-        $name = request('name') ?? "___________________________";
-        $age = request('age') ?? "____________________";
-        $id = request('id') ?? "______________";
+        $name = request('name') ?? '___________________________';
+        $age = request('age') ?? '____________________';
+        $id = request('id') ?? '______________';
         $weight = request('weight');
         $dosingWeight = request('weight') < 100 ? request('weight') : '100';
         $isWeightEstimated = request('estimated');
@@ -26,7 +32,7 @@ class HomeController extends Controller
                 'age' => request('age'),
                 'id' => request('id'),
                 'weight' => request('weight'),
-                'isWeightEstimated' => request('estimated')
+                'isWeightEstimated' => request('estimated'),
             ],
             'app' => [
                 'name' => $name,
@@ -34,8 +40,8 @@ class HomeController extends Controller
                 'id' => $id,
                 'weight' => $weight,
                 'dosingWeight' => $dosingWeight,
-                'isWeightEstimated' => $isWeightEstimated
-            ]
+                'isWeightEstimated' => $isWeightEstimated,
+            ],
         ]);
 
         return redirect()
