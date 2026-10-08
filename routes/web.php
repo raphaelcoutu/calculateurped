@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\OrganizationAdministratorController;
+use App\Http\Controllers\Admin\OrganizationController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\BolusController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfusionController;
+use App\Http\Controllers\OrganizationProfileController;
 use App\Http\Controllers\PdfController;
-use App\Models\Bolus;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,3 +32,28 @@ Route::middleware('weight')->group(function () {
 });
 
 Route::get('/reset', [HomeController::class, 'reset']);
+
+Route::middleware('guest')->group(function () {
+    Route::get('/connexion', [LoginController::class, 'create'])->name('login');
+    Route::post('/connexion', [LoginController::class, 'store'])->middleware('throttle:login')->name('login.store');
+
+    Route::get('/mot-de-passe/oublie', [PasswordResetController::class, 'requestForm'])->name('password.request');
+    Route::post('/mot-de-passe/courriel', [PasswordResetController::class, 'sendLink'])->middleware('throttle:5,1')->name('password.email');
+    Route::get('/mot-de-passe/reinitialiser/{token}', [PasswordResetController::class, 'resetForm'])->name('password.reset');
+    Route::post('/mot-de-passe/reinitialiser', [PasswordResetController::class, 'reset'])->middleware('throttle:5,1')->name('password.update');
+});
+
+Route::post('/deconnexion', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
+
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('organizations', OrganizationController::class)->only(['index', 'create', 'store', 'show', 'edit']);
+    Route::put('organizations/{organization}', [OrganizationProfileController::class, 'update'])
+        ->name('organizations.update');
+    Route::post('organizations/{organization}/administrators', [OrganizationAdministratorController::class, 'store'])
+        ->name('organizations.administrators.store');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/centre', [OrganizationProfileController::class, 'edit'])->name('organization.profile.edit');
+    Route::put('/centre', [OrganizationProfileController::class, 'update'])->name('organization.profile.update');
+});
