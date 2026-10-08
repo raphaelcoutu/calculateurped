@@ -2,19 +2,28 @@
 
 namespace Database\Factories;
 
+use App\Models\Bolus;
+use App\Models\Organization;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
+/** @extends Factory<Bolus> */
 class BolusFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
             'name' => $this->faker->name,
+            'organization_id' => Organization::factory(),
+            'recipe_id' => (string) Str::uuid(),
+            'version' => 1,
+            'status' => 'published',
+            'published_at' => now(),
             'asterisk' => $this->faker->boolean,
             'unit' => 'mg',
             'commercial_concentration' => 10,

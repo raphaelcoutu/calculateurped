@@ -33,6 +33,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     <nav className="flex items-center gap-2 text-sm">
                         {auth.user ? (
                             <>
+                                <Link href="/admin/boluses/catalog" className="rounded-lg px-3 py-2 font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Catalogue des bolus</Link>
+                                {!auth.user.is_superuser && <Link href="/admin/boluses" className="rounded-lg px-3 py-2 font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Mes bolus</Link>}
                                 {auth.user.is_superuser ? (
                                     <Link href="/admin/organizations" className="rounded-lg px-3 py-2 font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">Organisations</Link>
                                 ) : (

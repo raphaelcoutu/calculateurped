@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\BolusController as AdminBolusController;
 use App\Http\Controllers\Admin\OrganizationAdministratorController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Auth\LoginController;
@@ -46,6 +47,19 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('boluses/catalog', [AdminBolusController::class, 'catalog'])->name('boluses.catalog');
+    Route::get('boluses', [AdminBolusController::class, 'index'])->name('boluses.index');
+    Route::get('boluses/create', [AdminBolusController::class, 'create'])->name('boluses.create');
+    Route::post('boluses', [AdminBolusController::class, 'store'])->name('boluses.store');
+    Route::get('boluses/{bolus}/edit', [AdminBolusController::class, 'edit'])->name('boluses.edit');
+    Route::put('boluses/{bolus}', [AdminBolusController::class, 'update'])->name('boluses.update');
+    Route::post('boluses/{bolus}/revise', [AdminBolusController::class, 'revise'])->name('boluses.revise');
+    Route::post('boluses/{bolus}/publish', [AdminBolusController::class, 'publish'])->name('boluses.publish');
+    Route::post('boluses/{bolus}/copy', [AdminBolusController::class, 'copy'])->name('boluses.copy');
+    Route::delete('boluses/{bolus}', [AdminBolusController::class, 'destroy'])->name('boluses.destroy');
+    Route::post('boluses/{bolus}/restore', [AdminBolusController::class, 'restore'])->name('boluses.restore');
+    Route::get('boluses/{bolus}', [AdminBolusController::class, 'show'])->name('boluses.show');
+
     Route::resource('organizations', OrganizationController::class)->only(['index', 'create', 'store', 'show', 'edit']);
     Route::put('organizations/{organization}', [OrganizationProfileController::class, 'update'])
         ->name('organizations.update');

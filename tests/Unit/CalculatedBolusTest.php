@@ -138,7 +138,10 @@ it('should return a rounded dose', function (): void {
 });
 
 it('volume should have 2 digits precision below 1 ml', function (): void {
-    $bolus = Bolus::factory()->make(['commercial_concentration' => 33]);
+    $bolus = $this->bolus->replicate();
+    $bolus->commercial_concentration = 33;
+    $bolus->dosage = 1;
+    $bolus->minimum_dose = 0;
     $calc = new CalculatedBolus($bolus, 5.1);
 
     $this->assertEquals(0.15, $calc->roundedVolume);
@@ -146,7 +149,10 @@ it('volume should have 2 digits precision below 1 ml', function (): void {
 });
 
 it('volume should have 2 digits precision and multiple of 3 between 1 and 3 ml', function (): void {
-    $bolus = Bolus::factory()->make(['commercial_concentration' => 13]);
+    $bolus = $this->bolus->replicate();
+    $bolus->commercial_concentration = 13;
+    $bolus->dosage = 1;
+    $bolus->minimum_dose = 0;
 
     // 1.161...
     $calc = new CalculatedBolus($bolus, 15.1);
