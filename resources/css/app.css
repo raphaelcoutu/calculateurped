@@ -1,3 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --color-brand-50: #eefbf8;
+    --color-brand-100: #d5f4ed;
+    --color-brand-500: #168a78;
+    --color-brand-600: #117463;
+    --color-brand-700: #105d51;
+    --color-brand-900: #123d38;
+}
+
+html {
+    min-height: 100%;
+    background: #f7faf9;
+}
+
+html.dark {
+    background: #101a1a;
+}
+
+body {
+    min-height: 100vh;
+}

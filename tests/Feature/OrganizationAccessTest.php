@@ -30,11 +30,11 @@ it('lets a superuser create an organization, invite an administrator, and accept
     $superuser = User::factory()->create(['is_superuser' => true]);
 
     $this->actingAs($superuser)->post(route('admin.organizations.store'), [
-        'name' => 'Centre hospitalier du Nord',
+        'name' => 'Organisation hospitalière du Nord',
         'logo' => UploadedFile::fake()->image('logo.png'),
     ])->assertRedirect();
 
-    $organization = Organization::query()->where('name', 'Centre hospitalier du Nord')->firstOrFail();
+    $organization = Organization::query()->where('name', 'Organisation hospitalière du Nord')->firstOrFail();
     expect($organization->logo_path)->not->toBeNull();
     Storage::disk('public')->assertExists($organization->logo_path);
 
@@ -71,26 +71,26 @@ it('lets a superuser create an organization, invite an administrator, and accept
     ])->assertRedirect(route('organization.profile.edit'));
 });
 
-it('lets an administrator update their own center but hides other centers', function (): void {
+it('lets an administrator update their own organization but hides other organizations', function (): void {
     Storage::fake('public');
-    $ownOrganization = Organization::factory()->create(['name' => 'Centre initial']);
-    $otherOrganization = Organization::factory()->create(['name' => 'Autre centre']);
+    $ownOrganization = Organization::factory()->create(['name' => 'Organisation initiale']);
+    $otherOrganization = Organization::factory()->create(['name' => 'Autre organisation']);
     $administrator = User::factory()->for($ownOrganization)->create();
 
     $this->actingAs($administrator)->put(route('organization.profile.update'), [
-        'name' => 'Centre mis à jour',
+        'name' => 'Organisation mise à jour',
         'logo' => UploadedFile::fake()->image('nouveau-logo.png'),
     ])->assertRedirect();
 
     $ownOrganization->refresh();
-    expect($ownOrganization->name)->toBe('Centre mis à jour');
+    expect($ownOrganization->name)->toBe('Organisation mise à jour');
     Storage::disk('public')->assertExists($ownOrganization->logo_path);
 
     $this->put(route('admin.organizations.update', $otherOrganization), [
         'name' => 'Nom interdit',
     ])->assertNotFound();
 
-    expect($otherOrganization->fresh()->name)->toBe('Autre centre');
+    expect($otherOrganization->fresh()->name)->toBe('Autre organisation');
 });
 
 it('rejects administrator access to superuser organization creation', function (): void {
@@ -98,10 +98,10 @@ it('rejects administrator access to superuser organization creation', function (
     $administrator = User::factory()->for($organization)->create();
 
     $this->actingAs($administrator)
-        ->post(route('admin.organizations.store'), ['name' => 'Centre interdit'])
+        ->post(route('admin.organizations.store'), ['name' => 'Organisation interdite'])
         ->assertForbidden();
 
-    $this->assertDatabaseMissing('organizations', ['name' => 'Centre interdit']);
+    $this->assertDatabaseMissing('organizations', ['name' => 'Organisation interdite']);
 });
 
 it('requires a logo when a superuser creates an organization', function (): void {
@@ -109,29 +109,29 @@ it('requires a logo when a superuser creates an organization', function (): void
 
     $this->actingAs($superuser)
         ->from(route('admin.organizations.create'))
-        ->post(route('admin.organizations.store'), ['name' => 'Centre sans logo'])
+        ->post(route('admin.organizations.store'), ['name' => 'Organisation sans logo'])
         ->assertRedirect(route('admin.organizations.create'))
-        ->assertInvalid(['logo' => 'Le logo du centre est obligatoire.']);
+        ->assertInvalid(['logo' => 'Le logo de l’organisation est obligatoire.']);
 
-    $this->assertDatabaseMissing('organizations', ['name' => 'Centre sans logo']);
+    $this->assertDatabaseMissing('organizations', ['name' => 'Organisation sans logo']);
 });
 
 dataset('invalid organization input', [
-    'name is required' => [[], 'name', 'Le nom du centre est obligatoire.'],
+    'name is required' => [[], 'name', 'Le nom de l’organisation est obligatoire.'],
     'name is too long' => [[
         'name' => str_repeat('a', 256),
         'logo' => fn () => UploadedFile::fake()->image('logo.png'),
-    ], 'name', 'Le nom du centre ne peut pas dépasser 255 caractères.'],
+    ], 'name', 'Le nom de l’organisation ne peut pas dépasser 255 caractères.'],
     'logo is not an image' => [[
-        'name' => 'Centre valide',
+        'name' => 'Organisation valide',
         'logo' => fn () => UploadedFile::fake()->create('logo.txt', 1, 'text/plain'),
     ], 'logo', 'Le logo doit être une image.'],
     'logo has an unsupported format' => [[
-        'name' => 'Centre valide',
+        'name' => 'Organisation valide',
         'logo' => fn () => UploadedFile::fake()->image('logo.gif'),
     ], 'logo', 'Le logo doit être au format JPG, PNG ou WebP.'],
     'logo is too large' => [[
-        'name' => 'Centre valide',
+        'name' => 'Organisation valide',
         'logo' => fn () => UploadedFile::fake()->image('logo.png')->size(2049),
     ], 'logo', 'Le logo ne peut pas dépasser 2 Mo.'],
 ]);

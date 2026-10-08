@@ -6,24 +6,30 @@ use App\Http\Controllers\Controller;
 use App\Models\Organization;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class OrganizationController extends Controller
 {
-    public function index(): View
+    public function index(): Response
     {
         $this->authorize('viewAny', Organization::class);
 
-        return view('admin.organizations.index', [
+        return Inertia::render('admin/organizations/index', [
             'organizations' => Organization::query()->withCount('users')->orderBy('name')->paginate(20),
         ]);
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $this->authorize('create', Organization::class);
 
-        return view('admin.organizations.create');
+        return Inertia::render('admin/organizations/form', [
+            'organization' => null,
+            'action' => route('admin.organizations.store'),
+            'method' => 'post',
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -34,9 +40,9 @@ class OrganizationController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'logo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ], [
-            'name.required' => 'Le nom du centre est obligatoire.',
-            'name.max' => 'Le nom du centre ne peut pas dépasser 255 caractères.',
-            'logo.required' => 'Le logo du centre est obligatoire.',
+            'name.required' => 'Le nom de l’organisation est obligatoire.',
+            'name.max' => 'Le nom de l’organisation ne peut pas dépasser 255 caractères.',
+            'logo.required' => 'Le logo de l’organisation est obligatoire.',
             'logo.image' => 'Le logo doit être une image.',
             'logo.mimes' => 'Le logo doit être au format JPG, PNG ou WebP.',
             'logo.max' => 'Le logo ne peut pas dépasser 2 Mo.',
@@ -48,22 +54,40 @@ class OrganizationController extends Controller
         ]);
 
         return redirect()->route('admin.organizations.show', $organization)
-            ->with('status', 'Le centre a été créé. Vous pouvez maintenant inviter ses administrateurs.');
+            ->with('status', 'L’organisation a été créée. Vous pouvez maintenant inviter ses administrateurs.');
     }
 
-    public function show(Organization $organization): View
+    public function show(Organization $organization): Response
     {
         $this->authorize('view', $organization);
 
-        return view('admin.organizations.show', [
-            'organization' => $organization->load(['users' => fn ($query) => $query->orderBy('email')]),
+        $organization->load(['users' => fn ($query) => $query->orderBy('email')]);
+
+        return Inertia::render('admin/organizations/show', [
+            'organization' => [
+                'id' => $organization->id,
+                'name' => $organization->name,
+                'logoUrl' => $organization->logo_path === null ? null : Storage::disk('public')->url($organization->logo_path),
+                'users' => $organization->users
+                    ->reject(fn ($user): bool => $user->isSuperuser())
+                    ->map(fn ($user): array => $user->only(['id', 'name', 'email']))
+                    ->values(),
+            ],
         ]);
     }
 
-    public function edit(Organization $organization): View
+    public function edit(Organization $organization): Response
     {
         $this->authorize('update', $organization);
 
-        return view('admin.organizations.edit', compact('organization'));
+        return Inertia::render('admin/organizations/form', [
+            'organization' => [
+                'id' => $organization->id,
+                'name' => $organization->name,
+                'logoUrl' => $organization->logo_path === null ? null : Storage::disk('public')->url($organization->logo_path),
+            ],
+            'action' => route('admin.organizations.update', $organization),
+            'method' => 'put',
+        ]);
     }
 }

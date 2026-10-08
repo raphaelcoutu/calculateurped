@@ -1,26 +1,22 @@
 import { defineConfig } from 'vite';
+import inertia from '@inertiajs/vite';
+import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
-import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: ['resources/css/app.css', 'resources/js/app.tsx'],
             refresh: true,
         }),
-        vue({
-            template: {
-                transformAssetUrls: {
-                    base: null,
-                    includeAbsolute: false,
-                },
-            },
-        })
+        inertia(),
+        react(),
+        tailwindcss(),
     ],
     resolve: {
         alias: {
-            '@': '/resources/js',
-            vue: 'vue/dist/vue.esm-bundler.js',
+            '@': new URL('./resources/js', import.meta.url).pathname,
         }
     }
 });

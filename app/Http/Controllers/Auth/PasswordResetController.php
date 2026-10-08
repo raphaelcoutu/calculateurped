@@ -10,13 +10,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PasswordResetController extends Controller
 {
-    public function requestForm(): View
+    public function requestForm(): Response
     {
-        return view('auth.forgot-password');
+        return Inertia::render('auth/forgot-password');
     }
 
     public function sendLink(Request $request): RedirectResponse
@@ -31,9 +32,9 @@ class PasswordResetController extends Controller
         return back()->with('status', 'Si un compte correspond à cette adresse, un lien de définition du mot de passe a été envoyé.');
     }
 
-    public function resetForm(Request $request, string $token): View
+    public function resetForm(Request $request, string $token): Response
     {
-        return view('auth.reset-password', [
+        return Inertia::render('auth/reset-password', [
             'token' => $token,
             'email' => $request->string('email')->toString(),
         ]);
