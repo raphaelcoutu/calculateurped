@@ -13,7 +13,14 @@ describe('organization drafts', function (): void {
     it('shows a pending revision draft next to its published bolus', function (): void {
         $organization = Organization::factory()->create();
         $administrator = User::factory()->for($organization)->create();
-        $published = Bolus::factory()->for($organization)->create(['name' => 'Recette publiée']);
+        $published = Bolus::factory()->for($organization)->create([
+            'name' => 'Recette publiée',
+            'updated_at' => now()->subMinutes(2),
+        ]);
+        $unrelatedPublished = Bolus::factory()->for($organization)->create([
+            'name' => 'Autre recette publiée',
+            'updated_at' => now()->subMinute(),
+        ]);
         $draft = Bolus::factory()->for($organization)->create([
             'name' => 'Recette publiée',
             'recipe_id' => $published->recipe_id,
@@ -21,15 +28,19 @@ describe('organization drafts', function (): void {
             'status' => 'draft',
             'published_at' => null,
             'supersedes_id' => $published->id,
+            'updated_at' => now(),
         ]);
 
         $this->actingAs($administrator)->get(route('admin.boluses.index'))
             ->assertInertia(fn ($page) => $page
                 ->component('admin/boluses/index')
+                ->has('boluses.data', 3)
                 ->where('boluses.data.0.id', $draft->id)
                 ->where('boluses.data.0.pendingDraftId', null)
-                ->where('boluses.data.1.id', $published->id)
-                ->where('boluses.data.1.pendingDraftId', $draft->id));
+                ->where('boluses.data.1.id', $unrelatedPublished->id)
+                ->where('boluses.data.1.pendingDraftId', null)
+                ->where('boluses.data.2.id', $published->id)
+                ->where('boluses.data.2.pendingDraftId', $draft->id));
     });
 
     it('saves an empty instructions field as an empty string', function (): void {
