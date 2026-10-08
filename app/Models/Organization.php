@@ -14,6 +14,9 @@ class Organization extends Model
 
     protected $fillable = ['name', 'logo_path'];
 
+    /**
+     * @return HasMany<User, $this>
+     */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

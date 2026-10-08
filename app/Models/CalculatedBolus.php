@@ -5,6 +5,15 @@ namespace App\Models;
 use App\Concerns\HasAttributes;
 use ArrayAccess;
 
+/**
+ * @property Bolus $bolus
+ * @property float|int $dose
+ * @property float|int $volume
+ * @property float $roundedVolume
+ * @property float $roundedDose
+ * @property string $roundedVolumeString
+ * @property string $roundedDoseString
+ */
 class CalculatedBolus implements ArrayAccess
 {
     use HasAttributes;
@@ -34,7 +43,7 @@ class CalculatedBolus implements ArrayAccess
 
         if ($this->bolus->maximum_dose > 0 && $dose > $this->bolus->maximum_dose) {
             $result = $this->bolus->maximum_dose;
-        } else if ($this->bolus->minimum_dose > 0 && $dose < $this->bolus->minimum_dose) {
+        } elseif ($this->bolus->minimum_dose > 0 && $dose < $this->bolus->minimum_dose) {
             $result = $this->bolus->minimum_dose;
         } else {
             $result = $dose;
@@ -53,12 +62,11 @@ class CalculatedBolus implements ArrayAccess
         }
 
         // Exception pour les joules
-        else if ($this->bolus->commercial_concentration == 0.0) {
+        elseif ($this->bolus->commercial_concentration == 0.0) {
             return $this->volume = -1;
-        }
-
-        else {
+        } else {
             $volume = $dose / $this->bolus->commercial_concentration;
+
             return $this->volume = $volume;
         }
     }
@@ -68,14 +76,14 @@ class CalculatedBolus implements ArrayAccess
         $volume = $this->setVolume();
         $rounded = 0;
 
-        if($this->bolus->unit === "g") {
+        if ($this->bolus->unit === 'g') {
             $dose = $this->setRoundedDose();
             $rounded = round($dose / $this->bolus->commercial_concentration, $this->bolus->volume_precision);
         } else {
             if ($volume < 1) {
                 // 2 chiffres de précision
                 $rounded = round($volume, 2);
-            } else if ($volume >= 1 && $volume < 3) {
+            } elseif ($volume >= 1 && $volume < 3) {
                 // 2 chiffres de précision mais en multiple de 0.05
                 $rounded = round($volume * 2, 1) / 2;
             } else {
@@ -92,35 +100,35 @@ class CalculatedBolus implements ArrayAccess
         $dose = $this->setDose();
 
         // Si c'est les joules ou le NaCl 3%
-        if($this->bolus->commercial_concentration == 0.0) {
+        if ($this->bolus->commercial_concentration == 0.0) {
             return $this->roundedDose = round($this->dose, $this->bolus->dose_precision);
         }
 
         // Arrondissement pour mannitol et dextrose
-        else if($this->bolus->unit === "g") {
-            if($dose < 10) {
+        elseif ($this->bolus->unit === 'g') {
+            if ($dose < 10) {
                 $rounded = round($dose, 1);
             } else {
                 $rounded = round($dose, $this->bolus->dose_precision);
             }
+
             return $this->roundedDose = $rounded;
-        }
+        } else {
 
-        else {
-
-            if($dose < 0.1) {
+            if ($dose < 0.1) {
                 // 3 chiffres de précision
                 $rounded = round($dose, 3);
-            } else if($dose < 2) {
+            } elseif ($dose < 2) {
                 // 2 chiffres de précision
                 $rounded = round($dose, 2);
-            } else if($dose >= 2 && $dose < 5) {
+            } elseif ($dose >= 2 && $dose < 5) {
                 // 2 chiffres de précision mais en multiple de 0.05
                 $rounded = round($dose * 2, 1) / 2;
             } else {
                 // précision selon la base de données
                 $rounded = round($dose, $this->bolus->dose_precision);
             }
+
             return $this->roundedDose = $rounded;
         }
     }
@@ -132,7 +140,7 @@ class CalculatedBolus implements ArrayAccess
 
     public function setRoundedVolumeString()
     {
-        if($this->roundedVolume === -1) {
+        if ($this->roundedVolume === -1.0) {
             return $this->roundedVolumeString = '-';
         } else {
             return $this->roundedVolumeString = "{$this->roundedVolume} mL";

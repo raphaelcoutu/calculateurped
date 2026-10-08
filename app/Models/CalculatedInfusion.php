@@ -3,7 +3,20 @@
 namespace App\Models;
 
 use App\Concerns\HasAttributes;
+use LogicException;
 
+/**
+ * @property InfusionConcentration $recipe
+ * @property InfusionDrug $drug
+ * @property float $minimalRate
+ * @property float $maximalRate
+ * @property bool|null $isRateMinLimited
+ * @property bool|null $isRateMaxLimited
+ * @property float $minimalDosage
+ * @property float $maximalDosage
+ * @property string $dosageString
+ * @property string $rateString
+ */
 class CalculatedInfusion
 {
     use HasAttributes;
@@ -12,8 +25,14 @@ class CalculatedInfusion
 
     public function __construct(InfusionConcentration $recipe, $weight)
     {
+        $drug = $recipe->drug;
+
+        if ($drug === null) {
+            throw new LogicException('An infusion concentration must reference an existing drug.');
+        }
+
         $this->recipe = $recipe;
-        $this->drug = $recipe->drug;
+        $this->drug = $drug;
         $this->weight = $weight;
 
         $this->setValues();
@@ -96,10 +115,12 @@ class CalculatedInfusion
     /**
      * Fonction pour arrondir à l'inférieur (bug math avec PHP Floor)
      */
-    function floorp($val, $precision)
+    public function floorp($val, $precision)
     {
         // Éviter une valeur négative (ex: maxRate = 0)
-        if ($val == 0) return 0;
+        if ($val == 0) {
+            return 0;
+        }
 
         $factor = pow(10, $precision);
         $scaledValue = $val * $factor;
@@ -111,8 +132,6 @@ class CalculatedInfusion
     /**
      * Retourne la dose en unités standardisées (mg, unité) pour faciliter le calcul
      *
-     * @param $dose
-     * @param $unit
      * @return float
      */
     private function convertDoseToBaseUnit($dose, $unit)
@@ -169,7 +188,7 @@ class CalculatedInfusion
             $rate .= " - {$this->maximalRate}";
         }
 
-        $rate .= " mL/h";
+        $rate .= ' mL/h';
 
         $this->rateString = $rate;
     }
@@ -181,7 +200,7 @@ class CalculatedInfusion
             'mg' => 1,
             'unité' => 1,
             'mcg' => 1000,
-            'mU' => 1000
+            'mU' => 1000,
         ];
 
         return $units[$toUnit] / $units[$fromUnit];

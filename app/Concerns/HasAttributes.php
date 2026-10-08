@@ -11,16 +11,14 @@ trait HasAttributes
         return $this->getAttribute($key);
     }
 
-    public function __set($key, $value)
+    public function __set($key, $value): void
     {
         $this->attributes[$key] = $value;
-
-        return $this;
     }
 
     public function getAttribute($key)
     {
-        if(array_key_exists($key, $this->attributes)) {
+        if (array_key_exists($key, $this->attributes)) {
             return $this->getAttributeFromArray($key);
         }
 
@@ -29,7 +27,7 @@ trait HasAttributes
 
     public function getAttributeFromArray($key)
     {
-        if(isset($this->attributes[$key])) {
+        if (isset($this->attributes[$key])) {
             return $this->attributes[$key];
         }
     }
@@ -39,22 +37,22 @@ trait HasAttributes
         $this->attributes[$key] = $value;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return ! is_null($this->getAttribute($offset));
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->getAttribute($offset);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->setAttribute($offset, $value);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->attributes[$offset]);
     }
@@ -68,5 +66,4 @@ trait HasAttributes
     {
         $this->offsetUnset($key);
     }
-
 }
