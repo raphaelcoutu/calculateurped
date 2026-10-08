@@ -111,7 +111,38 @@ it('requires a logo when a superuser creates an organization', function (): void
         ->from(route('admin.organizations.create'))
         ->post(route('admin.organizations.store'), ['name' => 'Centre sans logo'])
         ->assertRedirect(route('admin.organizations.create'))
-        ->assertSessionHasErrors(['logo']);
+        ->assertInvalid(['logo' => 'Le logo du centre est obligatoire.']);
 
     $this->assertDatabaseMissing('organizations', ['name' => 'Centre sans logo']);
 });
+
+dataset('invalid organization input', [
+    'name is required' => [[], 'name', 'Le nom du centre est obligatoire.'],
+    'name is too long' => [[
+        'name' => str_repeat('a', 256),
+        'logo' => fn () => UploadedFile::fake()->image('logo.png'),
+    ], 'name', 'Le nom du centre ne peut pas dépasser 255 caractères.'],
+    'logo is not an image' => [[
+        'name' => 'Centre valide',
+        'logo' => fn () => UploadedFile::fake()->create('logo.txt', 1, 'text/plain'),
+    ], 'logo', 'Le logo doit être une image.'],
+    'logo has an unsupported format' => [[
+        'name' => 'Centre valide',
+        'logo' => fn () => UploadedFile::fake()->image('logo.gif'),
+    ], 'logo', 'Le logo doit être au format JPG, PNG ou WebP.'],
+    'logo is too large' => [[
+        'name' => 'Centre valide',
+        'logo' => fn () => UploadedFile::fake()->image('logo.png')->size(2049),
+    ], 'logo', 'Le logo ne peut pas dépasser 2 Mo.'],
+]);
+
+it('shows the validation message when organization input is invalid', function (array $input, string $field, string $message): void {
+    $superuser = User::factory()->create(['is_superuser' => true]);
+    $input = collect($input)->map(fn ($value) => $value instanceof Closure ? $value() : $value)->all();
+
+    $this->actingAs($superuser)
+        ->from(route('admin.organizations.create'))
+        ->post(route('admin.organizations.store'), $input)
+        ->assertRedirect(route('admin.organizations.create'))
+        ->assertInvalid([$field => $message]);
+})->with('invalid organization input');

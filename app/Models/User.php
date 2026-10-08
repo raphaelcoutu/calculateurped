@@ -66,8 +66,8 @@ class User extends Authenticatable
     /**
      * @param  string  $token
      */
-    public function sendPasswordResetNotification($token): void
+    public function sendPasswordResetNotification(#[\SensitiveParameter] mixed $token): void
     {
-        $this->notify(new SetPasswordNotification($token));
+        $this->notify(new SetPasswordNotification((string) $token));
     }
 }
