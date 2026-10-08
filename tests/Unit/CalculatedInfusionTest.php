@@ -5,9 +5,12 @@ use App\Models\InfusionConcentration;
 use App\Models\InfusionDrug;
 use App\WeightCategory;
 
-beforeEach(function (): void {
-
-    InfusionDrug::create([
+/**
+ * @return array{dexmedetomidine: InfusionDrug, propofol: InfusionDrug, insulin: InfusionDrug}
+ */
+function createInfusionFixtures(): array
+{
+    $dexmedetomidine = InfusionDrug::create([
         'name' => 'Dexmédétomidine',
         'brand_name' => 'Précédex',
         'concentration' => '100 mcg/mL',
@@ -22,8 +25,7 @@ beforeEach(function (): void {
         'type' => 1,
     ]);
 
-    InfusionConcentration::create([
-        'infusion_drug_id' => 1,
+    $dexmedetomidine->concentrations()->create([
         'concentration' => 4,
         'concentration_unit' => 'mcg',
         'instructions' => 'Recette',
@@ -31,8 +33,7 @@ beforeEach(function (): void {
         'weight_category' => 1,
     ]);
 
-    InfusionConcentration::create([
-        'infusion_drug_id' => 1,
+    $dexmedetomidine->concentrations()->create([
         'concentration' => 0.008,
         'concentration_unit' => 'mg',
         'instructions' => 'Recette',
@@ -40,7 +41,7 @@ beforeEach(function (): void {
         'weight_category' => 2,
     ]);
 
-    InfusionDrug::create([
+    $propofol = InfusionDrug::create([
         'name' => 'Propofol',
         'brand_name' => '',
         'concentration' => '10 mg/mL',
@@ -55,8 +56,7 @@ beforeEach(function (): void {
         'type' => 1,
     ]);
 
-    InfusionConcentration::create([
-        'infusion_drug_id' => 2,
+    $propofol->concentrations()->create([
         'concentration' => 10,
         'concentration_unit' => 'mg',
         'instructions' => 'Recette',
@@ -64,7 +64,7 @@ beforeEach(function (): void {
         'weight_category' => 1,
     ]);
 
-    InfusionDrug::create([
+    $insulin = InfusionDrug::create([
         'name' => 'Insuline',
         'brand_name' => '',
         'concentration' => '100 unités/mL',
@@ -79,8 +79,7 @@ beforeEach(function (): void {
         'type' => 1,
     ]);
 
-    InfusionConcentration::create([
-        'infusion_drug_id' => 3,
+    $insulin->concentrations()->create([
         'concentration' => 100,
         'concentration_unit' => 'mU',
         'instructions' => 'Recette',
@@ -88,42 +87,53 @@ beforeEach(function (): void {
         'weight_category' => 1,
     ]);
 
-});
+    return [
+        'dexmedetomidine' => $dexmedetomidine,
+        'propofol' => $propofol,
+        'insulin' => $insulin,
+    ];
+}
 
 it('calculates min rate', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 3;
     $weightCategory = WeightCategory::get($weight);
-    $product = InfusionConcentration::with('drug')->weight($weightCategory)->first();
+    $product = InfusionConcentration::with('drug')->weight($weightCategory)
+        ->where('infusion_drug_id', $fixtures['dexmedetomidine']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
     $this->assertEquals(45, $calc->minimalRate);
 
     $product = InfusionConcentration::with('drug')->weight($weightCategory)
-        ->where('infusion_drug_id', 2)->first();
+        ->where('infusion_drug_id', $fixtures['propofol']->getKey())->first();
     $anotherCalc = new CalculatedInfusion($product, $weight);
     $this->assertEquals(0.36, $anotherCalc->minimalRate);
 
 });
 
 it('calculates max rate', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 3;
     $weightCategory = WeightCategory::get($weight);
-    $product = InfusionConcentration::with('drug')->weight($weightCategory)->first();
+    $product = InfusionConcentration::with('drug')->weight($weightCategory)
+        ->where('infusion_drug_id', $fixtures['dexmedetomidine']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
     $this->assertEquals(90, $calc->maximalRate);
 
     $product = InfusionConcentration::with('drug')->weight($weightCategory)
-        ->where('infusion_drug_id', 2)->first();
+        ->where('infusion_drug_id', $fixtures['propofol']->getKey())->first();
     $anotherCalc = new CalculatedInfusion($product, $weight);
     $this->assertEquals(1.44, $anotherCalc->maximalRate);
 
 });
 
 it('calculates a limited min rate', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 7;
     $weightCategory = WeightCategory::get($weight);
-    $product = InfusionConcentration::with('drug')->weight($weightCategory)->first();
+    $product = InfusionConcentration::with('drug')->weight($weightCategory)
+        ->where('infusion_drug_id', $fixtures['dexmedetomidine']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
 
@@ -132,9 +142,11 @@ it('calculates a limited min rate', function (): void {
 });
 
 it('calculates a limited max rate', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 7;
     $weightCategory = WeightCategory::get($weight);
-    $product = InfusionConcentration::with('drug')->weight($weightCategory)->first();
+    $product = InfusionConcentration::with('drug')->weight($weightCategory)
+        ->where('infusion_drug_id', $fixtures['dexmedetomidine']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
 
@@ -143,16 +155,18 @@ it('calculates a limited max rate', function (): void {
 });
 
 it('converts rate to dosage', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 3;
     $weightCategory = WeightCategory::get($weight);
-    $product = InfusionConcentration::with('drug')->weight($weightCategory)->first();
+    $product = InfusionConcentration::with('drug')->weight($weightCategory)
+        ->where('infusion_drug_id', $fixtures['dexmedetomidine']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
     $this->assertEquals(1, $calc->minimalDosage);
     $this->assertEquals(2, $calc->maximalDosage);
 
     $product = InfusionConcentration::with('drug')->weight($weightCategory)
-        ->where('infusion_drug_id', 2)->first();
+        ->where('infusion_drug_id', $fixtures['propofol']->getKey())->first();
     $anotherCalc = new CalculatedInfusion($product, $weight);
     $this->assertEquals(1.2, $anotherCalc->minimalDosage);
     $this->assertEquals(4.8, $anotherCalc->maximalDosage);
@@ -160,9 +174,11 @@ it('converts rate to dosage', function (): void {
 });
 
 it('converts rate to dosage with limited rates', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 7;
     $weightCategory = WeightCategory::get($weight);
-    $product = InfusionConcentration::with('drug')->weight($weightCategory)->first();
+    $product = InfusionConcentration::with('drug')->weight($weightCategory)
+        ->where('infusion_drug_id', $fixtures['dexmedetomidine']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
     $this->assertEquals(0.5, $calc->minimalDosage);
@@ -171,10 +187,11 @@ it('converts rate to dosage with limited rates', function (): void {
 });
 
 it('respects dosage precision', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 3;
     $weightCategory = WeightCategory::get($weight);
     $product = InfusionConcentration::with('drug')->weight($weightCategory)
-        ->where('infusion_drug_id', 2)->first();
+        ->where('infusion_drug_id', $fixtures['propofol']->getKey())->first();
 
     $product->drug->dosage_precision = 0;
 
@@ -190,10 +207,11 @@ it('respects dosage precision', function (): void {
 });
 
 it('insuline max rate should be 0', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 3;
     $weightCategory = WeightCategory::get($weight);
     $product = InfusionConcentration::with('drug')->weight($weightCategory)
-        ->where('infusion_drug_id', 3)->first();
+        ->where('infusion_drug_id', $fixtures['insulin']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
 
@@ -202,9 +220,11 @@ it('insuline max rate should be 0', function (): void {
 });
 
 it('creates a simple dosage string', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 3;
     $weightCategory = WeightCategory::get($weight);
-    $product = InfusionConcentration::with('drug')->weight($weightCategory)->first();
+    $product = InfusionConcentration::with('drug')->weight($weightCategory)
+        ->where('infusion_drug_id', $fixtures['dexmedetomidine']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
     $this->assertEquals('1 - 2 mcg/kg/min', $calc->dosageString);
@@ -212,10 +232,11 @@ it('creates a simple dosage string', function (): void {
 });
 
 it('creates a dosage string when there is not max rate', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 3;
     $weightCategory = WeightCategory::get($weight);
     $product = InfusionConcentration::with('drug')->weight($weightCategory)
-        ->where('infusion_drug_id', 3)->first();
+        ->where('infusion_drug_id', $fixtures['insulin']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
     $this->assertEquals('0.1 unité/kg/min', $calc->dosageString);
@@ -223,9 +244,11 @@ it('creates a dosage string when there is not max rate', function (): void {
 });
 
 it('creates an adjusted dosage string when rate limited', function (): void {
+    $fixtures = createInfusionFixtures();
     $weight = 7;
     $weightCategory = WeightCategory::get($weight);
-    $product = InfusionConcentration::with('drug')->weight($weightCategory)->first();
+    $product = InfusionConcentration::with('drug')->weight($weightCategory)
+        ->where('infusion_drug_id', $fixtures['dexmedetomidine']->getKey())->first();
 
     $calc = new CalculatedInfusion($product, $weight);
     $this->assertEquals('0.5 - 1 mcg/kg/min', $calc->dosageString);

@@ -12,13 +12,6 @@ permissions:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    env:
-      DB_CONNECTION: pgsql
-      DB_HOST: 127.0.0.1
-      DB_PORT: 5432
-      DB_DATABASE: laravel
-      DB_USERNAME: laravel
-      DB_PASSWORD: secret
     services:
       postgres:
         image: postgres:17
@@ -54,6 +47,13 @@ jobs:
 
       - name: Setup Application
         run: composer setup
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: laravel
+          DB_USERNAME: laravel
+          DB_PASSWORD: secret
 
       - name: Run CI Checks
         run: composer ci:check
