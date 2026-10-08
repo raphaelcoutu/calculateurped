@@ -114,15 +114,15 @@ class BolusController extends Controller
             ->values();
 
         return Inertia::render('admin/boluses/show', [
+            'canManage' => $canManage,
+            'canCopy' => $request->user()->organization_id !== null
+                && $bolus->status === 'published'
+                && $request->user()->organization_id !== $bolus->organization_id,
             'bolus' => [
                 ...$this->listItem($bolus),
                 ...$bolus->recipeAttributes(),
                 'organization' => $bolus->organization->name,
                 'versions' => $versions,
-                'canManage' => $canManage,
-                'canCopy' => $request->user()->organization_id !== null
-                    && $bolus->status === 'published'
-                    && $request->user()->organization_id !== $bolus->organization_id,
                 'activities' => $bolus->activities->map(fn ($activity): array => [
                     'id' => $activity->id,
                     'action' => $activity->action,

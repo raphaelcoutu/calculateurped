@@ -58,6 +58,12 @@ describe('organization drafts', function (): void {
         $administrator = User::factory()->for($destinationOrganization)->create();
         $source = Bolus::factory()->for($sourceOrganization)->create(['name' => 'Bolus partagé', 'dosage' => 3]);
 
+        $this->actingAs($administrator)->get(route('admin.boluses.show', $source))
+            ->assertInertia(fn ($page) => $page
+                ->component('admin/boluses/show')
+                ->where('canManage', false)
+                ->where('canCopy', true));
+
         $this->actingAs($administrator)->post(route('admin.boluses.copy', $source))->assertRedirect();
 
         $copy = $destinationOrganization->boluses()->firstOrFail();
@@ -121,6 +127,12 @@ describe('catalog and publications', function (): void {
         $organization = Organization::factory()->create();
         $administrator = User::factory()->for($organization)->create();
         $published = Bolus::factory()->for($organization)->create(['name' => 'Version initiale']);
+
+        $this->actingAs($administrator)->get(route('admin.boluses.show', $published))
+            ->assertInertia(fn ($page) => $page
+                ->component('admin/boluses/show')
+                ->where('canManage', true)
+                ->where('canCopy', false));
 
         $this->actingAs($administrator)->post(route('admin.boluses.revise', $published))->assertRedirect();
 
