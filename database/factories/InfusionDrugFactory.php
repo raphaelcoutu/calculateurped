@@ -16,7 +16,7 @@ class InfusionDrugFactory extends Factory
         return [
             'name' => $this->faker->name,
             'brand_name' => $this->faker->name,
-            'concentration' => $this->faker->numberBetween(0.1, 100) . ' mg/mL',
+            'concentration' => $this->faker->numberBetween(0.1, 100).' mg/mL',
             'debit_min' => 1,
             'debit_max' => 5,
             'debit_dose_unit' => 'mg',
@@ -25,7 +25,7 @@ class InfusionDrugFactory extends Factory
             'debit_max_limit' => 0,
             'debit_limit_unit' => '',
             'dosage_precision' => 1,
-            'type' => 1
+            'type' => 1,
         ];
     }
 }

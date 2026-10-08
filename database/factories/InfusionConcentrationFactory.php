@@ -19,7 +19,7 @@ class InfusionConcentrationFactory extends Factory
             'concentration_unit' => 'mg',
             'instructions' => 'Recette',
             'total_volume' => 100,
-            'weight_category' => 1
+            'weight_category' => 1,
         ];
     }
 }

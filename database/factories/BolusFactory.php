@@ -26,7 +26,7 @@ class BolusFactory extends Factory
             'instructions' => $this->faker->sentence(),
             'type' => 1,
             'min_weight' => 0,
-            'max_weight' => 999
+            'max_weight' => 999,
         ];
     }
 }
