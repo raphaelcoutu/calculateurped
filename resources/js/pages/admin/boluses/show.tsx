@@ -9,6 +9,7 @@ type Bolus = {
     status: 'draft' | 'published';
     version: number;
     publishedAt: string | null;
+    supersededAt: string | null;
     author: string | null;
     publisher: string | null;
     unit: string;
@@ -55,9 +56,10 @@ const changeLabels: Record<string, string> = {
     source_organization: 'Organisation source',
 };
 
-export default function BolusShow({ bolus, canManage, canCopy }: {
+export default function BolusShow({ bolus, canManage, pendingDraftId, canCopy }: {
     bolus: Bolus;
     canManage: boolean;
+    pendingDraftId: number | null;
     canCopy: boolean;
 }) {
     return (
@@ -78,7 +80,8 @@ export default function BolusShow({ bolus, canManage, canCopy }: {
                         <Link href={`/admin/boluses/${bolus.id}/edit`} className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-white/15 dark:bg-[#182524] dark:text-slate-200">Modifier le brouillon</Link>
                         <button type="button" onClick={() => router.post(`/admin/boluses/${bolus.id}/publish`)} className="rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white hover:bg-brand-700">Publier sans approbation</button>
                     </>}
-                    {canManage && bolus.status === 'published' && <button type="button" onClick={() => router.post(`/admin/boluses/${bolus.id}/revise`)} className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-white/15 dark:bg-[#182524] dark:text-slate-200">Préparer une nouvelle version</button>}
+                    {canManage && bolus.status === 'published' && bolus.supersededAt === null && pendingDraftId === null && <button type="button" onClick={() => router.post(`/admin/boluses/${bolus.id}/revise`)} className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-white/15 dark:bg-white/5 dark:text-slate-200">Préparer une nouvelle version</button>}
+                    {canManage && bolus.status === 'published' && pendingDraftId !== null && <Link href={`/admin/boluses/${pendingDraftId}/edit`} className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900 hover:bg-amber-100 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">Continuer le brouillon en cours</Link>}
                     {canCopy && <button type="button" onClick={() => router.post(`/admin/boluses/${bolus.id}/copy`)} className="rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white hover:bg-brand-700">Copier dans mes brouillons</button>}
                     {canManage && <button type="button" onClick={() => {
                         if (window.confirm('Supprimer ce bolus? Il pourra être restauré par votre organisation.')) {

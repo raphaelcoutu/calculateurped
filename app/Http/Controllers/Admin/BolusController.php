@@ -22,11 +22,28 @@ class BolusController extends Controller
 
         $boluses = Bolus::query()
             ->where('organization_id', $request->user()->organization_id)
+            ->addSelect(['pending_draft_id' => Bolus::query()
+                ->select('id')
+                ->whereColumn('recipe_id', 'boluses.recipe_id')
+                ->where('status', 'draft')
+                ->orderByDesc('version')
+                ->limit(1)])
             ->when($request->boolean('deleted'), fn (Builder $query): Builder => $query->onlyTrashed())
             ->with(['author', 'publisher'])
             ->orderByDesc('updated_at')
             ->paginate(20)
-            ->through(fn (Bolus $bolus): array => $this->listItem($bolus));
+            ->through(function (Bolus $bolus): array {
+                $pendingDraftId = $bolus->getAttribute('pending_draft_id');
+
+                return [
+                    ...$this->listItem($bolus),
+                    'pendingDraftId' => $bolus->status === 'published'
+                    && $bolus->superseded_at === null
+                    && $pendingDraftId !== null
+                        ? (int) $pendingDraftId
+                        : null,
+                ];
+            });
 
         return Inertia::render('admin/boluses/index', [
             'boluses' => $boluses,
@@ -92,6 +109,13 @@ class BolusController extends Controller
 
         $canManage = ! $request->user()->isSuperuser()
             && $request->user()->organization_id === $bolus->organization_id;
+        $pendingDraftId = $canManage && $bolus->status === 'published' && $bolus->superseded_at === null
+            ? Bolus::query()
+                ->where('recipe_id', $bolus->recipe_id)
+                ->where('status', 'draft')
+                ->orderByDesc('version')
+                ->value('id')
+            : null;
         $bolus->load(['organization', 'author', 'publisher', 'activities.user']);
 
         $versions = Bolus::query()
@@ -115,6 +139,7 @@ class BolusController extends Controller
 
         return Inertia::render('admin/boluses/show', [
             'canManage' => $canManage,
+            'pendingDraftId' => $pendingDraftId === null ? null : (int) $pendingDraftId,
             'canCopy' => $request->user()->organization_id !== null
                 && $bolus->status === 'published'
                 && $request->user()->organization_id !== $bolus->organization_id,
@@ -171,6 +196,11 @@ class BolusController extends Controller
         $draft = DB::transaction(function () use ($bolus, $request): Bolus {
             $source = Bolus::query()->lockForUpdate()->findOrFail($bolus->id);
             abort_unless($source->status === 'published' && $source->superseded_at === null, 409);
+            abort_if(
+                Bolus::query()->where('recipe_id', $source->recipe_id)->where('status', 'draft')->exists(),
+                409,
+                'Une nouvelle version est déjà en brouillon.'
+            );
 
             $version = Bolus::withTrashed()->where('recipe_id', $source->recipe_id)->max('version') + 1;
             $draft = Bolus::create([

@@ -10,6 +10,28 @@ use Illuminate\Support\Facades\Schema;
 uses(RefreshDatabase::class);
 
 describe('organization drafts', function (): void {
+    it('shows a pending revision draft next to its published bolus', function (): void {
+        $organization = Organization::factory()->create();
+        $administrator = User::factory()->for($organization)->create();
+        $published = Bolus::factory()->for($organization)->create(['name' => 'Recette publiée']);
+        $draft = Bolus::factory()->for($organization)->create([
+            'name' => 'Recette publiée',
+            'recipe_id' => $published->recipe_id,
+            'version' => 2,
+            'status' => 'draft',
+            'published_at' => null,
+            'supersedes_id' => $published->id,
+        ]);
+
+        $this->actingAs($administrator)->get(route('admin.boluses.index'))
+            ->assertInertia(fn ($page) => $page
+                ->component('admin/boluses/index')
+                ->where('boluses.data.0.id', $draft->id)
+                ->where('boluses.data.0.pendingDraftId', null)
+                ->where('boluses.data.1.id', $published->id)
+                ->where('boluses.data.1.pendingDraftId', $draft->id));
+    });
+
     it('saves an empty instructions field as an empty string', function (): void {
         $organization = Organization::factory()->create();
         $administrator = User::factory()->for($organization)->create();
@@ -151,6 +173,14 @@ describe('catalog and publications', function (): void {
         $draft = $organization->boluses()->where('status', 'draft')->firstOrFail();
         expect(Bolus::published()->where('recipe_id', $published->recipe_id)->sole()->is($published))->toBeTrue();
 
+        $this->get(route('admin.boluses.show', $published))
+            ->assertInertia(fn ($page) => $page
+                ->component('admin/boluses/show')
+                ->where('pendingDraftId', $draft->id));
+
+        $this->post(route('admin.boluses.revise', $published))->assertStatus(409);
+        expect($organization->boluses()->where('recipe_id', $published->recipe_id)->where('status', 'draft')->count())->toBe(1);
+
         $this->put(route('admin.boluses.update', $draft), bolusInput(['dosage' => 5]))->assertRedirect();
         $this->post(route('admin.boluses.publish', $draft))->assertRedirect();
 
@@ -159,6 +189,21 @@ describe('catalog and publications', function (): void {
         expect($draft->fresh()->published_by)->toBe($administrator->id);
         expect($draft->fresh()->created_by)->toBe($administrator->id);
         expect($draft->activities()->pluck('action')->all())->toContain('revision_created', 'updated', 'published');
+    });
+
+    it('allows a new revision after the pending draft is deleted', function (): void {
+        $organization = Organization::factory()->create();
+        $administrator = User::factory()->for($organization)->create();
+        $published = Bolus::factory()->for($organization)->create(['name' => 'Version initiale']);
+
+        $this->actingAs($administrator)->post(route('admin.boluses.revise', $published))->assertRedirect();
+        $pendingDraft = $organization->boluses()->where('status', 'draft')->firstOrFail();
+
+        $this->delete(route('admin.boluses.destroy', $pendingDraft))->assertRedirect();
+        $this->post(route('admin.boluses.revise', $published))->assertRedirect();
+
+        expect($organization->boluses()->where('recipe_id', $published->recipe_id)->where('status', 'draft')->value('version'))->toBe(3);
+        expect(Bolus::withTrashed()->where('recipe_id', $published->recipe_id)->where('status', 'draft')->count())->toBe(2);
     });
 });
 

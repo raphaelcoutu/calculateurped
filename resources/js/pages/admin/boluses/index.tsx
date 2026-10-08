@@ -2,7 +2,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import AppLayout from '@/components/app-layout';
 import Pagination, { type PageLink } from '@/components/pagination';
 
-type Bolus = { id: number; name: string; brandName: string; status: string; version: number; publishedAt: string | null; supersededAt: string | null; author: string | null; publisher: string | null; deletedAt: string | null };
+type Bolus = { id: number; name: string; brandName: string; status: string; version: number; publishedAt: string | null; supersededAt: string | null; pendingDraftId: number | null; author: string | null; publisher: string | null; deletedAt: string | null };
 
 export default function BolusesIndex({ boluses, showDeleted }: {
     boluses: { data: Bolus[]; links: PageLink[]; current_page: number; last_page: number; total: number };
@@ -27,6 +27,10 @@ export default function BolusesIndex({ boluses, showDeleted }: {
                     <div>
                         {bolus.deletedAt ? <span className="font-semibold text-slate-900 dark:text-white">{bolus.name}</span> : <Link href={`/admin/boluses/${bolus.id}`} className="font-semibold text-slate-900 hover:text-brand-700 dark:text-white dark:hover:text-brand-100">{bolus.name}</Link>}
                         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Version {bolus.version} · {bolus.status === 'published' ? bolus.supersededAt ? `Remplacé le ${new Date(bolus.supersededAt).toLocaleDateString('fr-CA')}` : `Publié ${bolus.publishedAt ? `le ${new Date(bolus.publishedAt).toLocaleDateString('fr-CA')}` : ''}` : 'Brouillon'}</p>
+                        {bolus.status === 'published' && bolus.pendingDraftId !== null && <div className="mt-2 flex flex-wrap items-center gap-2">
+                            <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-200">Brouillon en cours</span>
+                            <Link href={`/admin/boluses/${bolus.pendingDraftId}/edit`} className="text-xs font-semibold text-brand-700 hover:underline dark:text-brand-100">Continuer</Link>
+                        </div>}
                     </div>
                     {showDeleted ? <button type="button" onClick={() => router.post(`/admin/boluses/${bolus.id}/restore`)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-white/15 dark:text-slate-200">Restaurer</button> : <Link href={`/admin/boluses/${bolus.id}`} className="text-sm font-semibold text-brand-700 hover:underline dark:text-brand-100">Consulter →</Link>}
                 </li>)}</ul> : <div className="px-6 py-16 text-center">
