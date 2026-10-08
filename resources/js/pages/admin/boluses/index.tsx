@@ -4,8 +4,9 @@ import Pagination, { type PageLink } from '@/components/pagination';
 
 type Bolus = { id: number; name: string; brandName: string; status: string; version: number; publishedAt: string | null; supersededAt: string | null; pendingDraftId: number | null; author: string | null; publisher: string | null; deletedAt: string | null };
 
-export default function BolusesIndex({ boluses, showDeleted }: {
+export default function BolusesIndex({ boluses, search, showDeleted }: {
     boluses: { data: Bolus[]; links: PageLink[]; current_page: number; last_page: number; total: number };
+    search: string;
     showDeleted: boolean;
 }) {
     return (
@@ -23,6 +24,17 @@ export default function BolusesIndex({ boluses, showDeleted }: {
                 </div>
             </div>
             <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#182524]">
+                <form method="get" action="/admin/boluses" className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-end dark:border-white/10">
+                    {showDeleted && <input type="hidden" name="deleted" value="1" />}
+                    <div className="flex-1">
+                        <label htmlFor="bolus-search" className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-200">Rechercher un bolus</label>
+                        <input id="bolus-search" type="search" name="search" defaultValue={search} placeholder="Nom ou nom commercial" className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 dark:border-white/15 dark:bg-[#101b1a] dark:text-white" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button type="submit" className="rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white hover:bg-brand-700">Rechercher</button>
+                        {search && <Link href={showDeleted ? '/admin/boluses?deleted=1' : '/admin/boluses'} className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/5">Effacer</Link>}
+                    </div>
+                </form>
                 {boluses.data.length ? <ul className="divide-y divide-slate-100 dark:divide-white/10">{boluses.data.map(bolus => <li key={bolus.id} className="flex flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-6">
                     <div>
                         {bolus.deletedAt ? <span className="font-semibold text-slate-900 dark:text-white">{bolus.name}</span> : <Link href={`/admin/boluses/${bolus.id}`} className="font-semibold text-slate-900 hover:text-brand-700 dark:text-white dark:hover:text-brand-100">{bolus.name}</Link>}

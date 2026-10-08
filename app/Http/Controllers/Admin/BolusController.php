@@ -19,9 +19,16 @@ class BolusController extends Controller
     public function index(Request $request): Response
     {
         $this->authorize('viewAny', Bolus::class);
+        $search = $request->string('search')->trim()->toString();
 
         $boluses = Bolus::query()
             ->where('organization_id', $request->user()->organization_id)
+            ->when($search !== '', function (Builder $query) use ($search): void {
+                $query->where(function (Builder $query) use ($search): void {
+                    $query->whereLike('name', "%{$search}%")
+                        ->orWhereLike('brand_name', "%{$search}%");
+                });
+            })
             ->addSelect(['pending_draft_id' => DB::table('boluses as pending_drafts')
                 ->select('pending_drafts.id')
                 ->whereColumn('pending_drafts.recipe_id', 'boluses.recipe_id')
@@ -33,6 +40,7 @@ class BolusController extends Controller
             ->with(['author', 'publisher'])
             ->orderByDesc('updated_at')
             ->paginate(20)
+            ->withQueryString()
             ->through(function (Bolus $bolus): array {
                 $pendingDraftId = $bolus->getAttribute('pending_draft_id');
 
@@ -48,6 +56,7 @@ class BolusController extends Controller
 
         return Inertia::render('admin/boluses/index', [
             'boluses' => $boluses,
+            'search' => $search,
             'showDeleted' => $request->boolean('deleted'),
         ]);
     }

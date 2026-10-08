@@ -10,6 +10,32 @@ use Illuminate\Support\Facades\Schema;
 uses(RefreshDatabase::class);
 
 describe('organization drafts', function (): void {
+    it('searches the organization bolus list by name or commercial name', function (): void {
+        $organization = Organization::factory()->create();
+        $otherOrganization = Organization::factory()->create();
+        $administrator = User::factory()->for($organization)->create();
+        $nameMatch = Bolus::factory()->for($organization)->create([
+            'name' => 'Adrénaline (nom)',
+            'brand_name' => 'Épinéphrine',
+            'updated_at' => now()->subMinutes(2),
+        ]);
+        $brandMatch = Bolus::factory()->for($organization)->create([
+            'name' => 'Produit hospitalier',
+            'brand_name' => 'Adrénaline',
+            'updated_at' => now()->subMinute(),
+        ]);
+        Bolus::factory()->for($organization)->create(['name' => 'Autre médicament']);
+        Bolus::factory()->for($otherOrganization)->create(['name' => 'Adrénaline autre centre']);
+
+        $this->actingAs($administrator)->get(route('admin.boluses.index', ['search' => 'adrénaline']))
+            ->assertInertia(fn ($page) => $page
+                ->component('admin/boluses/index')
+                ->where('search', 'adrénaline')
+                ->has('boluses.data', 2)
+                ->where('boluses.data.0.id', $brandMatch->id)
+                ->where('boluses.data.1.id', $nameMatch->id));
+    });
+
     it('shows a pending revision draft next to its published bolus', function (): void {
         $organization = Organization::factory()->create();
         $administrator = User::factory()->for($organization)->create();
