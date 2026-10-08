@@ -6,6 +6,13 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BolusRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'instructions' => $this->input('instructions') ?? '',
+        ]);
+    }
+
     public function authorize(): bool
     {
         return $this->user() !== null;

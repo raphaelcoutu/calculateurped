@@ -10,6 +10,18 @@ use Illuminate\Support\Facades\Schema;
 uses(RefreshDatabase::class);
 
 describe('organization drafts', function (): void {
+    it('saves an empty instructions field as an empty string', function (): void {
+        $organization = Organization::factory()->create();
+        $administrator = User::factory()->for($organization)->create();
+        $bolus = Bolus::factory()->for($organization)->create(['status' => 'draft', 'published_at' => null]);
+
+        $this->actingAs($administrator)
+            ->put(route('admin.boluses.update', $bolus), bolusInput(['instructions' => '']))
+            ->assertRedirect();
+
+        expect($bolus->fresh()->instructions)->toBe('');
+    });
+
     it('lets an administrator create and preview a draft bolus only in their organization', function (): void {
         $organization = Organization::factory()->create();
         $otherOrganization = Organization::factory()->create();
