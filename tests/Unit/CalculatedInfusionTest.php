@@ -272,3 +272,37 @@ it('infusion rate always has 2 digit precision', function (): void {
     $this->assertEquals(2, $digits);
 
 });
+
+it('calcule les doses sans poids indépendamment du poids du patient', function (string $timeUnit, float $expectedRate, string $expectedDose): void {
+    $drug = InfusionDrug::factory()->create([
+        'dose_per_kg' => false, 'debit_min' => 2, 'debit_max' => 0,
+        'debit_dose_unit' => 'mg', 'debit_time_unit' => $timeUnit,
+    ]);
+    $preparation = InfusionConcentration::factory()->for($drug, 'drug')->create(['concentration' => 10]);
+
+    $smallPatient = new CalculatedInfusion($preparation, 5);
+    $largePatient = new CalculatedInfusion($preparation, 60);
+
+    expect($smallPatient->minimalRate)->toBe($expectedRate);
+    expect($largePatient->minimalRate)->toBe($expectedRate);
+    expect($smallPatient->dosageString)->toBe($expectedDose);
+    expect($largePatient->dosageString)->toBe($expectedDose);
+})->with([
+    'par minute' => ['min', 12.0, '2 mg/min'],
+    'par heure' => ['h', 0.2, '2 mg/h'],
+]);
+
+it('recalcule une dose sans poids lorsque son débit est limité', function (): void {
+    $drug = InfusionDrug::factory()->create([
+        'dose_per_kg' => false, 'debit_min' => 2, 'debit_max' => 4,
+        'debit_dose_unit' => 'mg', 'debit_time_unit' => 'min',
+        'debit_min_limit' => 30, 'debit_max_limit' => 60, 'debit_limit_unit' => 'mg',
+    ]);
+    $preparation = InfusionConcentration::factory()->for($drug, 'drug')->create(['concentration' => 10]);
+
+    $calculated = new CalculatedInfusion($preparation, 60);
+
+    expect($calculated->minimalRate)->toBe(3.0);
+    expect($calculated->maximalRate)->toBe(6.0);
+    expect($calculated->dosageString)->toBe('0.5 - 1 mg/min');
+});

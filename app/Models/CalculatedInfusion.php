@@ -102,12 +102,13 @@ class CalculatedInfusion
         return $this->floorp($rate, $precision);
     }
 
-    private function getRate($dosageRate)
+    private function getRate(float $dosageRate): float
     {
         $standardDosage = $this->convertDoseToBaseUnit($dosageRate, $this->drug->debit_dose_unit);
         $concentration = $this->convertDoseToBaseUnit($this->recipe->concentration, $this->recipe->concentration_unit);
         $minuteToHourFactor = $this->minToHourFactor($this->drug->debit_time_unit);
-        $rate = $this->weight * $standardDosage / $concentration * $minuteToHourFactor;
+        $weightFactor = $this->drug->dose_per_kg ? $this->weight : 1;
+        $rate = $weightFactor * $standardDosage / $concentration * $minuteToHourFactor;
 
         return $this->floorp($rate, 2);
     }
@@ -145,7 +146,7 @@ class CalculatedInfusion
         return $dose;
     }
 
-    private function convertDosageToDrugUnit($mlHourRate)
+    private function convertDosageToDrugUnit(float $mlHourRate): float
     {
         $baseUnits = ['mg', 'unité'];
         $microUnits = ['mcg', 'mU'];
@@ -158,8 +159,9 @@ class CalculatedInfusion
         // Dose
         $dosage *= $this->convertUnitFactor($concUnit, $this->drug->debit_dose_unit);
 
-        // Weight
-        $dosage /= $this->weight;
+        if ($this->drug->dose_per_kg) {
+            $dosage /= $this->weight;
+        }
 
         // Time
         $dosage /= $this->minToHourFactor($this->drug->debit_time_unit);
@@ -167,7 +169,7 @@ class CalculatedInfusion
         return round($dosage, $this->drug->dosage_precision);
     }
 
-    private function setDosageString()
+    private function setDosageString(): void
     {
         $dosage = $this->minimalDosage;
 
@@ -175,7 +177,7 @@ class CalculatedInfusion
             $dosage .= " - {$this->maximalDosage}";
         }
 
-        $dosage .= " {$this->drug->debit_dose_unit}/kg/{$this->drug->debit_time_unit}";
+        $dosage .= ' '.$this->drug->doseUnit();
 
         $this->dosageString = $dosage;
     }

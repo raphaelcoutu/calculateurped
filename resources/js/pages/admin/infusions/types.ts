@@ -15,6 +15,8 @@ export type Recipe = {
     concentration: string;
     debit_min: number;
     debit_max: number;
+    dose_unit: string;
+    dose_per_kg: boolean;
     debit_dose_unit: string;
     debit_time_unit: string;
     debit_min_limit: number;

@@ -96,6 +96,7 @@ class InfusionDrugController extends Controller
         $this->authorize('create', InfusionDrug::class);
 
         return Inertia::render('admin/infusions/form', [
+            'doseUnits' => InfusionDrug::doseUnits(),
             'infusion' => null,
             'action' => route('admin.infusions.store'),
             'method' => 'post',
@@ -108,11 +109,13 @@ class InfusionDrugController extends Controller
 
         $infusion = DB::transaction(function () use ($request): InfusionDrug {
             $infusion = InfusionDrug::create([
-                ...$request->safe()->except('preparations'),
+                ...$request->safe()->except(['preparations', 'dose_unit']),
                 'brand_name' => $request->input('brand_name') ?? '',
                 'organization_id' => $request->user()->organization_id,
                 'recipe_id' => (string) Str::uuid(),
                 'version' => 1,
+                'type' => 1,
+                'order' => 1,
                 'status' => 'draft',
                 'created_by' => $request->user()->id,
             ]);
@@ -190,6 +193,7 @@ class InfusionDrugController extends Controller
         $this->authorize('update', $infusion);
 
         return Inertia::render('admin/infusions/form', [
+            'doseUnits' => InfusionDrug::doseUnits(),
             'infusion' => [...$this->listItem($infusion), ...$infusion->recipeSnapshot()],
             'action' => route('admin.infusions.update', $infusion),
             'method' => 'put',
@@ -204,7 +208,7 @@ class InfusionDrugController extends Controller
             $lockedInfusionDrug = InfusionDrug::query()->lockForUpdate()->findOrFail($infusion->id);
             $this->authorize('update', $lockedInfusionDrug);
             $lockedInfusionDrug->update([
-                ...$request->safe()->except('preparations'),
+                ...$request->safe()->except(['preparations', 'dose_unit']),
                 'brand_name' => $request->input('brand_name') ?? '',
             ]);
 

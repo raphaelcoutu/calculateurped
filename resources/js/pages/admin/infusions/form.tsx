@@ -6,8 +6,8 @@ import type { Recipe, Gap } from './types';
 
 const drugDefaults = {
     name: '', brand_name: '', concentration: '', debit_min: '0', debit_max: '0',
-    debit_dose_unit: 'mg', debit_time_unit: 'h', debit_min_limit: '0', debit_max_limit: '0',
-    debit_limit_unit: 'mg', dosage_precision: '1', type: '1', order: '1',
+    dose_unit: 'mg/kg/h', debit_min_limit: '0', debit_max_limit: '0',
+    debit_limit_unit: 'mg', dosage_precision: '1',
 };
 const preparationDefaults = {
     min_weight: '0', max_weight: '', concentration: '', concentration_unit: 'mg', total_volume: '', instructions: '',
@@ -15,28 +15,26 @@ const preparationDefaults = {
 type PreparationData = typeof preparationDefaults;
 type DrugKey = keyof typeof drugDefaults;
 type PreparationKey = keyof PreparationData;
-const drugFields: { id: DrugKey; label: string; numeric?: boolean; options?: string[] }[] = [
+const drugFields: { id: DrugKey; label: string; numeric?: boolean; options?: string[]; hint?: string }[] = [
     { id: 'name', label: 'Nom du médicament' }, { id: 'brand_name', label: 'Nom commercial (facultatif)' },
     { id: 'concentration', label: 'Concentration commerciale (ex. : 1 mg/mL)' },
-    { id: 'debit_min', label: 'Dose minimale par kg', numeric: true },
-    { id: 'debit_max', label: 'Dose maximale par kg (0 si absente)', numeric: true },
-    { id: 'debit_dose_unit', label: 'Unité de dose', options: ['mg', 'mcg', 'unité', 'mU'] },
-    { id: 'debit_time_unit', label: 'Unité de temps', options: ['min', 'h'] },
-    { id: 'debit_min_limit', label: 'Plafond horaire de la dose minimale (0 si absent)', numeric: true },
-    { id: 'debit_max_limit', label: 'Plafond horaire de la dose maximale (0 si absent)', numeric: true },
-    { id: 'debit_limit_unit', label: 'Unité des plafonds horaires', options: ['mg', 'mcg', 'unité', 'mU'] },
+    { id: 'debit_min', label: 'Dose minimale', numeric: true },
+    { id: 'debit_max', label: 'Dose maximale', hint: '0 si absente', numeric: true },
+    { id: 'dose_unit', label: 'Unité de dose' },
+    { id: 'debit_min_limit', label: 'Débit minimal', hint: '0 si absent', numeric: true },
+    { id: 'debit_max_limit', label: 'Débit maximal', hint: '0 si absent', numeric: true },
+    { id: 'debit_limit_unit', label: 'Unité de débit', hint: 'Par heure', options: ['mg', 'mcg', 'unité', 'mU'] },
     { id: 'dosage_precision', label: 'Décimales des doses', numeric: true },
-    { id: 'order', label: 'Ordre de la fiche dans le calculateur', numeric: true },
 ];
 const preparationFields: { id: PreparationKey; label: string; numeric?: boolean; options?: string[] }[] = [
     { id: 'min_weight', label: 'Poids minimal inclus (kg)', numeric: true },
     { id: 'max_weight', label: 'Poids maximal exclu (kg), vide si absent', numeric: true },
-    { id: 'concentration', label: 'Concentration préparée par mL', numeric: true },
+    { id: 'concentration', label: 'Concentration', numeric: true },
     { id: 'concentration_unit', label: 'Unité de concentration', options: ['mg', 'mcg', 'unité', 'mU'] },
     { id: 'total_volume', label: 'Volume total (mL)', numeric: true },
 ];
 
-export default function InfusionForm({ infusion, action, method }: { infusion: Recipe | null; action: string; method: 'post' | 'put' }) {
+export default function InfusionForm({ infusion, action, method, doseUnits }: { infusion: Recipe | null; action: string; method: 'post' | 'put'; doseUnits: string[] }) {
     const initial = { ...drugDefaults };
     for (const key of Object.keys(initial) as DrugKey[]) {
         initial[key] = String(infusion?.[key] ?? drugDefaults[key]);
@@ -73,11 +71,14 @@ export default function InfusionForm({ infusion, action, method }: { infusion: R
             <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-[#182524]">
                 <h2 className="mb-5 text-lg font-semibold">Médicament</h2>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {drugFields.map(field => <FormField key={field.id} id={field.id} label={field.label} error={errors[field.id]}>
-                        {field.options ? <select id={field.id} className={inputClass} value={form.data[field.id]} onChange={event => form.setData(field.id, event.target.value)}>{field.options.map(option => <option key={option}>{option}</option>)}</select>
+                    {drugFields.map(field => {
+                        const options = field.id === 'dose_unit' ? doseUnits : field.options;
+                        const hint = ['debit_min', 'debit_max'].includes(field.id) ? `${form.data.dose_unit}${field.hint ? ` · ${field.hint}` : ''}` : field.hint;
+                        return <FormField key={field.id} id={field.id} label={field.label} hint={hint} error={errors[field.id]}>
+                        {options ? <select id={field.id} className={inputClass} value={form.data[field.id]} onChange={event => form.setData(field.id, event.target.value)}>{options.map(option => <option key={option}>{option}</option>)}</select>
                             : <input id={field.id} className={inputClass} type={field.numeric ? 'number' : 'text'} step="any" min={field.numeric ? 0 : undefined} required={field.id !== 'brand_name'} value={form.data[field.id]} onChange={event => form.setData(field.id, event.target.value)} />}
-                    </FormField>)}
-                    <FormField id="type" label="Catégorie" error={errors.type}><select id="type" value={form.data.type} className={inputClass} onChange={event => form.setData('type', event.target.value)}><option value="1">Sédation</option><option value="2">Cardiovasculaire</option><option value="3">Autres médicaments</option></select></FormField>
+                    </FormField>;
+                    })}
                 </div>
             </section>
             <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-[#182524]">

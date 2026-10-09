@@ -22,16 +22,19 @@ class InfusionDrug extends Model
     /** @use HasFactory<InfusionDrugFactory> */
     use HasFactory, SoftDeletes;
 
+    protected $attributes = ['dose_per_kg' => true];
+
     protected $fillable = [
         'organization_id', 'recipe_id', 'version', 'status', 'created_by', 'published_by',
         'published_at', 'superseded_at', 'supersedes_id', 'name', 'brand_name',
         'concentration', 'debit_min', 'debit_max', 'debit_dose_unit', 'debit_time_unit',
-        'debit_min_limit', 'debit_max_limit', 'debit_limit_unit', 'dosage_precision', 'type', 'order',
+        'debit_min_limit', 'debit_max_limit', 'debit_limit_unit', 'dosage_precision', 'dose_per_kg', 'type', 'order',
     ];
 
     protected function casts(): array
     {
         return [
+            'dose_per_kg' => 'boolean',
             'organization_id' => 'integer',
             'version' => 'integer',
             'created_by' => 'integer',
@@ -94,8 +97,28 @@ class InfusionDrug extends Model
         return $this->only([
             'name', 'brand_name', 'concentration', 'debit_min', 'debit_max', 'debit_dose_unit',
             'debit_time_unit', 'debit_min_limit', 'debit_max_limit', 'debit_limit_unit',
-            'dosage_precision', 'type', 'order',
+            'dosage_precision', 'dose_per_kg', 'type', 'order',
         ]);
+    }
+
+    /** @return list<string> */
+    public static function doseUnits(): array
+    {
+        $units = [];
+        foreach (['mg', 'mcg', 'unité', 'mU'] as $doseUnit) {
+            foreach (['/kg', ''] as $weightUnit) {
+                foreach (['h', 'min'] as $timeUnit) {
+                    $units[] = $doseUnit.$weightUnit.'/'.$timeUnit;
+                }
+            }
+        }
+
+        return $units;
+    }
+
+    public function doseUnit(): string
+    {
+        return $this->debit_dose_unit.($this->dose_per_kg ? '/kg' : '').'/'.$this->debit_time_unit;
     }
 
     /** @return Collection<int, InfusionConcentration> */
@@ -140,7 +163,7 @@ class InfusionDrug extends Model
     /** @return array<string, mixed> */
     public function recipeSnapshot(): array
     {
-        return [...$this->recipeAttributes(), 'preparations' => $this->concentrations->map(
+        return [...$this->recipeAttributes(), 'dose_unit' => $this->doseUnit(), 'preparations' => $this->concentrations->map(
             fn (InfusionConcentration $preparation): array => $preparation->preparationAttributes()
         )->all()];
     }

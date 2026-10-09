@@ -34,9 +34,9 @@ function infusionInput(array $overrides = []): array
 {
     return array_replace([
         'name' => 'Adrénaline', 'brand_name' => '', 'concentration' => '1 mg/mL',
-        'debit_min' => 0.1, 'debit_max' => 1, 'debit_dose_unit' => 'mcg',
-        'debit_time_unit' => 'min', 'debit_min_limit' => 0, 'debit_max_limit' => 0,
-        'debit_limit_unit' => 'mcg', 'dosage_precision' => 2, 'type' => 1, 'order' => 1,
+        'debit_min' => 0.1, 'debit_max' => 1, 'dose_unit' => 'mcg/kg/min',
+        'debit_min_limit' => 0, 'debit_max_limit' => 0,
+        'debit_limit_unit' => 'mcg', 'dosage_precision' => 2,
         'preparations' => [
             ['min_weight' => 0, 'max_weight' => 10, 'concentration' => 10, 'concentration_unit' => 'mcg', 'total_volume' => 50, 'instructions' => 'Première préparation'],
             ['min_weight' => 10, 'max_weight' => null, 'concentration' => 20, 'concentration_unit' => 'mcg', 'total_volume' => 100, 'instructions' => 'Seconde préparation'],
@@ -211,4 +211,64 @@ it('refuse de restaurer un ancien brouillon lorsqu’une nouvelle révision exis
     $this->assertSoftDeleted($oldDraft);
     expect($newDraft->fresh()->status)->toBe('draft');
     expect(InfusionDrug::published()->pluck('id')->all())->toBe([$source->id]);
+});
+
+it('enregistre une unité combinée sans catégorie ni ordre saisis', function (): void {
+    $administrator = User::factory()->for(Organization::factory())->create();
+    $input = infusionInput(['dose_unit' => 'mcg/min']);
+    unset($input['debit_dose_unit'], $input['debit_time_unit'], $input['type'], $input['order']);
+
+    $this->actingAs($administrator)->post('/admin/infusions', $input)->assertRedirect();
+
+    $drug = InfusionDrug::firstOrFail();
+    expect($drug->dose_per_kg)->toBeFalse();
+    expect($drug->debit_dose_unit)->toBe('mcg');
+    expect($drug->debit_time_unit)->toBe('min');
+    $this->get("/admin/infusions/{$drug->id}/edit")->assertInertia(fn ($page) => $page
+        ->where('infusion.dose_unit', 'mcg/min'));
+});
+
+it('accepte les unités combinées et déduit leurs composantes malgré des champs internes injectés', function (string $unit, string $doseUnit, string $timeUnit, bool $perKg): void {
+    $administrator = User::factory()->for(Organization::factory())->create();
+
+    $this->actingAs($administrator)->post('/admin/infusions', infusionInput([
+        'dose_unit' => $unit, 'debit_dose_unit' => 'invalide', 'debit_time_unit' => 'invalide', 'dose_per_kg' => ! $perKg,
+    ]))->assertRedirect()->assertSessionHasNoErrors();
+
+    $drug = InfusionDrug::firstOrFail();
+    expect($drug->debit_dose_unit)->toBe($doseUnit);
+    expect($drug->debit_time_unit)->toBe($timeUnit);
+    expect($drug->dose_per_kg)->toBe($perKg);
+})->with([
+    ['mg/kg/h', 'mg', 'h', true], ['mg/kg/min', 'mg', 'min', true],
+    ['mg/h', 'mg', 'h', false], ['mg/min', 'mg', 'min', false],
+    ['mcg/kg/h', 'mcg', 'h', true], ['mcg/kg/min', 'mcg', 'min', true],
+    ['mcg/h', 'mcg', 'h', false], ['mcg/min', 'mcg', 'min', false],
+    ['unité/kg/h', 'unité', 'h', true], ['unité/kg/min', 'unité', 'min', true],
+    ['unité/h', 'unité', 'h', false], ['unité/min', 'unité', 'min', false],
+    ['mU/kg/h', 'mU', 'h', true], ['mU/kg/min', 'mU', 'min', true],
+    ['mU/h', 'mU', 'h', false], ['mU/min', 'mU', 'min', false],
+]);
+
+it('refuse une unité combinée non prise en charge', function (): void {
+    $administrator = User::factory()->for(Organization::factory())->create();
+
+    $this->actingAs($administrator)->post('/admin/infusions', infusionInput(['dose_unit' => 'mg/kg/jour']))
+        ->assertSessionHasErrors('dose_unit');
+
+    expect(InfusionDrug::count())->toBe(0);
+});
+
+it('préserve la catégorie et l’ordre existants en modifiant une unité de dose', function (): void {
+    $organization = Organization::factory()->create();
+    $administrator = User::factory()->for($organization)->create();
+    $drug = InfusionDrug::factory()->for($organization)->create(['status' => 'draft', 'type' => 2, 'order' => 7]);
+
+    $this->actingAs($administrator)->put("/admin/infusions/{$drug->id}", infusionInput([
+        'dose_unit' => 'mg/h', 'type' => 3, 'order' => 99,
+    ]))->assertRedirect()->assertSessionHasNoErrors();
+
+    expect($drug->fresh()->type)->toBe(2);
+    expect($drug->fresh()->order)->toBe(7);
+    expect($drug->fresh()->doseUnit())->toBe('mg/h');
 });
