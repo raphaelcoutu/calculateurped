@@ -10,19 +10,17 @@ use Illuminate\Support\Facades\Schema;
 uses(RefreshDatabase::class);
 
 describe('organization drafts', function (): void {
-    it('searches the organization bolus list by name or commercial name', function (): void {
+    it('searches the organization bolus list by name or commercial name in alphabetical order', function (): void {
         $organization = Organization::factory()->create();
         $otherOrganization = Organization::factory()->create();
         $administrator = User::factory()->for($organization)->create();
         $nameMatch = Bolus::factory()->for($organization)->create([
             'name' => 'Adrénaline (nom)',
             'brand_name' => 'Épinéphrine',
-            'updated_at' => now()->subMinutes(2),
         ]);
         $brandMatch = Bolus::factory()->for($organization)->create([
             'name' => 'Produit hospitalier',
             'brand_name' => 'Adrénaline',
-            'updated_at' => now()->subMinute(),
         ]);
         Bolus::factory()->for($organization)->create(['name' => 'Autre médicament']);
         Bolus::factory()->for($otherOrganization)->create(['name' => 'Adrénaline autre centre']);
@@ -32,20 +30,18 @@ describe('organization drafts', function (): void {
                 ->component('admin/boluses/index')
                 ->where('search', 'adrénaline')
                 ->has('boluses.data', 2)
-                ->where('boluses.data.0.id', $brandMatch->id)
-                ->where('boluses.data.1.id', $nameMatch->id));
+                ->where('boluses.data.0.id', $nameMatch->id)
+                ->where('boluses.data.1.id', $brandMatch->id));
     });
 
-    it('shows a pending revision draft next to its published bolus', function (): void {
+    it('sorts boluses alphabetically and puts the newest revision first for matching names', function (): void {
         $organization = Organization::factory()->create();
         $administrator = User::factory()->for($organization)->create();
         $published = Bolus::factory()->for($organization)->create([
             'name' => 'Recette publiée',
-            'updated_at' => now()->subMinutes(2),
         ]);
         $unrelatedPublished = Bolus::factory()->for($organization)->create([
             'name' => 'Autre recette publiée',
-            'updated_at' => now()->subMinute(),
         ]);
         $draft = Bolus::factory()->for($organization)->create([
             'name' => 'Recette publiée',
@@ -54,16 +50,15 @@ describe('organization drafts', function (): void {
             'status' => 'draft',
             'published_at' => null,
             'supersedes_id' => $published->id,
-            'updated_at' => now(),
         ]);
 
         $this->actingAs($administrator)->get(route('admin.boluses.index'))
             ->assertInertia(fn ($page) => $page
                 ->component('admin/boluses/index')
                 ->has('boluses.data', 3)
-                ->where('boluses.data.0.id', $draft->id)
+                ->where('boluses.data.0.id', $unrelatedPublished->id)
                 ->where('boluses.data.0.pendingDraftId', null)
-                ->where('boluses.data.1.id', $unrelatedPublished->id)
+                ->where('boluses.data.1.id', $draft->id)
                 ->where('boluses.data.1.pendingDraftId', null)
                 ->where('boluses.data.2.id', $published->id)
                 ->where('boluses.data.2.pendingDraftId', $draft->id));

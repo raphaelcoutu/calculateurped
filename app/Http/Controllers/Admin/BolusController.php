@@ -45,6 +45,7 @@ class BolusController extends Controller
             ->when($request->boolean('deleted'), fn (Builder $query): Builder => $query->onlyTrashed())
             ->with(['author', 'publisher'])
             ->orderBy('name')
+            ->orderByDesc('version')
             ->orderBy('id')
             ->paginate(20)
             ->withQueryString()
