@@ -19,7 +19,7 @@ const drugFields: { id: DrugKey; label: string; numeric?: boolean; options?: str
     { id: 'name', label: 'Nom du médicament' }, { id: 'brand_name', label: 'Nom commercial (facultatif)' },
     { id: 'concentration', label: 'Concentration commerciale (ex. : 1 mg/mL)' },
     { id: 'debit_min', label: 'Dose minimale', numeric: true },
-    { id: 'debit_max', label: 'Dose maximale', hint: '0 si absente', numeric: true },
+    { id: 'debit_max', label: 'Dose maximale', hint: '0 si aucune limite', numeric: true },
     { id: 'dose_unit', label: 'Unité de dose' },
     { id: 'debit_min_limit', label: 'Débit minimal', hint: '0 si aucune limite', numeric: true },
     { id: 'debit_max_limit', label: 'Débit maximal', hint: '0 si aucune limite', numeric: true },
