@@ -91,7 +91,7 @@ export default function BolusForm({ bolus, action, method }: {
             <div className="mb-6">
                 <Link href={bolus ? `/admin/boluses/${bolus.id}` : '/admin/boluses'} className="text-sm font-medium text-brand-700 hover:underline dark:text-brand-100">← Retour aux bolus</Link>
                 <p className="mt-5 text-xs font-semibold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-100">Gestion des recettes</p>
-                <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">{isEditing ? `Modifier ${bolus?.name}` : 'Créer un bolus en brouillon'}</h1>
+                <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">{isEditing ? `Modifier ${bolus?.name}` : 'Créer un bolus'}</h1>
                 <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Le brouillon demeure privé à votre organisation jusqu’à sa publication.</p>
             </div>
             <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#182524] sm:p-7">

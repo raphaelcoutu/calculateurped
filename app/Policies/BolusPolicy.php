@@ -78,6 +78,7 @@ class BolusPolicy
     public function copy(User $user, Bolus $bolus): bool|Response
     {
         return $user->organization_id !== null
+            && $user->organization_id !== $bolus->organization_id
             && $bolus->status === 'published'
             && $bolus->superseded_at === null
             && ! $bolus->trashed()

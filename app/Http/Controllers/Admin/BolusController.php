@@ -29,6 +29,12 @@ class BolusController extends Controller
                         ->orWhereLike('brand_name', "%{$search}%");
                 });
             })
+            ->when(! $request->boolean('deleted'), fn (Builder $query): Builder => $query->whereNull('superseded_at'))
+            ->addSelect(['has_later_version' => DB::table('boluses as later_versions')
+                ->select('later_versions.id')
+                ->whereColumn('later_versions.recipe_id', 'boluses.recipe_id')
+                ->whereColumn('later_versions.version', '>', 'boluses.version')
+                ->limit(1)])
             ->addSelect(['pending_draft_id' => DB::table('boluses as pending_drafts')
                 ->select('pending_drafts.id')
                 ->whereColumn('pending_drafts.recipe_id', 'boluses.recipe_id')
@@ -38,7 +44,8 @@ class BolusController extends Controller
                 ->limit(1)])
             ->when($request->boolean('deleted'), fn (Builder $query): Builder => $query->onlyTrashed())
             ->with(['author', 'publisher'])
-            ->orderByDesc('updated_at')
+            ->orderBy('name')
+            ->orderBy('id')
             ->paginate(20)
             ->withQueryString()
             ->through(function (Bolus $bolus): array {
@@ -51,6 +58,9 @@ class BolusController extends Controller
                     && $pendingDraftId !== null
                         ? (int) $pendingDraftId
                         : null,
+                    'canRestore' => $bolus->trashed()
+                        && $bolus->superseded_at === null
+                        && $bolus->getAttribute('has_later_version') === null,
                 ];
             });
 
@@ -64,9 +74,9 @@ class BolusController extends Controller
     public function catalog(Request $request): Response
     {
         $this->authorize('viewAny', Bolus::class);
+        $organizationId = $request->user()->organization_id;
 
         return Inertia::render('admin/boluses/catalog', [
-            'canCopy' => $request->user()->organization_id !== null,
             'boluses' => Bolus::published()
                 ->with('organization')
                 ->orderBy('name')
@@ -74,6 +84,7 @@ class BolusController extends Controller
                 ->through(fn (Bolus $bolus): array => [
                     ...$this->listItem($bolus),
                     'organization' => $bolus->organization->name,
+                    'canCopy' => $organizationId !== null && $organizationId !== $bolus->organization_id,
                 ]),
         ]);
     }
@@ -119,7 +130,7 @@ class BolusController extends Controller
 
         $canManage = ! $request->user()->isSuperuser()
             && $request->user()->organization_id === $bolus->organization_id;
-        $pendingDraftId = $canManage && $bolus->status === 'published' && $bolus->superseded_at === null
+        $pendingDraftId = $canManage && ! $bolus->trashed() && $bolus->status === 'published' && $bolus->superseded_at === null
             ? Bolus::query()
                 ->where('recipe_id', $bolus->recipe_id)
                 ->where('status', 'draft')
@@ -150,7 +161,8 @@ class BolusController extends Controller
         return Inertia::render('admin/boluses/show', [
             'canManage' => $canManage,
             'pendingDraftId' => $pendingDraftId === null ? null : (int) $pendingDraftId,
-            'canCopy' => $request->user()->organization_id !== null
+            'canCopy' => ! $bolus->trashed()
+                && $request->user()->organization_id !== null
                 && $bolus->status === 'published'
                 && $request->user()->organization_id !== $bolus->organization_id,
             'bolus' => [
@@ -322,8 +334,22 @@ class BolusController extends Controller
 
         abort_unless($trashedBolus->trashed(), 404);
         DB::transaction(function () use ($trashedBolus, $request): void {
-            $trashedBolus->restore();
-            $this->recordActivity($trashedBolus, $request, 'restored', ['version' => $trashedBolus->version]);
+            $lockedBolus = Bolus::withTrashed()->lockForUpdate()->findOrFail($trashedBolus->id);
+            $this->authorize('restore', $lockedBolus);
+
+            abort_unless($lockedBolus->trashed(), 404);
+            abort_if(
+                $lockedBolus->superseded_at !== null
+                    || Bolus::withTrashed()
+                        ->where('recipe_id', $lockedBolus->recipe_id)
+                        ->where('version', '>', $lockedBolus->version)
+                        ->exists(),
+                409,
+                'Cette version a été remplacée par une version ultérieure et ne peut plus être restaurée.'
+            );
+
+            $lockedBolus->restore();
+            $this->recordActivity($lockedBolus, $request, 'restored', ['version' => $lockedBolus->version]);
         });
 
         return redirect()->route('admin.boluses.show', $trashedBolus)

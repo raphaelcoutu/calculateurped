@@ -58,7 +58,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('boluses/{bolus}/copy', [AdminBolusController::class, 'copy'])->name('boluses.copy');
     Route::delete('boluses/{bolus}', [AdminBolusController::class, 'destroy'])->name('boluses.destroy');
     Route::post('boluses/{bolus}/restore', [AdminBolusController::class, 'restore'])->name('boluses.restore');
-    Route::get('boluses/{bolus}', [AdminBolusController::class, 'show'])->name('boluses.show');
+    Route::get('boluses/{bolus}', [AdminBolusController::class, 'show'])->withTrashed()->name('boluses.show');
 
     Route::resource('organizations', OrganizationController::class)->only(['index', 'create', 'store', 'show', 'edit']);
     Route::put('organizations/{organization}', [OrganizationProfileController::class, 'update'])
