@@ -2,8 +2,9 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import type { FormEvent } from 'react';
 import AppLayout from '@/components/app-layout';
 import { FormField, inputClass, PrimaryButton } from '@/components/form-field';
-import type { Item, Section, RecipeChoice } from './types';
+import type { Section, RecipeChoice } from './types';
 import { buttonClass, panelClass } from './types';
+import RecipeAutocomplete from './recipe-autocomplete';
 
 export default function ProfileForm({ profile, recipes, action, method }: {
     profile: { name: string; sections: Section[] } | null;
@@ -56,21 +57,20 @@ export default function ProfileForm({ profile, recipes, action, method }: {
                     </FormField>
                     <ol className="mt-4 flex flex-col gap-3">{section.items.map((item, itemIndex) => <li key={itemIndex} className="flex flex-wrap items-end gap-3 rounded-xl bg-slate-50 p-3 dark:bg-black/15">
                         <div className="min-w-48 flex-1"><FormField id={`recipe-${sectionIndex}-${itemIndex}`} label={`Recette ${itemIndex + 1}`} error={errors[`sections.${sectionIndex}.items.${itemIndex}.recipe_id`] ?? errors[`sections.${sectionIndex}.items.${itemIndex}.type`]}>
-                            <select id={`recipe-${sectionIndex}-${itemIndex}`} className={inputClass} value={`${item.type}:${item.recipe_id}`} onChange={event => {
-                                const [type, id] = event.target.value.split(':');
-                                const changed: Item = { type: type as Item['type'], recipe_id: Number(id) };
-                                setSection(sectionIndex, { ...section, items: section.items.map((current, index) => index === itemIndex ? changed : current) });
-                            }}>
-                                {!recipes.some(recipe => recipe.type === item.type && recipe.recipe_id === item.recipe_id) && <option value={`${item.type}:${item.recipe_id}`}>Recette déjà sélectionnée, indisponible pour un nouvel ajout</option>}
-                                {recipes.map(recipe => <option key={`${recipe.type}:${recipe.recipe_id}`} value={`${recipe.type}:${recipe.recipe_id}`}>{recipe.type === 'bolus' ? 'Bolus' : 'Perfusion'} · {recipe.name} · v{recipe.version} · {recipe.status === 'published' ? 'Publié' : 'Brouillon'}</option>)}
-                            </select>
+                            <RecipeAutocomplete id={`recipe-${sectionIndex}-${itemIndex}`} recipes={recipes} value={item} disabled={form.processing} error={Boolean(errors[`sections.${sectionIndex}.items.${itemIndex}.recipe_id`] ?? errors[`sections.${sectionIndex}.items.${itemIndex}.type`])} onSelect={recipe => {
+                                setSection(sectionIndex, { ...section, items: section.items.map((current, index) => index === itemIndex ? { type: recipe.type, recipe_id: recipe.recipe_id } : current) });
+                            }} />
                         </FormField></div>
                         <button type="button" className={buttonClass} disabled={itemIndex === 0} aria-label={`Monter la recette ${itemIndex + 1} de la section ${sectionIndex + 1}`} onClick={() => moveItem(sectionIndex, itemIndex, -1)}>↑</button>
                         <button type="button" className={buttonClass} disabled={itemIndex === section.items.length - 1} aria-label={`Descendre la recette ${itemIndex + 1} de la section ${sectionIndex + 1}`} onClick={() => moveItem(sectionIndex, itemIndex, 1)}>↓</button>
                         <button type="button" className={buttonClass} onClick={() => setSection(sectionIndex, { ...section, items: section.items.filter((_, index) => index !== itemIndex) })}>Retirer</button>
                     </li>)}</ol>
                     {errors[`sections.${sectionIndex}.items`] && <p role="alert" className="mt-3 text-sm text-rose-700 dark:text-rose-300">{errors[`sections.${sectionIndex}.items`]}</p>}
-                    <button type="button" className={`${buttonClass} mt-4`} disabled={!recipes.length} onClick={() => setSection(sectionIndex, { ...section, items: [...section.items, { type: recipes[0].type, recipe_id: recipes[0].recipe_id }] })}>Ajouter une recette</button>
+                    <div className="mt-4"><FormField id={`add-recipe-${sectionIndex}`} label="Ajouter une recette" hint="Recherchez par nom ou par type, puis choisissez une suggestion.">
+                        <RecipeAutocomplete id={`add-recipe-${sectionIndex}`} recipes={recipes} value={null} disabled={!recipes.length || form.processing} onSelect={recipe => {
+                            setSection(sectionIndex, { ...section, items: [...section.items, { type: recipe.type, recipe_id: recipe.recipe_id }] });
+                        }} />
+                    </FormField></div>
                     {!recipes.length && <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Publiez d’abord une recette de bolus ou de perfusion dans votre centre.</p>}
                 </section>)}
                 <div className="flex flex-wrap gap-3">
