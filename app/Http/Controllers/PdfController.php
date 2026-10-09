@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bolus;
 use App\Models\CalculatedBolus;
 use App\Models\CalculatedInfusion;
-use App\Models\InfusionConcentration;
-use App\WeightCategory;
+use App\Models\InfusionDrug;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -32,7 +31,7 @@ class PdfController extends Controller
             $calcBoluses->push(new CalculatedBolus($bolus, $weight));
         }
 
-        $infusions = InfusionConcentration::with('drug')->weight(WeightCategory::get($weight))->get();
+        $infusions = InfusionDrug::preparationsForWeight((float) $weight);
 
         foreach ($infusions as $infusion) {
             $calcInfusions->push(new CalculatedInfusion($infusion, $weight));

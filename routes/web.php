@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BolusController as AdminBolusController;
+use App\Http\Controllers\Admin\InfusionDrugController;
 use App\Http\Controllers\Admin\OrganizationAdministratorController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Auth\LoginController;
@@ -59,6 +60,19 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('boluses/{bolus}', [AdminBolusController::class, 'destroy'])->name('boluses.destroy');
     Route::post('boluses/{bolus}/restore', [AdminBolusController::class, 'restore'])->name('boluses.restore');
     Route::get('boluses/{bolus}', [AdminBolusController::class, 'show'])->withTrashed()->name('boluses.show');
+
+    Route::get('infusions/catalog', [InfusionDrugController::class, 'catalog'])->name('infusions.catalog');
+    Route::get('infusions', [InfusionDrugController::class, 'index'])->name('infusions.index');
+    Route::get('infusions/create', [InfusionDrugController::class, 'create'])->name('infusions.create');
+    Route::post('infusions', [InfusionDrugController::class, 'store'])->name('infusions.store');
+    Route::get('infusions/{infusion}/edit', [InfusionDrugController::class, 'edit'])->name('infusions.edit');
+    Route::put('infusions/{infusion}', [InfusionDrugController::class, 'update'])->name('infusions.update');
+    Route::post('infusions/{infusion}/revise', [InfusionDrugController::class, 'revise'])->name('infusions.revise');
+    Route::post('infusions/{infusion}/publish', [InfusionDrugController::class, 'publish'])->name('infusions.publish');
+    Route::post('infusions/{infusion}/copy', [InfusionDrugController::class, 'copy'])->name('infusions.copy');
+    Route::delete('infusions/{infusion}', [InfusionDrugController::class, 'destroy'])->name('infusions.destroy');
+    Route::post('infusions/{infusion}/restore', [InfusionDrugController::class, 'restore'])->name('infusions.restore');
+    Route::get('infusions/{infusion}', [InfusionDrugController::class, 'show'])->withTrashed()->name('infusions.show');
 
     Route::resource('organizations', OrganizationController::class)->only(['index', 'create', 'store', 'show', 'edit']);
     Route::put('organizations/{organization}', [OrganizationProfileController::class, 'update'])

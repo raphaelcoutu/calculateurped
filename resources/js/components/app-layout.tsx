@@ -57,6 +57,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     <nav aria-label="Navigation administrative" className="mx-auto flex max-w-6xl items-center gap-1 overflow-x-auto px-4 sm:px-6">
                         <Link href="/admin/boluses/catalog" aria-current={currentUrl === '/admin/boluses/catalog' ? 'page' : undefined} className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium transition ${tabClass('/admin/boluses/catalog')}`}>Catalogue des bolus</Link>
                         {!auth.user.is_superuser && <Link href="/admin/boluses" aria-current={currentUrl === '/admin/boluses' ? 'page' : undefined} className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium transition ${tabClass('/admin/boluses')}`}>Mes bolus</Link>}
+                        <Link href="/admin/infusions/catalog" aria-current={currentUrl === '/admin/infusions/catalog' ? 'page' : undefined} className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium transition ${tabClass('/admin/infusions/catalog')}`}>Catalogue des perfusions</Link>
+                        {!auth.user.is_superuser && <Link href="/admin/infusions" aria-current={currentUrl === '/admin/infusions' ? 'page' : undefined} className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium transition ${tabClass('/admin/infusions')}`}>Mes perfusions</Link>}
                         {auth.user.is_superuser ? (
                             <Link href="/admin/organizations" aria-current={currentUrl === '/admin/organizations' ? 'page' : undefined} className={`whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium transition ${tabClass('/admin/organizations')}`}>Organisations</Link>
                         ) : (
