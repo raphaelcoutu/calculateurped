@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\InfusionDrugRequest;
 use App\Models\InfusionDrug;
 use App\Models\PrescriptionItem;
+use App\Models\PrescriptionProfile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Http\RedirectResponse;
@@ -168,6 +169,21 @@ class InfusionDrugController extends Controller
         return Inertia::render('admin/infusions/show', [
             'gaps' => $infusion->coverageGaps(),
             'canManage' => $canManage,
+            'usingProfiles' => $canManage ? PrescriptionProfile::query()
+                ->where('organization_id', $request->user()->organization_id)
+                ->whereHas('sections.items', fn (Builder $query): Builder => $query->where('infusion_drug_id', $infusion->id))
+                ->orderBy('name')
+                ->orderByDesc('version')
+                ->orderBy('id')
+                ->get()
+                ->map(fn (PrescriptionProfile $profile): array => [
+                    'id' => $profile->id,
+                    'name' => $profile->name,
+                    'version' => $profile->version,
+                    'status' => $profile->status,
+                    'supersededAt' => $profile->superseded_at?->toIso8601String(),
+                    'url' => route('admin.profiles.show', $profile),
+                ])->values() : [],
             'pendingDraftId' => $pendingDraftId === null ? null : (int) $pendingDraftId,
             'canCopy' => $infusion->superseded_at === null && ! $infusion->trashed()
                 && $request->user()->organization_id !== null

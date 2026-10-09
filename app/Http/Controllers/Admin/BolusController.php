@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BolusRequest;
 use App\Models\Bolus;
 use App\Models\PrescriptionItem;
+use App\Models\PrescriptionProfile;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Http\RedirectResponse;
@@ -162,6 +163,21 @@ class BolusController extends Controller
 
         return Inertia::render('admin/boluses/show', [
             'canManage' => $canManage,
+            'usingProfiles' => $canManage ? PrescriptionProfile::query()
+                ->where('organization_id', $request->user()->organization_id)
+                ->whereHas('sections.items', fn (Builder $query): Builder => $query->where('bolus_id', $bolus->id))
+                ->orderBy('name')
+                ->orderByDesc('version')
+                ->orderBy('id')
+                ->get()
+                ->map(fn (PrescriptionProfile $profile): array => [
+                    'id' => $profile->id,
+                    'name' => $profile->name,
+                    'version' => $profile->version,
+                    'status' => $profile->status,
+                    'supersededAt' => $profile->superseded_at?->toIso8601String(),
+                    'url' => route('admin.profiles.show', $profile),
+                ])->values() : [],
             'pendingDraftId' => $pendingDraftId === null ? null : (int) $pendingDraftId,
             'canCopy' => ! $bolus->trashed()
                 && $request->user()->organization_id !== null

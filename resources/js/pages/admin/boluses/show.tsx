@@ -1,5 +1,7 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/app-layout';
+import RecipeProfileUsage from '@/components/recipe-profile-usage';
+import type { UsingProfile } from '@/components/recipe-profile-usage';
 
 type Bolus = {
     id: number;
@@ -57,11 +59,12 @@ const changeLabels: Record<string, string> = {
     source_organization: 'Organisation source',
 };
 
-export default function BolusShow({ bolus, canManage, pendingDraftId, canCopy }: {
+export default function BolusShow({ bolus, canManage, pendingDraftId, canCopy, usingProfiles }: {
     bolus: Bolus;
     canManage: boolean;
     pendingDraftId: number | null;
     canCopy: boolean;
+    usingProfiles: UsingProfile[];
 }) {
     const { errors } = usePage<{ errors: Record<string, string> }>().props;
     const isDeleted = bolus.deletedAt !== null;
@@ -117,39 +120,42 @@ export default function BolusShow({ bolus, canManage, pendingDraftId, canCopy }:
                     {bolus.instructions && <div className="mt-5 rounded-xl bg-slate-50 p-4 dark:bg-black/15"><h3 className="text-sm font-semibold text-slate-900 dark:text-white">Instructions</h3><p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600 dark:text-slate-300">{bolus.instructions}</p></div>}
                 </section>
 
-                <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#182524] sm:p-6">
-                    <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Historique</h2>
-                    <ol className="relative ml-1.5 mt-5 space-y-5 border-l border-brand-200 pl-5 dark:border-brand-800">
-                        {bolus.activities.map(activity => {
-                            const changes = visibleActivityChanges(activity.changes);
-                            const detailsId = `activity-${activity.id}-details`;
+                <div className="flex min-w-0 flex-col gap-6">
+                    {canManage && <RecipeProfileUsage profiles={usingProfiles} />}
+                    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#182524] sm:p-6">
+                        <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Historique</h2>
+                        <ol className="relative ml-1.5 mt-5 space-y-5 border-l border-brand-200 pl-5 dark:border-brand-800">
+                            {bolus.activities.map(activity => {
+                                const changes = visibleActivityChanges(activity.changes);
+                                const detailsId = `activity-${activity.id}-details`;
 
-                            return <li key={activity.id} tabIndex={0} aria-describedby={detailsId} className="group relative rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#182524]">
-                                <span aria-hidden="true" className="absolute -left-[1.62rem] top-1.5 size-3 rounded-full border-2 border-white bg-brand-600 ring-2 ring-brand-200 dark:border-[#182524] dark:ring-brand-800" />
-                                <div className="cursor-help py-0.5">
-                                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{activityLabels[activity.action] ?? activity.action}</p>
-                                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                        <time dateTime={activity.date}>{new Date(activity.date).toLocaleDateString('fr-CA')}</time>
-                                        <span aria-hidden="true"> · </span>{activity.author}
-                                    </p>
-                                </div>
-                                <div id={detailsId} role="tooltip" className="invisible absolute left-0 top-full z-30 mt-2 max-h-64 w-72 max-w-[calc(100vw-3rem)] overflow-y-auto rounded-xl border border-slate-200 bg-white text-left opacity-0 shadow-xl transition duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 dark:border-white/15 dark:bg-[#101b1a]">
-                                    <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10">
+                                return <li key={activity.id} tabIndex={0} aria-describedby={detailsId} className="group relative rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#182524]">
+                                    <span aria-hidden="true" className="absolute -left-[1.62rem] top-1.5 size-3 rounded-full border-2 border-white bg-brand-600 ring-2 ring-brand-200 dark:border-[#182524] dark:ring-brand-800" />
+                                    <div className="cursor-help py-0.5">
                                         <p className="text-sm font-semibold text-slate-900 dark:text-white">{activityLabels[activity.action] ?? activity.action}</p>
-                                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{activity.author} · {new Date(activity.date).toLocaleString('fr-CA')}</p>
+                                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                            <time dateTime={activity.date}>{new Date(activity.date).toLocaleDateString('fr-CA')}</time>
+                                            <span aria-hidden="true"> · </span>{activity.author}
+                                        </p>
                                     </div>
-                                    {changes.length ? <dl className="grid gap-2 px-4 py-3">
-                                        {changes.map(change => <div key={change.label} className="grid grid-cols-[auto_1fr] gap-3 text-xs">
-                                            <dt className="font-medium text-slate-500 dark:text-slate-400">{change.label}</dt>
-                                            <dd className="break-words text-right text-slate-800 dark:text-slate-100">{change.value}</dd>
-                                        </div>)}
-                                    </dl> : <p className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">Aucun autre détail pour cette action.</p>}
-                                </div>
-                            </li>;
-                        })}
-                    </ol>
-                    <p className="mt-5 text-xs text-slate-500 dark:text-slate-400">Créé par {bolus.author ?? 'Système'}{bolus.publisher ? ` · Publié par ${bolus.publisher}` : ''}{bolus.publishedAt ? ` le ${new Date(bolus.publishedAt).toLocaleDateString('fr-CA')}` : ''}</p>
-                </section>
+                                    <div id={detailsId} role="tooltip" className="invisible absolute left-0 top-full z-30 mt-2 max-h-64 w-72 max-w-[calc(100vw-3rem)] overflow-y-auto rounded-xl border border-slate-200 bg-white text-left opacity-0 shadow-xl transition duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 dark:border-white/15 dark:bg-[#101b1a]">
+                                        <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10">
+                                            <p className="text-sm font-semibold text-slate-900 dark:text-white">{activityLabels[activity.action] ?? activity.action}</p>
+                                            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{activity.author} · {new Date(activity.date).toLocaleString('fr-CA')}</p>
+                                        </div>
+                                        {changes.length ? <dl className="grid gap-2 px-4 py-3">
+                                            {changes.map(change => <div key={change.label} className="grid grid-cols-[auto_1fr] gap-3 text-xs">
+                                                <dt className="font-medium text-slate-500 dark:text-slate-400">{change.label}</dt>
+                                                <dd className="break-words text-right text-slate-800 dark:text-slate-100">{change.value}</dd>
+                                            </div>)}
+                                        </dl> : <p className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">Aucun autre détail pour cette action.</p>}
+                                    </div>
+                                </li>;
+                            })}
+                        </ol>
+                        <p className="mt-5 text-xs text-slate-500 dark:text-slate-400">Créé par {bolus.author ?? 'Système'}{bolus.publisher ? ` · Publié par ${bolus.publisher}` : ''}{bolus.publishedAt ? ` le ${new Date(bolus.publishedAt).toLocaleDateString('fr-CA')}` : ''}</p>
+                    </section>
+                </div>
             </div>
             <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#182524] sm:p-6">
                 <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Versions de cette recette</h2>

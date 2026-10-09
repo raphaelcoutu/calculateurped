@@ -10,6 +10,53 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+it('liste sans doublons les profils utilisant la version consultée de la recette', function (string $model, string $path, string $column): void {
+    $administrator = User::factory()->for(Organization::factory())->create();
+    $recipe = $model::factory()->create(['organization_id' => $administrator->organization_id]);
+    $replacement = $model::factory()->create(['organization_id' => $administrator->organization_id, 'recipe_id' => $recipe->recipe_id, 'version' => 2]);
+    $profiles = PrescriptionProfile::factory()->count(4)->sequence(
+        ['name' => 'A Brouillon', 'status' => 'draft'],
+        ['name' => 'B Dépublié', 'status' => 'unpublished'],
+        ['name' => 'C Publié', 'status' => 'published'],
+        ['name' => 'D Remplacé', 'status' => 'published', 'superseded_at' => now()],
+    )->create(['organization_id' => $administrator->organization_id]);
+    foreach ($profiles as $profile) {
+        $section = $profile->sections()->create(['name' => 'Section', 'position' => 0]);
+        $section->items()->create([$column => $recipe->id, 'position' => 0]);
+        $section->items()->create([$column => $recipe->id, 'position' => 1]);
+    }
+    $deleted = PrescriptionProfile::factory()->create(['organization_id' => $administrator->organization_id]);
+    $deleted->sections()->create(['name' => 'Section', 'position' => 0])->items()->create([$column => $recipe->id, 'position' => 0]);
+    $deleted->delete();
+    $foreign = PrescriptionProfile::factory()->create();
+    $foreign->sections()->create(['name' => 'Section', 'position' => 0])->items()->create([$column => $recipe->id, 'position' => 0]);
+    $otherVersion = PrescriptionProfile::factory()->create(['organization_id' => $administrator->organization_id]);
+    $otherVersion->sections()->create(['name' => 'Section', 'position' => 0])->items()->create([$column => $replacement->id, 'position' => 0]);
+
+    $this->actingAs($administrator)->get("/admin/{$path}/{$recipe->id}")->assertInertia(fn ($page) => $page
+        ->has('usingProfiles', 4)
+        ->where('usingProfiles.0.id', $profiles[0]->id)->where('usingProfiles.0.name', 'A Brouillon')->where('usingProfiles.0.status', 'draft')
+        ->where('usingProfiles.0.version', 1)->where('usingProfiles.0.url', route('admin.profiles.show', $profiles[0]))
+        ->where('usingProfiles.1.id', $profiles[1]->id)->where('usingProfiles.1.status', 'unpublished')
+        ->where('usingProfiles.2.id', $profiles[2]->id)->where('usingProfiles.2.status', 'published')->where('usingProfiles.2.supersededAt', null)
+        ->where('usingProfiles.3.id', $profiles[3]->id)->where('usingProfiles.3.supersededAt', $profiles[3]->superseded_at->toIso8601String()));
+})->with([
+    'bolus' => [Bolus::class, 'boluses', 'bolus_id'],
+    'perfusion' => [InfusionDrug::class, 'infusions', 'infusion_drug_id'],
+]);
+
+it('ne révèle pas les profils privés lors de la consultation du catalogue d’un autre centre', function (string $model, string $path, string $column): void {
+    $recipe = $model::factory()->create();
+    $profile = PrescriptionProfile::factory()->create(['organization_id' => $recipe->organization_id]);
+    $profile->sections()->create(['name' => 'Section', 'position' => 0])->items()->create([$column => $recipe->id, 'position' => 0]);
+    $visitor = User::factory()->for(Organization::factory())->create();
+
+    $this->actingAs($visitor)->get("/admin/{$path}/{$recipe->id}")->assertInertia(fn ($page) => $page->has('usingProfiles', 0));
+})->with([
+    'bolus' => [Bolus::class, 'boluses', 'bolus_id'],
+    'perfusion' => [InfusionDrug::class, 'infusions', 'infusion_drug_id'],
+]);
+
 it('compose plusieurs profils avec sections ordonnées et recettes répétées dans son centre', function (): void {
     $administrator = User::factory()->for(Organization::factory())->create();
     $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id]);
