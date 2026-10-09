@@ -21,4 +21,10 @@ class Organization extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    /** @return HasMany<Bolus, $this> */
+    public function boluses(): HasMany
+    {
+        return $this->hasMany(Bolus::class);
+    }
 }
