@@ -25,6 +25,9 @@ void createInertiaApp({
     },
 });
 
-const appearance = window.localStorage.getItem('appearance');
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-document.documentElement.classList.toggle('dark', appearance === 'dark' || (appearance === null && prefersDark));
+if (typeof window !== 'undefined') {
+    const appearance = window.localStorage.getItem('appearance');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    document.documentElement.classList.toggle('dark', appearance === 'dark' || (appearance === null && prefersDark));
+}
