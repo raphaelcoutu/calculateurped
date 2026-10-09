@@ -35,7 +35,7 @@ export default function ProfileForm({ profile, recipes, action, method }: {
         <Head title={profile ? 'Modifier le profil' : 'Créer un profil'} />
         <Link href="/admin/profiles" className="text-sm text-brand-700 dark:text-brand-100">← Retour aux profils</Link>
         <h1 className="mt-5 text-3xl font-semibold">{profile ? 'Modifier le profil' : 'Créer un profil d’ordonnance'}</h1>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Organisez les sections et les recettes dans l’ordre du PDF. Une recette peut apparaître plusieurs fois.</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Organisez les sections et les recettes dans l’ordre du PDF. Seules les recettes publiées peuvent être ajoutées. Une recette peut apparaître plusieurs fois.</p>
         <form onSubmit={submit} className="mt-6 flex flex-col gap-5">
             <fieldset disabled={form.processing} className="flex flex-col gap-5 disabled:opacity-60">
                 <div className={panelClass}><FormField id="profile-name" label="Nom du profil" error={errors.name}>
@@ -61,7 +61,7 @@ export default function ProfileForm({ profile, recipes, action, method }: {
                                 const changed: Item = { type: type as Item['type'], recipe_id: Number(id) };
                                 setSection(sectionIndex, { ...section, items: section.items.map((current, index) => index === itemIndex ? changed : current) });
                             }}>
-                                {!recipes.some(recipe => recipe.type === item.type && recipe.recipe_id === item.recipe_id) && <option value={`${item.type}:${item.recipe_id}`}>Recette indisponible, choisissez un remplacement</option>}
+                                {!recipes.some(recipe => recipe.type === item.type && recipe.recipe_id === item.recipe_id) && <option value={`${item.type}:${item.recipe_id}`}>Recette déjà sélectionnée, indisponible pour un nouvel ajout</option>}
                                 {recipes.map(recipe => <option key={`${recipe.type}:${recipe.recipe_id}`} value={`${recipe.type}:${recipe.recipe_id}`}>{recipe.type === 'bolus' ? 'Bolus' : 'Perfusion'} · {recipe.name} · v{recipe.version} · {recipe.status === 'published' ? 'Publié' : 'Brouillon'}</option>)}
                             </select>
                         </FormField></div>
@@ -71,7 +71,7 @@ export default function ProfileForm({ profile, recipes, action, method }: {
                     </li>)}</ol>
                     {errors[`sections.${sectionIndex}.items`] && <p role="alert" className="mt-3 text-sm text-rose-700 dark:text-rose-300">{errors[`sections.${sectionIndex}.items`]}</p>}
                     <button type="button" className={`${buttonClass} mt-4`} disabled={!recipes.length} onClick={() => setSection(sectionIndex, { ...section, items: [...section.items, { type: recipes[0].type, recipe_id: recipes[0].recipe_id }] })}>Ajouter une recette</button>
-                    {!recipes.length && <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Créez d’abord une recette de bolus ou de perfusion dans votre centre.</p>}
+                    {!recipes.length && <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Publiez d’abord une recette de bolus ou de perfusion dans votre centre.</p>}
                 </section>)}
                 <div className="flex flex-wrap gap-3">
                     <button type="button" className={buttonClass} onClick={() => { form.setData('sections', [...form.data.sections, { name: '', items: [] }]); form.clearErrors(); }}>Ajouter une section</button>

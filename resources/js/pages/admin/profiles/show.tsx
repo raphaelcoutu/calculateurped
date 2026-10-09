@@ -54,7 +54,12 @@ export default function ProfileShow({ profile, pendingDraftId }: { profile: Prof
                 <h2 className="font-semibold">{index + 1}. {section.name}</h2>
                 <ol className="mt-3 flex flex-col gap-2">{section.items.map((item, itemIndex) => <li key={itemIndex} className="flex flex-wrap justify-between gap-2 rounded-lg bg-slate-50 p-3 text-sm dark:bg-black/15">
                     <Link href={`/admin/${item.type === 'bolus' ? 'boluses' : 'infusions'}/${item.recipe_id}`} className="text-brand-700 dark:text-brand-100">{itemIndex + 1}. {item.name}</Link>
-                    <span>{item.type === 'bolus' ? 'Bolus' : 'Perfusion'} · {item.deletedAt ? 'Supprimée' : item.status === 'published' ? 'Publiée' : 'Brouillon'}</span>
+                    <div className="flex items-center gap-3">
+                        <span>{item.type === 'bolus' ? 'Bolus' : 'Perfusion'} · {item.deletedAt ? 'Supprimée' : item.status === 'published' ? 'Publiée' : 'Brouillon'}</span>
+                        <Link href={`/admin/${item.type === 'bolus' ? 'boluses' : 'infusions'}/${item.recipe_id}`} target="_blank" rel="noopener noreferrer" aria-label={`Voir les paramètres de ${item.name}, nouvel onglet`} title="Voir les paramètres dans un nouvel onglet" className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 text-brand-700 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-white/15 dark:text-brand-100 dark:hover:bg-white/10">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4 4" /></svg>
+                        </Link>
+                    </div>
                 </li>)}</ol>
                 {!section.items.length && <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Section vide.</p>}
             </section>)}

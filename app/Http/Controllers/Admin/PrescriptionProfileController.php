@@ -130,7 +130,7 @@ class PrescriptionProfileController extends Controller
                 'name' => $source->name, 'status' => 'draft', 'created_by' => $request->user()->id,
                 'supersedes_id' => $source->id,
             ]);
-            $this->saveSections($draft, $source->profileSnapshot()['sections']);
+            $this->saveSections($draft, $source->profileSnapshot()['sections'], $source);
             $this->recordActivity($draft, $request, 'revision_created');
 
             return $draft;
@@ -260,7 +260,7 @@ class PrescriptionProfileController extends Controller
     {
         $choices = [];
         foreach (['bolus' => Bolus::class, 'infusion' => InfusionDrug::class] as $type => $model) {
-            foreach ($model::where('organization_id', $organizationId)->orderBy('name')->orderByDesc('version')->orderBy('id')->get() as $recipe) {
+            foreach ($model::published()->where('organization_id', $organizationId)->orderBy('name')->orderByDesc('version')->orderBy('id')->get() as $recipe) {
                 $choices[] = ['type' => $type, 'recipe_id' => $recipe->id, 'name' => $recipe->name, 'status' => $recipe->status, 'version' => $recipe->version];
             }
         }
@@ -280,8 +280,15 @@ class PrescriptionProfileController extends Controller
     }
 
     /** @param list<array{name: string, items: list<array{type: string, recipe_id: int}>}> $sections */
-    private function saveSections(PrescriptionProfile $profile, array $sections): void
+    private function saveSections(PrescriptionProfile $profile, array $sections, ?PrescriptionProfile $source = null): void
     {
+        $existingOccurrences = [];
+        foreach (($source ?? $profile)->profileSnapshot()['sections'] as $existingSection) {
+            foreach ($existingSection['items'] as $existingItem) {
+                $key = $existingItem['type'].':'.$existingItem['recipe_id'];
+                $existingOccurrences[$key] = ($existingOccurrences[$key] ?? 0) + 1;
+            }
+        }
         foreach ($sections as $sectionIndex => $section) {
             foreach ($section['items'] as $itemIndex => $item) {
                 $model = $item['type'] === 'bolus' ? Bolus::class : InfusionDrug::class;
@@ -289,6 +296,12 @@ class PrescriptionProfileController extends Controller
                 if ($recipe === null || $recipe->organization_id !== $profile->organization_id) {
                     throw ValidationException::withMessages(["sections.{$sectionIndex}.items.{$itemIndex}.recipe_id" => 'Choisissez une recette non supprimée de votre centre.']);
                 }
+                $key = $item['type'].':'.$item['recipe_id'];
+                $remainingOccurrences = $existingOccurrences[$key] ?? 0;
+                if (($recipe->status !== 'published' || $recipe->superseded_at !== null) && $remainingOccurrences === 0) {
+                    throw ValidationException::withMessages(["sections.{$sectionIndex}.items.{$itemIndex}.recipe_id" => 'Seules les recettes publiées et actives peuvent être ajoutées au profil.']);
+                }
+                $existingOccurrences[$key] = max(0, $remainingOccurrences - 1);
             }
         }
         $profile->sections()->delete();

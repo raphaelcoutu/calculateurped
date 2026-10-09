@@ -12,7 +12,7 @@ uses(RefreshDatabase::class);
 
 it('compose plusieurs profils avec sections ordonnées et recettes répétées dans son centre', function (): void {
     $administrator = User::factory()->for(Organization::factory())->create();
-    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id, 'status' => 'draft']);
+    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id]);
     $infusion = InfusionDrug::factory()->create(['organization_id' => $administrator->organization_id]);
     $input = ['name' => 'Urgence', 'sections' => [
         ['name' => 'Première', 'items' => [
@@ -25,7 +25,7 @@ it('compose plusieurs profils avec sections ordonnées et recettes répétées d
 
     $this->actingAs($administrator)->post('/admin/profiles', [...$input, 'status' => 'published', 'organization_id' => 999])->assertRedirect();
     $profile = PrescriptionProfile::firstOrFail();
-    $this->assertDatabaseHas('prescription_profiles', ['id' => $profile->id, 'organization_id' => $administrator->organization_id, 'status' => 'draft', 'created_by' => $administrator->id]);
+    $this->assertDatabaseHas('prescription_profiles', ['id' => $profile->id, 'organization_id' => $administrator->organization_id, 'created_by' => $administrator->id]);
     $this->get("/admin/profiles/{$profile->id}")->assertInertia(fn ($page) => $page
         ->component('admin/profiles/show')->where('profile.name', 'Urgence')
         ->where('profile.sections.0.name', 'Première')->where('profile.sections.1.name', 'Seconde')
@@ -38,11 +38,12 @@ it('compose plusieurs profils avec sections ordonnées et recettes répétées d
 
 it('refuse de publier avec des recettes en brouillon et conserve la version active pendant la révision', function (): void {
     $administrator = User::factory()->for(Organization::factory())->create();
-    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id, 'status' => 'draft']);
+    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id]);
     $input = ['name' => 'Urgence', 'sections' => [['name' => 'Bolus', 'items' => [['type' => 'bolus', 'recipe_id' => $bolus->id]]]]];
     $this->actingAs($administrator)->post('/admin/profiles', $input)->assertRedirect();
     $profile = PrescriptionProfile::firstOrFail();
 
+    $this->post("/admin/boluses/{$bolus->id}/unpublish")->assertRedirect();
     $this->post("/admin/profiles/{$profile->id}/publish")->assertSessionHasErrors(['recipes']);
     expect($profile->fresh()->status)->toBe('draft');
     $this->post("/admin/boluses/{$bolus->id}/publish")->assertRedirect();
@@ -123,13 +124,16 @@ it('change le profil par défaut et restaure un profil supprimé sans réactiver
 
 it('prévisualise un brouillon avec les calculs existants sans modifier les données de session', function (): void {
     $administrator = User::factory()->for(Organization::factory())->create();
-    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id, 'status' => 'draft', 'name' => 'Bolus fictif', 'asterisk' => true, 'instructions' => 'Instruction bolus']);
-    $infusion = InfusionDrug::factory()->create(['organization_id' => $administrator->organization_id, 'status' => 'draft', 'name' => 'Perfusion fictive', 'brand_name' => '']);
+    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id, 'name' => 'Bolus fictif', 'asterisk' => true, 'instructions' => 'Instruction bolus']);
+    $infusion = InfusionDrug::factory()->create(['organization_id' => $administrator->organization_id, 'name' => 'Perfusion fictive', 'brand_name' => '']);
     InfusionConcentration::factory()->create(['infusion_drug_id' => $infusion->id, 'min_weight' => 0, 'max_weight' => null]);
     $this->actingAs($administrator)->post('/admin/profiles', ['name' => 'Mixte', 'sections' => [['name' => 'Urgence', 'items' => [
         ['type' => 'infusion', 'recipe_id' => $infusion->id], ['type' => 'bolus', 'recipe_id' => $bolus->id], ['type' => 'bolus', 'recipe_id' => $bolus->id],
     ]]]])->assertRedirect();
     $profile = PrescriptionProfile::firstOrFail();
+
+    $this->post("/admin/boluses/{$bolus->id}/unpublish")->assertRedirect();
+    $this->post("/admin/infusions/{$infusion->id}/unpublish")->assertRedirect();
 
     $response = $this->withSession(['app' => ['name' => 'Patient courant', 'id' => 'Réel', 'weight' => 30, 'dosingWeight' => 30]])
         ->get("/admin/profiles/{$profile->id}/preview?weight=10&name=Patient%20fictif&patient_id=TEST");
@@ -221,8 +225,8 @@ function prescriptionPdfText(string $pdf): string
 
 it('conserve la note de dilution au-dessus de quinze kilogrammes et signale les recettes indisponibles', function (): void {
     $administrator = User::factory()->for(Organization::factory())->create();
-    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id, 'status' => 'draft', 'name' => 'Bolus avec note', 'asterisk' => true]);
-    $infusion = InfusionDrug::factory()->create(['organization_id' => $administrator->organization_id, 'status' => 'draft', 'name' => 'Perfusion hors plage']);
+    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id, 'name' => 'Bolus avec note', 'asterisk' => true]);
+    $infusion = InfusionDrug::factory()->create(['organization_id' => $administrator->organization_id, 'name' => 'Perfusion hors plage']);
     InfusionConcentration::factory()->create(['infusion_drug_id' => $infusion->id, 'min_weight' => 0, 'max_weight' => 10]);
     $this->actingAs($administrator)->post('/admin/profiles', ['name' => 'Profil', 'sections' => [['name' => 'Section', 'items' => [
         ['type' => 'bolus', 'recipe_id' => $bolus->id], ['type' => 'infusion', 'recipe_id' => $infusion->id],
@@ -240,4 +244,60 @@ it('conserve la note de dilution au-dessus de quinze kilogrammes et signale les 
     $response->assertOk();
     expect(prescriptionPdfText($response->getContent()))->toContain('Bolus avec note', 'Recette supprimée');
     $this->post("/admin/profiles/{$profile->id}/publish")->assertSessionHasErrors('recipes');
+});
+
+it('propose uniquement les recettes publiées et refuse l’ajout de brouillons', function (): void {
+    $administrator = User::factory()->for(Organization::factory())->create();
+    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id]);
+    $infusion = InfusionDrug::factory()->create(['organization_id' => $administrator->organization_id]);
+    $draftBolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id, 'status' => 'draft']);
+    $draftInfusion = InfusionDrug::factory()->create(['organization_id' => $administrator->organization_id, 'status' => 'draft']);
+    $input = ['name' => 'Profil', 'sections' => [['name' => 'Section', 'items' => [['type' => 'bolus', 'recipe_id' => $bolus->id]]]]];
+    $this->actingAs($administrator)->post('/admin/profiles', $input)->assertRedirect();
+    $profile = PrescriptionProfile::firstOrFail();
+
+    $this->get('/admin/profiles/create')->assertInertia(fn ($page) => $page->has('recipes', 2)
+        ->where('recipes.0.recipe_id', $bolus->id)->where('recipes.1.recipe_id', $infusion->id));
+    $this->get("/admin/profiles/{$profile->id}/edit")->assertInertia(fn ($page) => $page->has('recipes', 2));
+    foreach ([['type' => 'bolus', 'recipe_id' => $draftBolus->id], ['type' => 'infusion', 'recipe_id' => $draftInfusion->id]] as $item) {
+        $invalid = ['name' => 'Interdit', 'sections' => [['name' => 'Section', 'items' => [$item]]]];
+        $this->post('/admin/profiles', $invalid)->assertSessionHasErrors('sections.0.items.0.recipe_id');
+        $this->put("/admin/profiles/{$profile->id}", $invalid)->assertSessionHasErrors('sections.0.items.0.recipe_id');
+    }
+    expect(PrescriptionProfile::count())->toBe(1);
+    expect($profile->fresh()->name)->toBe('Profil');
+});
+
+it('conserve une recette dépubliée déjà choisie mais refuse d’en ajouter une occurrence', function (): void {
+    $administrator = User::factory()->for(Organization::factory())->create();
+    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id]);
+    $item = ['type' => 'bolus', 'recipe_id' => $bolus->id];
+    $input = ['name' => 'Profil', 'sections' => [['name' => 'Section', 'items' => [$item]]]];
+    $this->actingAs($administrator)->post('/admin/profiles', $input)->assertRedirect();
+    $profile = PrescriptionProfile::firstOrFail();
+    $this->post("/admin/boluses/{$bolus->id}/unpublish")->assertRedirect();
+
+    $this->put("/admin/profiles/{$profile->id}", [...$input, 'name' => 'Profil modifié'])->assertRedirect();
+    $input['sections'][0]['items'][] = $item;
+    $this->put("/admin/profiles/{$profile->id}", $input)->assertSessionHasErrors('sections.0.items.1.recipe_id');
+    expect($profile->fresh()->name)->toBe('Profil modifié');
+    expect($profile->fresh()->profileSnapshot()['sections'][0]['items'])->toHaveCount(1);
+});
+
+it('préserve une version de recette remplacée lors de la révision du profil', function (): void {
+    $administrator = User::factory()->for(Organization::factory())->create();
+    $bolus = Bolus::factory()->create(['organization_id' => $administrator->organization_id]);
+    $input = ['name' => 'Profil', 'sections' => [['name' => 'Section', 'items' => [['type' => 'bolus', 'recipe_id' => $bolus->id]]]]];
+    $this->actingAs($administrator)->post('/admin/profiles', $input)->assertRedirect();
+    $profile = PrescriptionProfile::firstOrFail();
+    $this->post("/admin/profiles/{$profile->id}/publish")->assertRedirect();
+    $bolus->update(['superseded_at' => now()]);
+    $replacement = Bolus::factory()->create(['organization_id' => $administrator->organization_id, 'recipe_id' => $bolus->recipe_id, 'version' => 2]);
+
+    $this->post("/admin/profiles/{$profile->id}/revise")->assertRedirect();
+
+    $draft = PrescriptionProfile::where('status', 'draft')->firstOrFail();
+    expect($draft->profileSnapshot()['sections'][0]['items'][0]['recipe_id'])->toBe($bolus->id);
+    $this->get("/admin/profiles/{$draft->id}/edit")->assertInertia(fn ($page) => $page->has('recipes', 1)->where('recipes.0.recipe_id', $replacement->id));
+    $this->put("/admin/profiles/{$draft->id}", $input)->assertRedirect();
 });
