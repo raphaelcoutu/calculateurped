@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BolusRequest;
 use App\Models\Bolus;
+use App\Models\PrescriptionItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Http\RedirectResponse;
@@ -313,6 +314,23 @@ class BolusController extends Controller
             ->with('status', 'Une copie indépendante a été créée dans vos brouillons.');
     }
 
+    public function unpublish(Request $request, Bolus $bolus): RedirectResponse
+    {
+        $this->authorize('revise', $bolus);
+        DB::transaction(function () use ($request, $bolus): void {
+            $locked = Bolus::query()->lockForUpdate()->findOrFail($bolus->id);
+            $this->authorize('revise', $locked);
+            PrescriptionItem::assertRecipeCanBeWithdrawn('bolus_id', $locked->id);
+            abort_if(Bolus::where('recipe_id', $locked->recipe_id)->where('status', 'draft')->exists(), 409,
+                'Une nouvelle version est déjà en brouillon.');
+            $locked->update(['status' => 'draft']);
+            $this->recordActivity($locked, $request, 'unpublished', ['version' => $locked->version]);
+        });
+
+        return redirect()->route('admin.boluses.show', $bolus)
+            ->with('status', 'La recette a été dépubliée et peut être modifiée.');
+    }
+
     public function destroy(Request $request, Bolus $bolus): RedirectResponse
     {
         $this->authorize('delete', $bolus);
@@ -320,6 +338,7 @@ class BolusController extends Controller
         DB::transaction(function () use ($bolus, $request): void {
             $lockedBolus = Bolus::query()->lockForUpdate()->findOrFail($bolus->id);
             $this->authorize('delete', $lockedBolus);
+            PrescriptionItem::assertRecipeCanBeWithdrawn('bolus_id', $lockedBolus->id);
             $lockedBolus->delete();
             $this->recordActivity($lockedBolus, $request, 'deleted', ['version' => $lockedBolus->version]);
         });

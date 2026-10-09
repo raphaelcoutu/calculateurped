@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/app-layout';
 
 type Bolus = {
@@ -63,6 +63,7 @@ export default function BolusShow({ bolus, canManage, pendingDraftId, canCopy }:
     pendingDraftId: number | null;
     canCopy: boolean;
 }) {
+    const { errors } = usePage<{ errors: Record<string, string> }>().props;
     const isDeleted = bolus.deletedAt !== null;
 
     return (
@@ -88,6 +89,7 @@ export default function BolusShow({ bolus, canManage, pendingDraftId, canCopy }:
                     </>}
                     {canManage && !isDeleted && bolus.status === 'published' && bolus.supersededAt === null && pendingDraftId === null && <button type="button" onClick={() => router.post(`/admin/boluses/${bolus.id}/revise`)} className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-white/15 dark:bg-white/5 dark:text-slate-200">Préparer une nouvelle version</button>}
                     {canManage && !isDeleted && bolus.status === 'published' && pendingDraftId !== null && <Link href={`/admin/boluses/${pendingDraftId}/edit`} className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900 hover:bg-amber-100 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-100">Continuer le brouillon en cours</Link>}
+                    {canManage && !isDeleted && !bolus.supersededAt && bolus.status === 'published' && <button type="button" onClick={() => router.post(`/admin/boluses/${bolus.id}/unpublish`)} className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold dark:border-white/15">Dépublier</button>}
                     {canCopy && !isDeleted && <button type="button" onClick={() => router.post(`/admin/boluses/${bolus.id}/copy`)} className="rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-white hover:bg-brand-700">Copier dans mes brouillons</button>}
                     {canManage && !isDeleted && <button type="button" onClick={() => {
                         if (window.confirm('Supprimer ce bolus? Il pourra être restauré par votre organisation.')) {
@@ -97,6 +99,7 @@ export default function BolusShow({ bolus, canManage, pendingDraftId, canCopy }:
                 </div>
             </div>
 
+            {Object.entries(errors).map(([key, error]) => <p key={key} role="alert" className="mt-4 rounded-xl bg-rose-50 p-4 text-sm text-rose-800 dark:bg-rose-950 dark:text-rose-200">{error}</p>)}
             <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
                 <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-[#182524] sm:p-6">
                     <h2 className="text-lg font-semibold text-slate-950 dark:text-white">Paramètres du bolus</h2>

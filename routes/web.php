@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\BolusController as AdminBolusController;
 use App\Http\Controllers\Admin\InfusionDrugController;
 use App\Http\Controllers\Admin\OrganizationAdministratorController;
 use App\Http\Controllers\Admin\OrganizationController;
+use App\Http\Controllers\Admin\PrescriptionPreviewController;
+use App\Http\Controllers\Admin\PrescriptionProfileController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\BolusController;
@@ -48,6 +50,20 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('profiles', [PrescriptionProfileController::class, 'index'])->name('profiles.index');
+    Route::get('profiles/create', [PrescriptionProfileController::class, 'create'])->name('profiles.create');
+    Route::delete('profiles/{profile}', [PrescriptionProfileController::class, 'destroy'])->name('profiles.destroy');
+    Route::post('profiles/{profile}/restore', [PrescriptionProfileController::class, 'restore'])->name('profiles.restore');
+    Route::get('profiles/{profile}/preview', PrescriptionPreviewController::class)->middleware('throttle:30,1')->name('profiles.preview');
+    Route::get('profiles/{profile}/edit', [PrescriptionProfileController::class, 'edit'])->name('profiles.edit');
+    Route::put('profiles/{profile}', [PrescriptionProfileController::class, 'update'])->name('profiles.update');
+    Route::post('profiles/{profile}/unpublish', [PrescriptionProfileController::class, 'unpublish'])->name('profiles.unpublish');
+    Route::post('profiles/{profile}/publish', [PrescriptionProfileController::class, 'publish'])->name('profiles.publish');
+    Route::post('profiles/{profile}/revise', [PrescriptionProfileController::class, 'revise'])->name('profiles.revise');
+    Route::post('profiles/{profile}/default', [PrescriptionProfileController::class, 'setDefault'])->name('profiles.default');
+    Route::post('profiles', [PrescriptionProfileController::class, 'store'])->name('profiles.store');
+    Route::get('profiles/{profile}', [PrescriptionProfileController::class, 'show'])->withTrashed()->name('profiles.show');
+
     Route::get('boluses/catalog', [AdminBolusController::class, 'catalog'])->name('boluses.catalog');
     Route::get('boluses', [AdminBolusController::class, 'index'])->name('boluses.index');
     Route::get('boluses/create', [AdminBolusController::class, 'create'])->name('boluses.create');
@@ -55,6 +71,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('boluses/{bolus}/edit', [AdminBolusController::class, 'edit'])->name('boluses.edit');
     Route::put('boluses/{bolus}', [AdminBolusController::class, 'update'])->name('boluses.update');
     Route::post('boluses/{bolus}/revise', [AdminBolusController::class, 'revise'])->name('boluses.revise');
+    Route::post('boluses/{bolus}/unpublish', [AdminBolusController::class, 'unpublish'])->name('boluses.unpublish');
     Route::post('boluses/{bolus}/publish', [AdminBolusController::class, 'publish'])->name('boluses.publish');
     Route::post('boluses/{bolus}/copy', [AdminBolusController::class, 'copy'])->name('boluses.copy');
     Route::delete('boluses/{bolus}', [AdminBolusController::class, 'destroy'])->name('boluses.destroy');
@@ -68,6 +85,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('infusions/{infusion}/edit', [InfusionDrugController::class, 'edit'])->name('infusions.edit');
     Route::put('infusions/{infusion}', [InfusionDrugController::class, 'update'])->name('infusions.update');
     Route::post('infusions/{infusion}/revise', [InfusionDrugController::class, 'revise'])->name('infusions.revise');
+    Route::post('infusions/{infusion}/unpublish', [InfusionDrugController::class, 'unpublish'])->name('infusions.unpublish');
     Route::post('infusions/{infusion}/publish', [InfusionDrugController::class, 'publish'])->name('infusions.publish');
     Route::post('infusions/{infusion}/copy', [InfusionDrugController::class, 'copy'])->name('infusions.copy');
     Route::delete('infusions/{infusion}', [InfusionDrugController::class, 'destroy'])->name('infusions.destroy');

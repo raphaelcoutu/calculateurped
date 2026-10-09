@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InfusionDrugRequest;
 use App\Models\InfusionDrug;
+use App\Models\PrescriptionItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Http\RedirectResponse;
@@ -326,6 +327,23 @@ class InfusionDrugController extends Controller
             ->with('status', 'Une copie indépendante a été créée dans vos brouillons.');
     }
 
+    public function unpublish(Request $request, InfusionDrug $infusion): RedirectResponse
+    {
+        $this->authorize('revise', $infusion);
+        DB::transaction(function () use ($request, $infusion): void {
+            $locked = InfusionDrug::query()->lockForUpdate()->findOrFail($infusion->id);
+            $this->authorize('revise', $locked);
+            PrescriptionItem::assertRecipeCanBeWithdrawn('infusion_drug_id', $locked->id);
+            abort_if(InfusionDrug::where('recipe_id', $locked->recipe_id)->where('status', 'draft')->exists(), 409,
+                'Une nouvelle version est déjà en brouillon.');
+            $locked->update(['status' => 'draft']);
+            $this->recordActivity($locked, $request, 'unpublished', ['version' => $locked->version]);
+        });
+
+        return redirect()->route('admin.infusions.show', $infusion)
+            ->with('status', 'La recette a été dépubliée et peut être modifiée.');
+    }
+
     public function destroy(Request $request, InfusionDrug $infusion): RedirectResponse
     {
         $this->authorize('delete', $infusion);
@@ -333,6 +351,7 @@ class InfusionDrugController extends Controller
         DB::transaction(function () use ($infusion, $request): void {
             $lockedInfusionDrug = InfusionDrug::query()->lockForUpdate()->findOrFail($infusion->id);
             $this->authorize('delete', $lockedInfusionDrug);
+            PrescriptionItem::assertRecipeCanBeWithdrawn('infusion_drug_id', $lockedInfusionDrug->id);
             $lockedInfusionDrug->delete();
             $this->recordActivity($lockedInfusionDrug, $request, 'deleted', ['version' => $lockedInfusionDrug->version]);
         });

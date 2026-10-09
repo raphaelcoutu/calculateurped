@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -161,8 +161,12 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 </head>
 <body>
-@include('pdf.bolus', compact('calcBoluses'))
-<div class="page-break"></div>
-@include('pdf.infusion', compact('calcInfusions'))
+@isset($profileSections)
+    @include('pdf.profile')
+@else
+    @include('pdf.bolus', compact('calcBoluses'))
+    <div class="page-break"></div>
+    @include('pdf.infusion', compact('calcInfusions'))
+@endisset
 </body>
 </html>

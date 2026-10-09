@@ -12,7 +12,12 @@ class Organization extends Model
     /** @use HasFactory<OrganizationFactory> */
     use HasFactory;
 
-    protected $fillable = ['name', 'logo_path'];
+    protected $fillable = ['name', 'logo_path', 'default_prescription_profile_id'];
+
+    protected function casts(): array
+    {
+        return ['default_prescription_profile_id' => 'integer'];
+    }
 
     /**
      * @return HasMany<User, $this>

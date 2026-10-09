@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import AppLayout from '@/components/app-layout';
 import type { Recipe, Gap, Preparation } from './types';
 
@@ -8,7 +8,7 @@ type Infusion = Recipe & Version & {
     activities: { id: number; action: string; date: string; author: string; changes: Record<string, unknown> | null }[];
     versions: Version[];
 };
-const actions: Record<string, string> = { created: 'Création du brouillon', updated: 'Modification du brouillon', copied: 'Copie depuis le catalogue', revision_created: 'Création d’une nouvelle version', published: 'Publication', deleted: 'Suppression', restored: 'Restauration' };
+const actions: Record<string, string> = { created: 'Création du brouillon', updated: 'Modification du brouillon', copied: 'Copie depuis le catalogue', revision_created: 'Création d’une nouvelle version', published: 'Publication', unpublished: 'Dépublication', deleted: 'Suppression', restored: 'Restauration' };
 const labels: Record<string, string> = {
     name: 'Médicament', brand_name: 'Nom commercial', concentration: 'Concentration commerciale',
     debit_min: 'Dose minimale', debit_max: 'Dose maximale', debit_dose_unit: 'Unité de dose',
@@ -21,6 +21,7 @@ const buttonClass = 'rounded-xl border border-slate-200 px-4 py-3 text-sm font-s
 export default function InfusionShow({ infusion, canManage, canCopy, pendingDraftId, gaps }: {
     infusion: Infusion; canManage: boolean; canCopy: boolean; pendingDraftId: number | null; gaps: Gap[];
 }) {
+    const { errors } = usePage<{ errors: Record<string, string> }>().props;
     const active = !infusion.deletedAt && !infusion.supersededAt;
     return <AppLayout>
         <Head title={infusion.name} />
@@ -30,11 +31,13 @@ export default function InfusionShow({ infusion, canManage, canCopy, pendingDraf
             <div className="flex flex-wrap gap-2">
                 {canManage && active && infusion.status === 'draft' && <><Link href={`/admin/infusions/${infusion.id}/edit`} className={buttonClass}>Modifier</Link><button type="button" onClick={() => router.post(`/admin/infusions/${infusion.id}/publish`)} className={buttonClass}>Publier</button></>}
                 {canManage && active && infusion.status === 'published' && (pendingDraftId ? <Link href={`/admin/infusions/${pendingDraftId}/edit`} className={buttonClass}>Continuer le brouillon</Link> : <button type="button" onClick={() => router.post(`/admin/infusions/${infusion.id}/revise`)} className={buttonClass}>Préparer une nouvelle version</button>)}
+                {canManage && active && infusion.status === 'published' && <button type="button" onClick={() => router.post(`/admin/infusions/${infusion.id}/unpublish`)} className={buttonClass}>Dépublier</button>}
                 {canCopy && <button type="button" onClick={() => router.post(`/admin/infusions/${infusion.id}/copy`)} className={buttonClass}>Copier dans mes brouillons</button>}
                 {canManage && !infusion.deletedAt && <button type="button" onClick={() => { if (window.confirm('Supprimer cette version de la fiche et ses préparations ?')) router.delete(`/admin/infusions/${infusion.id}`); }} className={buttonClass}>Supprimer</button>}
             </div>
         </div>
         {gaps.length > 0 && <p role="status" className="mt-6 rounded-xl bg-amber-50 p-4 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-100">Plages non couvertes entre 0 et 100 kg : {gaps.map(gap => `[${gap.min}, ${gap.max}[ kg`).join(', ')}. Cet avertissement n’empêche pas la publication.</p>}
+        {Object.entries(errors).map(([key, error]) => <p key={key} role="alert" className="mt-4 rounded-xl bg-rose-50 p-4 text-sm text-rose-800 dark:bg-rose-950 dark:text-rose-200">{error}</p>)}
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-[#182524]">
             <h2 className="text-lg font-semibold">Médicament et doses</h2>
             <dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
