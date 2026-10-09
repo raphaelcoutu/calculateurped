@@ -13,7 +13,7 @@ const labels: Record<string, string> = {
     name: 'Médicament', brand_name: 'Nom commercial', concentration: 'Concentration commerciale',
     debit_min: 'Dose minimale', debit_max: 'Dose maximale', debit_dose_unit: 'Unité de dose',
     debit_time_unit: 'Unité de temps', debit_min_limit: 'Débit minimal', debit_max_limit: 'Débit maximal',
-    dose_unit: 'Unité de dose combinée', debit_limit_unit: 'Unité de débit par heure', dosage_precision: 'Décimales des doses', type: 'Catégorie',
+    dose_unit: 'Unité de dose combinée', debit_limit_unit: 'Unité de débit par heure', dosage_precision: 'Décimales des doses',
     source_organization: 'Centre d’origine', source_version: 'Version d’origine', version: 'Version', published_at: 'Date de publication',
 };
 const buttonClass = 'rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold hover:bg-slate-100 dark:border-white/15 dark:hover:bg-white/10';
@@ -42,7 +42,6 @@ export default function InfusionShow({ infusion, canManage, canCopy, pendingDraf
                 <Detail label="Dose" value={`${infusion.debit_min}${infusion.debit_max > 0 ? ` à ${infusion.debit_max}` : ''} ${infusion.dose_unit}`} />
                 <Detail label="Intervalle de débit" value={formatDebitInterval(infusion.debit_min_limit, infusion.debit_max_limit, `${infusion.debit_limit_unit}/h`)} />
                 <Detail label="Décimales des doses" value={String(infusion.dosage_precision)} />
-                <Detail label="Catégorie" value={infusion.type === 1 ? 'Sédation' : infusion.type === 2 ? 'Cardiovasculaire' : 'Autres médicaments'} />
             </dl>
         </section>
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-[#182524]">
