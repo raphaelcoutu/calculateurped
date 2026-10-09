@@ -40,7 +40,7 @@ export default function InfusionShow({ infusion, canManage, canCopy, pendingDraf
             <dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <Detail label="Concentration commerciale" value={infusion.concentration} />
                 <Detail label="Dose" value={`${infusion.debit_min}${infusion.debit_max > 0 ? ` à ${infusion.debit_max}` : ''} ${infusion.dose_unit}`} />
-                <Detail label="Débit minimal / maximal" value={`${infusion.debit_min_limit || 'Absent'} / ${infusion.debit_max_limit || 'Absent'} ${infusion.debit_limit_unit}/h`} />
+                <Detail label="Intervalle de débit" value={formatDebitInterval(infusion.debit_min_limit, infusion.debit_max_limit, `${infusion.debit_limit_unit}/h`)} />
                 <Detail label="Décimales des doses" value={String(infusion.dosage_precision)} />
                 <Detail label="Catégorie" value={infusion.type === 1 ? 'Sédation' : infusion.type === 2 ? 'Cardiovasculaire' : 'Autres médicaments'} />
                 <Detail label="Ordre de la fiche" value={String(infusion.order)} />
@@ -93,6 +93,13 @@ export default function InfusionShow({ infusion, canManage, canCopy, pendingDraf
 
 function Detail({ label, value }: { label: string; value: string }) {
     return <div className="rounded-xl bg-slate-50 p-4 dark:bg-black/15"><dt className="text-xs text-slate-500 dark:text-slate-400">{label}</dt><dd className="mt-1 font-semibold">{value}</dd></div>;
+}
+
+function formatDebitInterval(min: number, max: number, unit: string): string {
+    if (min === 0 && max === 0) return '-';
+    if (min === 0) return `≤ ${max} ${unit}`;
+    if (max === 0) return `≥ ${min} ${unit}`;
+    return `${min} à ${max} ${unit}`;
 }
 
 function PreparationSummary({ preparation, index }: { preparation: Preparation; index: number }) {

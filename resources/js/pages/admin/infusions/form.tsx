@@ -21,8 +21,8 @@ const drugFields: { id: DrugKey; label: string; numeric?: boolean; options?: str
     { id: 'debit_min', label: 'Dose minimale', numeric: true },
     { id: 'debit_max', label: 'Dose maximale', hint: '0 si absente', numeric: true },
     { id: 'dose_unit', label: 'Unité de dose' },
-    { id: 'debit_min_limit', label: 'Débit minimal', hint: '0 si absent', numeric: true },
-    { id: 'debit_max_limit', label: 'Débit maximal', hint: '0 si absent', numeric: true },
+    { id: 'debit_min_limit', label: 'Débit minimal', hint: '0 si aucune limite', numeric: true },
+    { id: 'debit_max_limit', label: 'Débit maximal', hint: '0 si aucune limite', numeric: true },
     { id: 'debit_limit_unit', label: 'Unité de débit', hint: 'Par heure', options: ['mg', 'mcg', 'unité', 'mU'] },
     { id: 'dosage_precision', label: 'Décimales des doses', numeric: true },
 ];
