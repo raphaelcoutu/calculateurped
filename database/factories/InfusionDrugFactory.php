@@ -2,18 +2,25 @@
 
 namespace Database\Factories;
 
+use App\Models\InfusionDrug;
+use App\Models\Organization;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
+/** @extends Factory<InfusionDrug> */
 class InfusionDrugFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
-    public function definition()
+    public function definition(): array
     {
         return [
+            'organization_id' => Organization::factory(),
+            'recipe_id' => (string) Str::uuid(),
+            'status' => 'published',
+            'published_at' => now(),
+            'version' => 1,
             'name' => $this->faker->name,
             'brand_name' => $this->faker->name,
             'concentration' => $this->faker->numberBetween(0.1, 100).' mg/mL',

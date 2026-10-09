@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CalculatedInfusion;
-use App\Models\InfusionConcentration;
-use App\WeightCategory;
+use App\Models\InfusionDrug;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -14,9 +13,7 @@ class InfusionController extends Controller
     {
         $weight = session('app.dosingWeight');
 
-        $weightCategory = WeightCategory::get($weight);
-
-        $infusions = InfusionConcentration::with('drug')->weight($weightCategory)->get();
+        $infusions = InfusionDrug::preparationsForWeight((float) $weight);
 
         $calculated = collect();
 
