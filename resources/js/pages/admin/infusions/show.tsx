@@ -47,9 +47,30 @@ export default function InfusionShow({ infusion, canManage, canCopy, pendingDraf
             </dl>
         </section>
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-[#182524]">
-            <h2 className="text-lg font-semibold">Préparations dans l’ordre d’évaluation</h2>
+            <h2 id="preparations-heading" className="text-lg font-semibold">Préparations dans l’ordre d’évaluation</h2>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">La première plage compatible est retenue. Le poids minimal est inclus et le poids maximal est exclu.</p>
-            <ol className="mt-4 grid gap-4 sm:grid-cols-2">{infusion.preparations.map((preparation, index) => <li key={index} className="rounded-xl bg-slate-50 p-4 dark:bg-black/15"><PreparationSummary preparation={preparation} index={index} /></li>)}</ol>
+            <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200 dark:border-white/10">
+                <table aria-labelledby="preparations-heading" className="w-full min-w-[640px] text-left text-sm">
+                    <thead className="bg-slate-50 text-slate-600 dark:bg-black/15 dark:text-slate-300">
+                        <tr>
+                            <th scope="col" className="whitespace-nowrap px-4 py-3 font-semibold">Poids min (kg)</th>
+                            <th scope="col" className="whitespace-nowrap px-4 py-3 font-semibold">Poids max (kg)</th>
+                            <th scope="col" className="px-4 py-3 font-semibold">Concentration</th>
+                            <th scope="col" className="px-4 py-3 font-semibold">Volume</th>
+                            <th scope="col" className="w-full px-4 py-3 font-semibold">Instructions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-white/10">
+                        {infusion.preparations.map((preparation, index) => <tr key={index} className="align-top">
+                            <td className="px-4 py-4 tabular-nums">{preparation.min_weight}</td>
+                            <td className="px-4 py-4 tabular-nums">{preparation.max_weight ?? 'Sans limite'}</td>
+                            <td className="whitespace-nowrap px-4 py-4 tabular-nums">{preparation.concentration} {preparation.concentration_unit}/mL</td>
+                            <td className="whitespace-nowrap px-4 py-4 tabular-nums">{preparation.total_volume} mL</td>
+                            <td className="min-w-64 whitespace-pre-wrap break-words px-4 py-4 text-slate-600 dark:text-slate-300">{preparation.instructions}</td>
+                        </tr>)}
+                    </tbody>
+                </table>
+            </div>
         </section>
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
             <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-[#182524]">
