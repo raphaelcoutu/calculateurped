@@ -26,9 +26,9 @@ const drugFields: { id: DrugKey; label: string; numeric?: boolean; options?: str
     { id: 'debit_limit_unit', label: 'Unité de débit', hint: 'Par heure', options: ['mg', 'mcg', 'unité', 'mU'] },
     { id: 'dosage_precision', label: 'Décimales des doses', numeric: true },
 ];
-const preparationFields: { id: PreparationKey; label: string; numeric?: boolean; options?: string[] }[] = [
-    { id: 'min_weight', label: 'Poids minimal inclus (kg)', numeric: true },
-    { id: 'max_weight', label: 'Poids maximal exclu (kg), vide si absent', numeric: true },
+const preparationFields: { id: PreparationKey; label: string; numeric?: boolean; options?: string[]; hint?: string }[] = [
+    { id: 'min_weight', label: 'Poids minimal (kg)', hint: 'inclus', numeric: true },
+    { id: 'max_weight', label: 'Poids maximal (kg)', hint: 'exclus, 0 si aucune limite', numeric: true },
     { id: 'concentration', label: 'Concentration', numeric: true },
     { id: 'concentration_unit', label: 'Unité de concentration', options: ['mg', 'mcg', 'unité', 'mU'] },
     { id: 'total_volume', label: 'Volume total (mL)', numeric: true },
@@ -96,7 +96,7 @@ export default function InfusionForm({ infusion, action, method, doseUnits }: { 
                     {errors[`preparations.${index}`] && <p role="alert" className="mb-3 text-sm text-rose-700 dark:text-rose-300">{errors[`preparations.${index}`]}</p>}
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{preparationFields.map(field => {
                         const id = `preparations.${index}.${field.id}`;
-                        return <FormField key={field.id} id={id} label={field.label} error={errors[id]}>
+                        return <FormField key={field.id} id={id} label={field.label} hint={field.hint} error={errors[id]}>
                             {field.options ? <select id={id} className={inputClass} value={preparation[field.id]} onChange={event => updatePreparation(index, field.id, event.target.value)}>{field.options.map(option => <option key={option}>{option}</option>)}</select>
                                 : <input id={id} className={inputClass} type="number" min="0" step="any" required={field.id !== 'max_weight'} value={preparation[field.id]} onChange={event => updatePreparation(index, field.id, event.target.value)} />}
                         </FormField>;
@@ -113,8 +113,8 @@ export default function InfusionForm({ infusion, action, method, doseUnits }: { 
 function coverageGaps(preparations: PreparationData[]): Gap[] {
     const gaps: Gap[] = [];
     let coveredUntil = 0;
-    const ranges = preparations.filter(preparation => preparation.min_weight !== '' && Number.isFinite(Number(preparation.min_weight)) && (preparation.max_weight === '' || Number(preparation.max_weight) > Number(preparation.min_weight)))
-        .map(preparation => ({ min: Math.max(0, Number(preparation.min_weight)), max: preparation.max_weight === '' ? 100 : Number(preparation.max_weight) }))
+    const ranges = preparations.filter(preparation => preparation.min_weight !== '' && Number.isFinite(Number(preparation.min_weight)) && (preparation.max_weight === '' || Number(preparation.max_weight) === 0 || Number(preparation.max_weight) > Number(preparation.min_weight)))
+        .map(preparation => ({ min: Math.max(0, Number(preparation.min_weight)), max: preparation.max_weight === '' || Number(preparation.max_weight) === 0 ? 100 : Number(preparation.max_weight) }))
         .sort((a, b) => a.min - b.min);
     for (const range of ranges) {
         const min = Math.min(100, range.min);

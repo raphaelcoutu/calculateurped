@@ -12,6 +12,17 @@ class InfusionDrugRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
+        $preparations = $this->input('preparations');
+        if (is_array($preparations)) {
+            foreach ($preparations as $index => $preparation) {
+                if (is_array($preparation) && is_numeric($preparation['max_weight'] ?? null) && (float) $preparation['max_weight'] === 0.0) {
+                    $preparations[$index]['max_weight'] = null;
+                }
+            }
+
+            $this->merge(['preparations' => $preparations]);
+        }
+
         $unit = $this->input('dose_unit');
         if (is_string($unit) && in_array($unit, InfusionDrug::doseUnits(), true)) {
             $parts = explode('/', $unit);

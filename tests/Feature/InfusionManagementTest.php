@@ -29,6 +29,21 @@ it('enregistre une fiche et ses préparations uniquement dans le centre de l’a
     expect($drug->fresh()->name)->toBe('Adrénaline');
 });
 
+it('traite un poids maximal de zéro comme une plage sans limite supérieure', function (): void {
+    $administrator = User::factory()->for(Organization::factory())->create();
+    $input = infusionInput();
+    $input['preparations'][1]['max_weight'] = 0;
+
+    $this->actingAs($administrator)->post('/admin/infusions', $input)->assertRedirect();
+
+    $drug = InfusionDrug::firstOrFail();
+    $this->assertDatabaseHas('infusion_concentrations', [
+        'infusion_drug_id' => $drug->id,
+        'min_weight' => 10,
+        'max_weight' => null,
+    ]);
+});
+
 /** @return array<string, mixed> */
 function infusionInput(array $overrides = []): array
 {
